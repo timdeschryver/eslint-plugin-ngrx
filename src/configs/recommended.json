@@ -1,0 +1,7 @@
+{
+  "extends": "./configs/base.json",
+  "rules": {
+    "action-hygiene": "warn",
+    "no-effect-decorator-and-creator": "error"
+  }
+}
