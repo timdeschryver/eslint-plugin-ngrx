@@ -14,6 +14,12 @@ ruleTester().run(ruleName, rule, {
       on(def, state => state),
       on(ghi, state => state),
     )`,
+    // does not crash when no arguments present
+    `
+    export const reducer = createReducer(
+      {},
+      on(),
+    )`,
   ],
   invalid: [
     {

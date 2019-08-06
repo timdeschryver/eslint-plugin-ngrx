@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { reducerAction } from './selectors'
+import { isIdentifier, reducerOn } from './utils'
 
 export const ruleName = 'no-duplicate-action-in-reducer'
 
@@ -60,8 +60,13 @@ export default ESLintUtils.RuleCreator(name => name)<Options, MessageIds>({
     }
 
     return {
-      [reducerAction](node: TSESTree.Identifier) {
-        isDuplicate(node)
+      [reducerOn](node: TSESTree.CallExpression) {
+        if (node.arguments && node.arguments.length > 1) {
+          const [action] = node.arguments
+          if (isIdentifier(action)) {
+            isDuplicate(action)
+          }
+        }
       },
     }
   },
