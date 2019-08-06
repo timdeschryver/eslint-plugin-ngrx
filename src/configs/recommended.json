@@ -2,6 +2,7 @@
   "extends": "./configs/base.json",
   "rules": {
     "action-hygiene": "warn",
+    "no-duplicate-action-in-reducer": "error",
     "no-effect-decorator-and-creator": "error"
   }
 }
