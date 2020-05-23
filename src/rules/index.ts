@@ -7,15 +7,20 @@ import noDuplicateActionInReducer, {
 import noEffectDecoratorAndCreator, {
   ruleName as noEffectDecoratorAndCreatorRuleName,
 } from './no-effect-decorator-and-creator'
+import noTypedStore, {
+  ruleName as noTypedStoreRuleName,
+} from './no-typed-store'
 
 const ruleNames = {
   actionHygieneRuleName,
   noDuplicateActionInReducerRuleName,
   noEffectDecoratorAndCreatorRuleName,
+  noTypedStoreRuleName,
 }
 
 export const rules = {
   [ruleNames.actionHygieneRuleName]: actionHygiene,
   [ruleNames.noDuplicateActionInReducerRuleName]: noDuplicateActionInReducer,
   [ruleNames.noEffectDecoratorAndCreatorRuleName]: noEffectDecoratorAndCreator,
+  [ruleNames.noTypedStoreRuleName]: noTypedStore,
 }
