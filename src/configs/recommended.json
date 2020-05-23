@@ -3,6 +3,7 @@
   "rules": {
     "ngrx/action-hygiene": "warn",
     "ngrx/no-duplicate-action-in-reducer": "error",
-    "ngrx/no-effect-decorator-and-creator": "error"
+    "ngrx/no-effect-decorator-and-creator": "error",
+    "ngrx/no-typed-store": "error"
   }
 }
