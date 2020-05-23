@@ -6,6 +6,7 @@
     "ngrx/no-effect-decorator-and-creator": "error",
     "ngrx/no-typed-store": "error",
     "ngrx/avoid-dispatching-multiple-actions-sequentially": "error",
-    "ngrx/no-multiple-stores": "error"
+    "ngrx/no-multiple-stores": "error",
+    "ngrx/no-dispatch-in-effects": "error"
   }
 }
