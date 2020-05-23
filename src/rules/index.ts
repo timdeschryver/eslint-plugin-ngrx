@@ -10,12 +10,16 @@ import noEffectDecoratorAndCreator, {
 import noTypedStore, {
   ruleName as noTypedStoreRuleName,
 } from './no-typed-store'
+import avoidDispatchingMultipleActionsSequentially, {
+  ruleName as avoidDispatchingMultipleActionsSequentiallyRuleName,
+} from './avoid-dispatching-multiple-actions-sequentially'
 
 const ruleNames = {
   actionHygieneRuleName,
   noDuplicateActionInReducerRuleName,
   noEffectDecoratorAndCreatorRuleName,
   noTypedStoreRuleName,
+  avoidDispatchingMultipleActionsSequentiallyRuleName,
 }
 
 export const rules = {
@@ -23,4 +27,5 @@ export const rules = {
   [ruleNames.noDuplicateActionInReducerRuleName]: noDuplicateActionInReducer,
   [ruleNames.noEffectDecoratorAndCreatorRuleName]: noEffectDecoratorAndCreator,
   [ruleNames.noTypedStoreRuleName]: noTypedStore,
+  [ruleNames.avoidDispatchingMultipleActionsSequentiallyRuleName]: avoidDispatchingMultipleActionsSequentially,
 }
