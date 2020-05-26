@@ -16,6 +16,9 @@ import avoidDispatchingMultipleActionsSequentially, {
 import noMultipleStores, {
   ruleName as noMultipleStoresRuleName,
 } from './no-multiple-stores'
+import noDispatchInEffects, {
+  ruleName as noDispatchInEffectsRuleName,
+} from './no-dispatch-in-effects'
 
 const ruleNames = {
   actionHygieneRuleName,
@@ -24,6 +27,7 @@ const ruleNames = {
   noTypedStoreRuleName,
   avoidDispatchingMultipleActionsSequentiallyRuleName,
   noMultipleStoresRuleName,
+  noDispatchInEffectsRuleName,
 }
 
 export const rules = {
@@ -33,4 +37,5 @@ export const rules = {
   [ruleNames.noTypedStoreRuleName]: noTypedStore,
   [ruleNames.avoidDispatchingMultipleActionsSequentiallyRuleName]: avoidDispatchingMultipleActionsSequentially,
   [ruleNames.noMultipleStoresRuleName]: noMultipleStores,
+  [ruleNames.noDispatchInEffectsRuleName]: noDispatchInEffects,
 }
