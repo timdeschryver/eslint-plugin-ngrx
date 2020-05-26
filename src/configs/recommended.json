@@ -9,6 +9,7 @@
     "ngrx/no-multiple-stores": "error",
     "ngrx/no-dispatch-in-effects": "error",
     "ngrx/no-effect-decorator": "error",
-    "ngrx/no-effects-in-providers": "error"
+    "ngrx/no-effects-in-providers": "error",
+    "ngrx/use-selector-in-select": "error"
   }
 }

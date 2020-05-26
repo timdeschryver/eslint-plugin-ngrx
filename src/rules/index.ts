@@ -25,6 +25,9 @@ import noEffectDecorator, {
 import noEffectsInProviders, {
   ruleName as noEffectsInProvidersRuleName,
 } from './no-effects-in-providers'
+import useSelectorInSelect, {
+  ruleName as useSelectorInSelectRuleName,
+} from './use-selector-in-select'
 
 const ruleNames = {
   actionHygieneRuleName,
@@ -36,6 +39,7 @@ const ruleNames = {
   noDispatchInEffectsRuleName,
   noEffectDecoratorRuleName,
   noEffectsInProvidersRuleName,
+  useSelectorInSelectRuleName,
 }
 
 export const rules = {
@@ -48,4 +52,5 @@ export const rules = {
   [ruleNames.noDispatchInEffectsRuleName]: noDispatchInEffects,
   [ruleNames.noEffectDecoratorRuleName]: noEffectDecorator,
   [ruleNames.noEffectsInProvidersRuleName]: noEffectsInProviders,
+  [ruleNames.useSelectorInSelectRuleName]: useSelectorInSelect,
 }
