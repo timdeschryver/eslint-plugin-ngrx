@@ -20,10 +20,11 @@
   "private": false,
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage",
-    "prebuild": "rm -rf ./dist",
+    "test": "jest",
+    "test:cov": "jest --coverage",
+    "prebuild": "rimraf ./dist",
     "build": "tsc",
-    "postbuild": "cp ./package.json ./dist",
+    "postbuild": "cpy ./package.json ./dist",
     "lint": "eslint --ext .ts ./src/** ./tests/**"
   },
   "devDependencies": {
@@ -34,6 +35,7 @@
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
     "common-tags": "^1.8.0",
+    "cpy-cli": "^3.1.1",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
@@ -41,8 +43,9 @@
     "jest": "^24.8.0",
     "lint-staged": "^9.2.1",
     "prettier": "^1.18.2",
+    "rimraf": "^3.0.2",
     "semantic-release": "^15.13.19",
-    "ts-jest": "^24.0.2",
+    "ts-jest": "^26.0.0",
     "typescript": "^3.5.3"
   }
 }
