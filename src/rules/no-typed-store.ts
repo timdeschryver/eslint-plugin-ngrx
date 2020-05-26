@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { store } from './utils'
+import { typedStore } from './utils'
 
 export const ruleName = 'no-typed-store'
 
@@ -30,7 +30,7 @@ export default ESLintUtils.RuleCreator(name => name)<Options, MessageIds>({
   defaultOptions: [],
   create: context => {
     return {
-      [store](node: TSESTree.TSTypeReference) {
+      [typedStore](node: TSESTree.TSTypeReference) {
         context.report({
           node,
           messageId,
