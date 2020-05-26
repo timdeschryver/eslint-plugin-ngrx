@@ -1,9 +1,14 @@
-name: ci
+name: release
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
-  build_and_test:
+  release:
+    if: github.repository == 'timdeschryver/eslint-plugin-ngrx'
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -23,3 +28,8 @@ jobs:
         run: npm run test -- --ci
         env:
           CI: true
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
