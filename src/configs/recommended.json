@@ -8,6 +8,7 @@
     "ngrx/avoid-dispatching-multiple-actions-sequentially": "error",
     "ngrx/no-multiple-stores": "error",
     "ngrx/no-dispatch-in-effects": "error",
-    "ngrx/no-effect-decorator": "error"
+    "ngrx/no-effect-decorator": "error",
+    "ngrx/no-effects-in-providers": "error"
   }
 }

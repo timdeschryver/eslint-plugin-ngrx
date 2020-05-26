@@ -17,3 +17,9 @@ export const dispatchInEffects = `ClassProperty > CallExpression:has(Identifier[
 export const injectedStore = `MethodDefinition[kind='constructor'] Identifier>TSTypeAnnotation>TSTypeReference[typeName.name="Store"]`
 
 export const typedStore = `${injectedStore}[typeParameters.params]`
+
+export const ngModuleDecorator = `ClassDeclaration > Decorator > CallExpression[callee.name='NgModule']`
+
+export const ngModuleProviders = `${ngModuleDecorator} ObjectExpression Property[key.name='providers'] > ArrayExpression Identifier`
+
+export const ngModuleImports = `${ngModuleDecorator} ObjectExpression Property[key.name='imports'] > ArrayExpression CallExpression[callee.object.name='EffectsModule'][callee.property.name=/forRoot|forFeature/] ArrayExpression > Identifier`
