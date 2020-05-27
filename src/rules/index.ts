@@ -22,6 +22,9 @@ import noDispatchInEffects, {
 import noEffectDecorator, {
   ruleName as noEffectDecoratorRuleName,
 } from './no-effect-decorator'
+import noEffectsInProviders, {
+  ruleName as noEffectsInProvidersRuleName,
+} from './no-effects-in-providers'
 
 const ruleNames = {
   actionHygieneRuleName,
@@ -32,6 +35,7 @@ const ruleNames = {
   noMultipleStoresRuleName,
   noDispatchInEffectsRuleName,
   noEffectDecoratorRuleName,
+  noEffectsInProvidersRuleName,
 }
 
 export const rules = {
@@ -43,4 +47,5 @@ export const rules = {
   [ruleNames.noMultipleStoresRuleName]: noMultipleStores,
   [ruleNames.noDispatchInEffectsRuleName]: noDispatchInEffects,
   [ruleNames.noEffectDecoratorRuleName]: noEffectDecorator,
+  [ruleNames.noEffectsInProvidersRuleName]: noEffectsInProviders,
 }
