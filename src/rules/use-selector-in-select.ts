@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { select } from './utils'
+import { select, docsUrl } from './utils'
 
 export const ruleName = 'use-selector-in-select'
 
@@ -9,7 +9,7 @@ export type MessageIds = typeof messageId
 
 type Options = []
 
-export default ESLintUtils.RuleCreator(name => name)<Options, MessageIds>({
+export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: ruleName,
   meta: {
     type: 'problem',
