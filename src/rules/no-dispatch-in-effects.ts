@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { dispatchInEffects } from './utils'
+import { dispatchInEffects, docsUrl } from './utils'
 
 export const ruleName = 'no-dispatch-in-effects'
 
@@ -9,7 +9,7 @@ export type MessageIds = typeof messageId
 
 type Options = []
 
-export default ESLintUtils.RuleCreator(name => name)<Options, MessageIds>({
+export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: ruleName,
   meta: {
     type: 'problem',

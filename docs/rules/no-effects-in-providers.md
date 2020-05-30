@@ -1,0 +1,1 @@
+# no-effects-in-providers

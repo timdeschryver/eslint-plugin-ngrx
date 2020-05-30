@@ -1,0 +1,1 @@
+# no-typed-store
