@@ -25,6 +25,9 @@ import noEffectsInProviders, {
 import useSelectorInSelect, {
   ruleName as useSelectorInSelectRuleName,
 } from './use-selector-in-select'
+import onFunctionExplicitReturnType, {
+  ruleName as onFunctionExplicitReturnTypeRuleName,
+} from './on-function-explicit-return-type'
 
 const ruleNames = {
   actionHygieneRuleName,
@@ -36,6 +39,7 @@ const ruleNames = {
   noEffectDecoratorRuleName,
   noEffectsInProvidersRuleName,
   useSelectorInSelectRuleName,
+  onFunctionExplicitReturnTypeRuleName,
 }
 
 export const rules = {
@@ -48,4 +52,5 @@ export const rules = {
   [ruleNames.noEffectDecoratorRuleName]: noEffectDecorator,
   [ruleNames.noEffectsInProvidersRuleName]: noEffectsInProviders,
   [ruleNames.useSelectorInSelectRuleName]: useSelectorInSelect,
+  [ruleNames.onFunctionExplicitReturnTypeRuleName]: onFunctionExplicitReturnType,
 }
