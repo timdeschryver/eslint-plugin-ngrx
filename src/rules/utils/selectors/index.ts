@@ -28,3 +28,5 @@ const pipeableSelect = `CallExpression[callee.property.name="pipe"] CallExpressi
 const storeSelect = `CallExpression[callee.object.name='store'][callee.property.name='select']`
 
 export const select = `${pipeableSelect} Literal, ${storeSelect} Literal, ${pipeableSelect} ArrowFunctionExpression, ${storeSelect} ArrowFunctionExpression`
+
+export const onFunctionWithoutType = `CallExpression[callee.name='createReducer'] CallExpression[callee.name='on'] ArrowFunctionExpression:not([returnType.typeAnnotation],:has(CallExpression))`
