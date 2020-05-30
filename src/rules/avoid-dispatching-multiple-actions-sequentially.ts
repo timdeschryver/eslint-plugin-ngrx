@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { multipleActionDispatch, docsUrl } from './utils'
+import { multipleActionDispatch, docsUrl } from '../utils'
 
 export const ruleName = 'avoid-dispatching-multiple-actions-sequentially'
 

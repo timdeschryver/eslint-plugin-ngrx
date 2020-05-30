@@ -1,7 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { effectCreator, effectDecorator } from './utils/selectors'
-import { docsUrl } from './utils'
+import { effectCreator, effectDecorator, docsUrl } from '../utils'
 
 export const ruleName = 'no-effect-decorator-and-creator'
 

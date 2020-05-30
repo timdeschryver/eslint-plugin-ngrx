@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { typedStore, docsUrl } from './utils'
+import { typedStore, docsUrl } from '../utils'
 
 export const ruleName = 'no-typed-store'
 

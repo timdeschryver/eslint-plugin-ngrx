@@ -44,13 +44,13 @@ const ruleNames = {
 
 export const rules = {
   [ruleNames.actionHygieneRuleName]: actionHygiene,
-  [ruleNames.noEffectDecoratorAndCreatorRuleName]: noEffectDecoratorAndCreator,
-  [ruleNames.noTypedStoreRuleName]: noTypedStore,
   [ruleNames.avoidDispatchingMultipleActionsSequentiallyRuleName]: avoidDispatchingMultipleActionsSequentially,
-  [ruleNames.noMultipleStoresRuleName]: noMultipleStores,
   [ruleNames.noDispatchInEffectsRuleName]: noDispatchInEffects,
+  [ruleNames.noEffectDecoratorAndCreatorRuleName]: noEffectDecoratorAndCreator,
   [ruleNames.noEffectDecoratorRuleName]: noEffectDecorator,
   [ruleNames.noEffectsInProvidersRuleName]: noEffectsInProviders,
-  [ruleNames.useSelectorInSelectRuleName]: useSelectorInSelect,
+  [ruleNames.noMultipleStoresRuleName]: noMultipleStores,
+  [ruleNames.noTypedStoreRuleName]: noTypedStore,
   [ruleNames.onFunctionExplicitReturnTypeRuleName]: onFunctionExplicitReturnType,
+  [ruleNames.useSelectorInSelectRuleName]: useSelectorInSelect,
 }

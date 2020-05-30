@@ -4,8 +4,8 @@ import {
   ngModuleDecorator,
   ngModuleImports,
   ngModuleProviders,
-} from './utils/selectors'
-import { docsUrl } from './utils'
+  docsUrl,
+} from '../utils'
 
 export const ruleName = 'no-effects-in-providers'
 

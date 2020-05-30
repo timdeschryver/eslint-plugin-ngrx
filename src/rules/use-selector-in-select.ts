@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { select, docsUrl } from './utils'
+import { select, docsUrl } from '../utils'
 
 export const ruleName = 'use-selector-in-select'
 

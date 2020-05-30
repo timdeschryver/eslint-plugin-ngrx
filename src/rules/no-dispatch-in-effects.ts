@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { dispatchInEffects, docsUrl } from './utils'
+import { dispatchInEffects, docsUrl } from '../utils'
 
 export const ruleName = 'no-dispatch-in-effects'
 

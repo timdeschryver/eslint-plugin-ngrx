@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { docsUrl, actionCreator } from './utils'
+import { docsUrl, actionCreator } from '../utils'
 
 export const ruleName = 'action-hygiene'
 

@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { constructorExit, injectedStore, docsUrl } from './utils'
+import { constructorExit, injectedStore, docsUrl } from '../utils'
 
 export const ruleName = 'no-multiple-stores'
 
