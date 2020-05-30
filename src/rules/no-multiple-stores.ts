@@ -16,7 +16,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Possible Errors',
       description: 'There should only be one store injected',
-      extraDescription: ['There is only one global store'],
       recommended: 'error',
     },
     schema: [],
@@ -25,7 +24,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
   },
   defaultOptions: [],
-  create: context => {
+  create: (context) => {
     const injectedStores: TSESTree.Identifier[] = []
 
     return {
@@ -35,7 +34,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       [constructorExit]() {
         injectedStores
           .filter((_, i) => i > 0)
-          .forEach(node => {
+          .forEach((node) => {
             context.report({
               node,
               messageId,

@@ -22,9 +22,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Possible Errors',
       description:
         'An Effect should not be listed as a provider if it is added to the EffectsModule',
-      extraDescription: [
-        'If an Effect is registered with EffectsModule and is added as a provider, it will be registered twice',
-      ],
       recommended: 'error',
     },
     schema: [],
@@ -34,7 +31,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
   },
   defaultOptions: [],
-  create: context => {
+  create: (context) => {
     const effectsInProviders: TSESTree.Identifier[] = []
     const importedEffectsNames: string[] = []
 
