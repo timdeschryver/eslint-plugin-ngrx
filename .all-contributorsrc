@@ -30,6 +30,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "StephenCooper",
+      "name": "Stephen Cooper",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/20125490?v=4",
+      "profile": "https://github.com/StephenCooper",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "skipCi": true,
