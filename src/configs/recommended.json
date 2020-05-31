@@ -9,7 +9,7 @@
     "ngrx/no-dispatch-in-effects": "error",
     "ngrx/no-effect-decorator": "error",
     "ngrx/no-effects-in-providers": "error",
-    "ngrx/use-selector-in-select": "error",
-    "ngrx/on-function-explicit-return-type": "error"
+    "ngrx/on-function-explicit-return-type": "error",
+    "ngrx/use-selector-in-select": "error"
   }
 }

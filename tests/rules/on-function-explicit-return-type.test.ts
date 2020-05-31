@@ -25,6 +25,16 @@ ruleTester().run(ruleName, rule, {
       on(increment, s => incrementFunc(s)),
       on(increment, (s): State => incrementFunc(s)),
     )`,
+    `
+    const reducer = createReducer(
+      initialState,
+      on(
+        increment,
+        produce((draft: State, action) => {
+            draft.counter++;
+        }),
+      ),
+    )`,
   ],
   invalid: [
     {

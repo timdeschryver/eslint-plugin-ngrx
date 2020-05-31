@@ -22,12 +22,12 @@ import noEffectDecorator, {
 import noEffectsInProviders, {
   ruleName as noEffectsInProvidersRuleName,
 } from './no-effects-in-providers'
-import useSelectorInSelect, {
-  ruleName as useSelectorInSelectRuleName,
-} from './use-selector-in-select'
 import onFunctionExplicitReturnType, {
   ruleName as onFunctionExplicitReturnTypeRuleName,
 } from './on-function-explicit-return-type'
+import useSelectorInSelect, {
+  ruleName as useSelectorInSelectRuleName,
+} from './use-selector-in-select'
 
 const ruleNames = {
   actionHygieneRuleName,
@@ -38,8 +38,8 @@ const ruleNames = {
   noDispatchInEffectsRuleName,
   noEffectDecoratorRuleName,
   noEffectsInProvidersRuleName,
-  useSelectorInSelectRuleName,
   onFunctionExplicitReturnTypeRuleName,
+  useSelectorInSelectRuleName,
 }
 
 export const rules = {
