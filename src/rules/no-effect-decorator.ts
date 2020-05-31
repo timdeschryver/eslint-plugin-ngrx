@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { effectDecorator, docsUrl } from './utils'
+import { effectDecorator, docsUrl } from '../utils'
 
 export const ruleName = 'no-effect-decorator'
 
@@ -16,7 +16,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Possible Errors',
       description: 'The createEffect creator function is preferred',
-      extraDescription: ['createEffect allows an effect to be type safe'],
       recommended: 'error',
     },
     schema: [],
@@ -25,7 +24,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
   },
   defaultOptions: [],
-  create: context => {
+  create: (context) => {
     return {
       [effectDecorator](node: TSESTree.TSTypeReference) {
         context.report({

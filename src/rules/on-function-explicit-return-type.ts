@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { onFunctionWithoutType, docsUrl } from './utils'
+import { onFunctionWithoutType, docsUrl } from '../utils'
 
 export const ruleName = 'on-function-explicit-return-type'
 
@@ -16,9 +16,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Possible Errors',
       description: 'On function should have an explicit return type',
-      extraDescription: [
-        'This rule forces the on function to have an explicit return type when defined with an arrow function.',
-      ],
       recommended: 'error',
     },
     schema: [],
@@ -28,7 +25,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
   },
   defaultOptions: [],
-  create: context => {
+  create: (context) => {
     return {
       [onFunctionWithoutType](node: TSESTree.TSTypeReference) {
         context.report({

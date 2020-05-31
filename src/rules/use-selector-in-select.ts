@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { select, docsUrl } from './utils'
+import { select, docsUrl } from '../utils'
 
 export const ruleName = 'use-selector-in-select'
 
@@ -17,9 +17,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Possible Errors',
       description:
         'Using a selector in a select function is preferred in favor of strings/props drilling',
-      extraDescription: [
-        'A selector is more performant, shareable and maintainable',
-      ],
       recommended: 'error',
     },
     schema: [],
@@ -29,7 +26,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
   },
   defaultOptions: [],
-  create: context => {
+  create: (context) => {
     return {
       [select](node: TSESTree.Literal | TSESTree.ArrowFunctionExpression) {
         context.report({

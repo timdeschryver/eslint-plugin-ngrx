@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { typedStore, docsUrl } from './utils'
+import { typedStore, docsUrl } from '../utils'
 
 export const ruleName = 'no-typed-store'
 
@@ -16,9 +16,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Possible Errors',
       description: 'Store should not be typed',
-      extraDescription: [
-        'This rule forces the usage of selectors, which are typed',
-      ],
       recommended: 'error',
     },
     schema: [],
@@ -28,7 +25,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
   },
   defaultOptions: [],
-  create: context => {
+  create: (context) => {
     return {
       [typedStore](node: TSESTree.TSTypeReference) {
         context.report({

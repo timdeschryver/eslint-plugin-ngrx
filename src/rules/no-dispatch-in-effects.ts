@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { dispatchInEffects, docsUrl } from './utils'
+import { dispatchInEffects, docsUrl } from '../utils'
 
 export const ruleName = 'no-dispatch-in-effects'
 
@@ -16,7 +16,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Possible Errors',
       description: 'An Effect should not call store.dispatch',
-      extraDescription: ['An action should be returned from the effect'],
       recommended: 'error',
     },
     schema: [],
@@ -25,7 +24,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
   },
   defaultOptions: [],
-  create: context => {
+  create: (context) => {
     return {
       [dispatchInEffects](node: TSESTree.CallExpression) {
         context.report({

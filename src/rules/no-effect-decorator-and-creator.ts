@@ -1,7 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { effectCreator, effectDecorator } from './utils/selectors'
-import { docsUrl } from './utils'
+import { effectCreator, effectDecorator, docsUrl } from '../utils'
 
 export const ruleName = 'no-effect-decorator-and-creator'
 
@@ -18,9 +17,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Possible Errors',
       description:
         'An Effect should only use the effect creator (`createEffect`) or the effect decorator (`@Effect`), but not both simultaneously',
-      extraDescription: [
-        'The Effect will fire twice when using the decorator and the create function',
-      ],
       recommended: 'error',
     },
     schema: [],
@@ -30,7 +26,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
   },
   defaultOptions: [],
-  create: context => {
+  create: (context) => {
     const effects: TSESTree.ClassProperty[] = []
 
     function isDuplicate(effect: TSESTree.ClassProperty) {

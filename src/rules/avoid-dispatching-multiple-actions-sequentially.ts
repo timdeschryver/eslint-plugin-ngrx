@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { multipleActionDispatch, docsUrl } from './utils'
+import { multipleActionDispatch, docsUrl } from '../utils'
 
 export const ruleName = 'avoid-dispatching-multiple-actions-sequentially'
 
@@ -16,9 +16,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Possible Errors',
       description: 'It is recommended to only dispatch one action at a time.',
-      extraDescription: [
-        'See more at https://redux.js.org/style-guide/style-guide#avoid-dispatching-many-actions-sequentially',
-      ],
       recommended: 'error',
     },
     schema: [],
@@ -28,7 +25,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
   },
   defaultOptions: [],
-  create: context => {
+  create: (context) => {
     return {
       [multipleActionDispatch](node: TSESTree.CallExpression) {
         context.report({

@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { docsUrl, actionCreator } from './utils'
+import { docsUrl, actionCreator } from '../utils'
 
 export const ruleName = 'action-hygiene'
 
@@ -25,7 +25,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
   },
   defaultOptions: [],
-  create: context => {
+  create: (context) => {
     return {
       [actionCreator](node: TSESTree.CallExpression) {
         if (node.arguments && node.arguments[0].type === 'Literal') {

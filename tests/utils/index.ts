@@ -1,14 +1,9 @@
-import * as path from 'path'
+import { resolve } from 'path'
 import { RuleTester } from '@typescript-eslint/experimental-utils/dist/ts-eslint'
-
-const parser = path.resolve(
-  __dirname,
-  '../../node_modules/@typescript-eslint/parser',
-)
 
 export function ruleTester() {
   const ruleTester = new RuleTester({
-    parser,
+    parser: resolve('./node_modules/@typescript-eslint/parser'),
     parserOptions: {
       ecmaVersion: 6,
       sourceType: 'module',
