@@ -35,6 +35,14 @@ ruleTester().run(ruleName, rule, {
         }),
       ),
     )`,
+    // https://github.com/timdeschryver/ngrx-tslint-rules/pull/37
+    `
+    const reducer = createReducer(
+      on(increment, (s): State => ({
+        ...s,
+        counter: (s => s.counter + 1)(s),
+      })),
+    )`,
   ],
   invalid: [
     {
