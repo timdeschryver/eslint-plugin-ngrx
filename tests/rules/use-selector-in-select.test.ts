@@ -7,15 +7,28 @@ import { ruleTester } from '../utils'
 
 ruleTester().run(ruleName, rule, {
   valid: [
-    `store.pipe(select(selectCustomers))`,
-    `store.pipe(select(selectorsObj.selectCustomers))`,
-    `store.select(selectCustomers)`,
-    `store.select(selectorsObj.selectCustomers)`,
+    `this.store.pipe(select(selectCustomers))`,
+    `this.store.pipe(select(selectorsObj.selectCustomers))`,
+    `this.store.select(selectCustomers)`,
+    `this.store.select(selectorsObj.selectCustomers)`,
   ],
   invalid: [
     {
       code: stripIndent`
-        store.pipe(select('customers'))`,
+        this.store.pipe(select('customers'))`,
+      errors: [
+        {
+          messageId,
+          line: 1,
+          column: 24,
+          endLine: 1,
+          endColumn: 35,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        this.store.select('customers')`,
       errors: [
         {
           messageId,
@@ -28,20 +41,27 @@ ruleTester().run(ruleName, rule, {
     },
     {
       code: stripIndent`
-        store.select('customers')`,
+        this.store.pipe(select('customers', 'orders'))`,
       errors: [
         {
           messageId,
           line: 1,
-          column: 14,
+          column: 24,
           endLine: 1,
-          endColumn: 25,
+          endColumn: 35,
+        },
+        {
+          messageId,
+          line: 1,
+          column: 37,
+          endLine: 1,
+          endColumn: 45,
         },
       ],
     },
     {
       code: stripIndent`
-        store.pipe(select('customers', 'orders'))`,
+        this.store.select('customers', 'orders')`,
       errors: [
         {
           messageId,
@@ -61,27 +81,20 @@ ruleTester().run(ruleName, rule, {
     },
     {
       code: stripIndent`
-        store.select('customers', 'orders')`,
+        this.store.pipe(select(state => state.customers))`,
       errors: [
         {
           messageId,
           line: 1,
-          column: 14,
+          column: 24,
           endLine: 1,
-          endColumn: 25,
-        },
-        {
-          messageId,
-          line: 1,
-          column: 27,
-          endLine: 1,
-          endColumn: 35,
+          endColumn: 48,
         },
       ],
     },
     {
       code: stripIndent`
-        store.pipe(select(state => state.customers))`,
+        this.store.select(state => state.customers)`,
       errors: [
         {
           messageId,
@@ -94,20 +107,20 @@ ruleTester().run(ruleName, rule, {
     },
     {
       code: stripIndent`
-        store.select(state => state.customers)`,
+        this.store.pipe(select(state => state.customers.orders))`,
       errors: [
         {
           messageId,
           line: 1,
-          column: 14,
+          column: 24,
           endLine: 1,
-          endColumn: 38,
+          endColumn: 55,
         },
       ],
     },
     {
       code: stripIndent`
-        store.pipe(select(state => state.customers.orders))`,
+        this.store.select(state => state.customers.orders)`,
       errors: [
         {
           messageId,
@@ -115,19 +128,6 @@ ruleTester().run(ruleName, rule, {
           column: 19,
           endLine: 1,
           endColumn: 50,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-        store.select(state => state.customers.orders)`,
-      errors: [
-        {
-          messageId,
-          line: 1,
-          column: 14,
-          endLine: 1,
-          endColumn: 45,
         },
       ],
     },
