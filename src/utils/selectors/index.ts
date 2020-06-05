@@ -24,8 +24,8 @@ export const ngModuleProviders = `${ngModuleDecorator} ObjectExpression Property
 
 export const ngModuleImports = `${ngModuleDecorator} ObjectExpression Property[key.name='imports'] > ArrayExpression CallExpression[callee.object.name='EffectsModule'][callee.property.name=/forRoot|forFeature/] ArrayExpression > Identifier`
 
-const pipeableSelect = `CallExpression[callee.property.name="pipe"] CallExpression[callee.name="select"]`
-const storeSelect = `CallExpression[callee.object.name='store'][callee.property.name='select']`
+export const pipeableSelect = `CallExpression[callee.property.name="pipe"] CallExpression[callee.name="select"]`
+export const storeSelect = `CallExpression[callee.object.property.name='store'][callee.property.name='select']`
 
 export const select = `${pipeableSelect} Literal, ${storeSelect} Literal, ${pipeableSelect} ArrowFunctionExpression, ${storeSelect} ArrowFunctionExpression`
 

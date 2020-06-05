@@ -28,6 +28,7 @@ import noTypedStore, {
 import onFunctionExplicitReturnType, {
   ruleName as onFunctionExplicitReturnTypeRuleName,
 } from './on-function-explicit-return-type'
+import selectStyle, { ruleName as selectStyleRuleName } from './select-style'
 import useSelectorInSelect, {
   ruleName as useSelectorInSelectRuleName,
 } from './use-selector-in-select'
@@ -43,6 +44,7 @@ const ruleNames = {
   noReducerInKeyNamesRuleName,
   noTypedStoreRuleName,
   onFunctionExplicitReturnTypeRuleName,
+  selectStyleRuleName,
   useSelectorInSelectRuleName,
 }
 
@@ -57,5 +59,6 @@ export const rules = {
   [ruleNames.noReducerInKeyNamesRuleName]: noReducerInKeyNames,
   [ruleNames.noTypedStoreRuleName]: noTypedStore,
   [ruleNames.onFunctionExplicitReturnTypeRuleName]: onFunctionExplicitReturnType,
+  [ruleNames.selectStyleRuleName]: selectStyle,
   [ruleNames.useSelectorInSelectRuleName]: useSelectorInSelect,
 }
