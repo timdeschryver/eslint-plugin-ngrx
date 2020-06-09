@@ -4,8 +4,6 @@ export const effectDecorator = `ClassProperty > Decorator[expression.callee.name
 
 export const actionCreator = `CallExpression[callee.name=/createAction.*/]`
 
-export const reducerOn = `CallExpression[callee.name='createReducer'] > CallExpression[callee.name='on']`
-
 export const constructorExit = `MethodDefinition[kind='constructor']:exit`
 
 const actionDispatch =
@@ -34,3 +32,9 @@ export const onFunctionWithoutType = `CallExpression[callee.name='createReducer'
 export const storeActionReducerMap = `${ngModuleDecorator} ObjectExpression Property[key.name='imports'] > ArrayExpression CallExpression[callee.object.name='StoreModule'][callee.property.name=/forRoot|forFeature/] > ObjectExpression > Property`
 
 export const actionReducerMap = `VariableDeclarator[id.typeAnnotation.typeAnnotation.typeName.name='ActionReducerMap'] > ObjectExpression > Property`
+
+const effectsOperator = `ClassProperty > CallExpression[callee.name='createEffect'] CallExpression[callee.name=/switchMap|concatMap|mergeMap|flatMap|exhaustMap/]`
+
+export const effectsArrowReturn = `${effectsOperator} > ArrowFunctionExpression > ArrayExpression`
+
+export const effectsReturn = `${effectsOperator} ReturnStatement`
