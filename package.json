@@ -24,7 +24,7 @@
     "test:cov": "jest --coverage",
     "prebuild": "rimraf ./dist",
     "build": "tsc",
-    "postbuild": "cpy ./package.json ./dist",
+    "postbuild": "cpy ./{package.json,README.md} ./dist",
     "lint": "eslint --ext .ts ./src/** ./tests/**"
   },
   "devDependencies": {
