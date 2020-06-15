@@ -47,7 +47,7 @@ To enable the recommended configuration, add it to your ESLint configuration fil
 
 | Name                                                                                                                                                                             | Description                                                                                                                    | :heavy_check_mark: |
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
-| [action-hygiene](https://github.com/timdeschryver/eslint-plugin-ngrx/tree/master/docs/rules/action-hygiene.md)                                                                   | Enforces the use of good action hygiene. See more at https://www.youtube.com/watch?v=JmnsEvoy-gY.                              | :heavy_check_mark: |
+| [action-hygiene](https://github.com/timdeschryver/eslint-plugin-ngrx/tree/master/docs/rules/action-hygiene.md)                                                                   | Enforces the use of good action hygiene.                                                                                       | :heavy_check_mark: |
 | [avoid-dispatching-multiple-actions-sequentially](https://github.com/timdeschryver/eslint-plugin-ngrx/tree/master/docs/rules/avoid-dispatching-multiple-actions-sequentially.md) | It is recommended to only dispatch one action at a time.                                                                       | :heavy_check_mark: |
 | [no-dispatch-in-effects](https://github.com/timdeschryver/eslint-plugin-ngrx/tree/master/docs/rules/no-dispatch-in-effects.md)                                                   | An Effect should not call store.dispatch                                                                                       | :heavy_check_mark: |
 | [no-effect-decorator](https://github.com/timdeschryver/eslint-plugin-ngrx/tree/master/docs/rules/no-effect-decorator.md)                                                         | The createEffect creator function is preferred                                                                                 | :heavy_check_mark: |
@@ -83,6 +83,7 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
