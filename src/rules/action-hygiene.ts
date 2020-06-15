@@ -17,7 +17,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Best Practices',
       description:
         'Enforces the use of good action hygiene. See more at https://www.youtube.com/watch?v=JmnsEvoy-gY.',
-      recommended: 'warn',
+      recommended: 'error',
     },
     schema: [],
     messages: {
