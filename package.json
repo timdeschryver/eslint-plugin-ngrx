@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-ngrx",
-  "version": "0.0.0-development",
+  "version": "0.0.1-development",
   "description": "ESLint plugin for NgRx",
   "keywords": [
     "NgRx",
@@ -27,6 +27,10 @@
     "postbuild": "cpy ./{package.json,README.md} ./dist",
     "lint": "eslint --ext .ts ./src/** ./tests/**"
   },
+  "dependencies": {
+    "@typescript-eslint/experimental-utils": "^2.29.0",
+    "tsutils-etc": "^1.2.2"
+  },
   "devDependencies": {
     "@types/common-tags": "^1.8.0",
     "@types/eslint": "^6.8.1",
@@ -45,7 +49,6 @@
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.0.0",
-    "tsutils-etc": "^1.2.2",
     "typescript": "^3.9.3"
   }
 }

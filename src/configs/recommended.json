@@ -1,5 +1,5 @@
 {
-  "extends": "./configs/base.json",
+  "plugins": ["ngrx"],
   "rules": {
     "ngrx/action-hygiene": "error",
     "ngrx/avoid-dispatching-multiple-actions-sequentially": "error",

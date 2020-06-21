@@ -1,5 +1,4 @@
 import { AST_NODE_TYPES, TSESTree } from '@typescript-eslint/experimental-utils'
-import { RuleContext } from '@typescript-eslint/experimental-utils/dist/ts-eslint/Rule'
 import { couldBeType } from 'tsutils-etc'
 
 export const docsUrl = (ruleName: string) =>
@@ -14,7 +13,8 @@ export function isLiteral(node: TSESTree.Node): node is TSESTree.Literal {
 }
 
 function getParserServices(
-  context: Readonly<RuleContext<string, readonly unknown[]>>,
+  // RuleContext<string, readonly unknown[]>>
+  context: Readonly<any>,
 ) {
   if (
     !context.parserServices ||
@@ -29,7 +29,8 @@ function getParserServices(
 }
 
 export function typecheck(
-  context: Readonly<RuleContext<string, readonly unknown[]>>,
+  // RuleContext<string, readonly unknown[]>>
+  context: Readonly<any>,
 ) {
   const service = getParserServices(context)
   const nodeMap = service.esTreeNodeToTSNodeMap
