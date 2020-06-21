@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-ngrx",
-  "version": "0.0.1-development",
+  "version": "0.0.0-development",
   "description": "ESLint plugin for NgRx",
   "keywords": [
     "NgRx",

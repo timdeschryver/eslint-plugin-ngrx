@@ -1,5 +1,5 @@
 import { rules } from '../src/rules'
-import recommended from '../src/configs/recommended.json'
+import recommended from '../src/configs/recommended'
 
 it('should export recommended rules', () => {
   const recommmendedRules: { [name: string]: false | 'error' | 'warn' } = {}

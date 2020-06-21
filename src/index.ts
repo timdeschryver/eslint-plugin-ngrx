@@ -1,6 +1,6 @@
 import { rules } from './rules'
 
-import recommended from './configs/recommended.json'
+import recommended from './configs/recommended'
 
 export = {
   rules,
