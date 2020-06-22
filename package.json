@@ -27,8 +27,7 @@
     "postbuild": "cpy ./{package.json,README.md} ./dist",
     "lint": "eslint --ext .ts ./src/** ./tests/**",
     "generate:config": "ts-node ./scripts/generate-config.ts",
-    "pre-commit": "npm run generate:config && lint-staged",
-    "pre-push": "npm run lint"
+    "pre-commit": "npm run generate:config && git add ./src/configs/**.ts && lint-staged"
   },
   "dependencies": {
     "@typescript-eslint/experimental-utils": "^2.29.0",
