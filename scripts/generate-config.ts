@@ -1,5 +1,5 @@
-import fs from 'fs'
-import path from 'path'
+import { writeFileSync } from 'fs'
+import { join } from 'path'
 import { format, resolveConfig } from 'prettier'
 import { rules } from '../src/rules'
 
@@ -27,4 +27,4 @@ const config = format(code, {
   parser: 'typescript',
   ...prettierConfig,
 })
-fs.writeFileSync(path.join(CONFIG_DIRECTORY, 'recommended.ts'), config)
+writeFileSync(join(CONFIG_DIRECTORY, 'recommended.ts'), config)
