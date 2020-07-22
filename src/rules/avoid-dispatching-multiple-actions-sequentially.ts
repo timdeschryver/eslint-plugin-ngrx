@@ -1,6 +1,11 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { multipleActionDispatch, docsUrl } from '../utils'
+import {
+  docsUrl,
+  isCallExpression,
+  isMemberExpression,
+  isIdentifier,
+} from '../utils'
 
 export const ruleName = 'avoid-dispatching-multiple-actions-sequentially'
 
@@ -26,12 +31,44 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
+    let storeName = ''
     return {
-      [multipleActionDispatch](node: TSESTree.CallExpression) {
-        context.report({
-          node,
-          messageId,
-        })
+      [`MethodDefinition[kind='constructor'] Identifier[typeAnnotation.typeAnnotation.typeName.name="Store"]`](
+        node: TSESTree.Identifier,
+      ) {
+        storeName = node.name
+      },
+      [`ClassDeclaration > ClassBody > MethodDefinition > FunctionExpression > BlockStatement`](
+        node: TSESTree.BlockStatement,
+      ) {
+        if (!storeName) return
+
+        const dispatchExpressions = node.body
+          .map((expression: TSESTree.ExpressionStatement) => {
+            if (
+              isCallExpression(expression.expression) &&
+              isMemberExpression(expression.expression.callee) &&
+              isIdentifier(expression.expression.callee.property) &&
+              expression.expression.callee.property.name === 'dispatch' &&
+              isMemberExpression(expression.expression.callee.object) &&
+              isIdentifier(expression.expression.callee.object.property) &&
+              expression.expression.callee.object.property.name === storeName
+            ) {
+              return expression.expression
+            } else {
+              return null
+            }
+          })
+          .filter(Boolean)
+
+        if (dispatchExpressions.length > 1) {
+          dispatchExpressions.forEach((expression) => {
+            context.report({
+              node: expression,
+              messageId: 'AvoidDispatchingMultipleActionsSequentially',
+            })
+          })
+        }
       },
     }
   },
