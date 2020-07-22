@@ -8,9 +8,8 @@ export const constructorExit = `MethodDefinition[kind='constructor']:exit`
 
 export const dispatchInEffects = `ClassProperty > CallExpression:has(Identifier[name="createEffect"]) CallExpression > MemberExpression:has(Identifier[name="dispatch"]):has(MemberExpression > Identifier[name="store"])`
 
-export const injectedStore = `MethodDefinition[kind='constructor'] Identifier>TSTypeAnnotation>TSTypeReference[typeName.name="Store"]`
-
-export const typedStore = `${injectedStore}[typeParameters.params]`
+export const injectedStore = `MethodDefinition[kind='constructor'] Identifier[typeAnnotation.typeAnnotation.typeName.name="Store"]`
+export const typedStore = `MethodDefinition[kind='constructor'] Identifier>TSTypeAnnotation>TSTypeReference[typeName.name="Store"][typeParameters.params]`
 
 export const ngModuleDecorator = `ClassDeclaration > Decorator > CallExpression[callee.name='NgModule']`
 

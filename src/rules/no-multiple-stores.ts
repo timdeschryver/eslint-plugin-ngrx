@@ -32,14 +32,14 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         injectedStores.push(node.parent.parent as TSESTree.Identifier)
       },
       [constructorExit]() {
-        injectedStores
-          .filter((_, i) => i > 0)
-          .forEach((node) => {
+        if (injectedStores.length > 1) {
+          injectedStores.forEach((node) => {
             context.report({
               node,
               messageId,
             })
           })
+        }
       },
     }
   },

@@ -5,6 +5,7 @@ import {
   isCallExpression,
   isMemberExpression,
   isIdentifier,
+  injectedStore,
 } from '../utils'
 
 export const ruleName = 'avoid-dispatching-multiple-actions-sequentially'
@@ -33,9 +34,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   create: (context) => {
     let storeName = ''
     return {
-      [`MethodDefinition[kind='constructor'] Identifier[typeAnnotation.typeAnnotation.typeName.name="Store"]`](
-        node: TSESTree.Identifier,
-      ) {
+      [injectedStore](node: TSESTree.Identifier) {
         storeName = node.name
       },
       [`ClassDeclaration > ClassBody > MethodDefinition > FunctionExpression > BlockStatement`](

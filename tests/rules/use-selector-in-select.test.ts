@@ -7,127 +7,173 @@ import { ruleTester } from '../utils'
 
 ruleTester().run(ruleName, rule, {
   valid: [
-    `this.store.pipe(select(selectCustomers))`,
-    `this.store.pipe(select(selectorsObj.selectCustomers))`,
-    `this.store.select(selectCustomers)`,
-    `this.store.select(selectorsObj.selectCustomers)`,
+    stripIndent`
+      export class Component {
+        view$ = this.store.pipe(select(selectCustomers))
+        constructor(store: Store){}
+      }`,
+    stripIndent`
+      export class Component {
+        view$ = this.store.select(selectCustomers)
+        constructor(store: Store){}
+      }`,
+    stripIndent`
+      export class Component {
+        view$ = this.store.pipe(select(selectorsObj.selectCustomers))
+        constructor(store: Store){}
+      }`,
+    stripIndent`
+      export class Component {
+        view$ = this.store.select(selectorsObj.selectCustomers)
+        constructor(store: Store){}
+      }`,
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/41
+    stripIndent`
+      export class Component {
+        view$ = this.store.pipe(select(selectQueryParam('parameter')))
+        constructor(store: Store){}
+      }`,
   ],
   invalid: [
     {
       code: stripIndent`
-        this.store.pipe(select('customers'))`,
+        export class Component {
+          view$ = this.store.pipe(select('customers'))
+          constructor(store: Store){}
+        }`,
       errors: [
         {
           messageId,
-          line: 1,
-          column: 24,
-          endLine: 1,
-          endColumn: 35,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-        this.store.select('customers')`,
-      errors: [
-        {
-          messageId,
-          line: 1,
-          column: 19,
-          endLine: 1,
-          endColumn: 30,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-        this.store.pipe(select('customers', 'orders'))`,
-      errors: [
-        {
-          messageId,
-          line: 1,
-          column: 24,
-          endLine: 1,
-          endColumn: 35,
-        },
-        {
-          messageId,
-          line: 1,
-          column: 37,
-          endLine: 1,
+          line: 2,
+          column: 34,
+          endLine: 2,
           endColumn: 45,
         },
       ],
     },
     {
       code: stripIndent`
-        this.store.select('customers', 'orders')`,
+        export class Component {
+          view$ = this.store.select('customers')
+          constructor(store: Store){}
+        }`,
       errors: [
         {
           messageId,
-          line: 1,
-          column: 19,
-          endLine: 1,
-          endColumn: 30,
-        },
-        {
-          messageId,
-          line: 1,
-          column: 32,
-          endLine: 1,
+          line: 2,
+          column: 29,
+          endLine: 2,
           endColumn: 40,
         },
       ],
     },
     {
       code: stripIndent`
-        this.store.pipe(select(state => state.customers))`,
+        export class Component {
+          view$ = this.store.pipe(select('customers', 'orders'))
+          constructor(store: Store){}
+        }`,
       errors: [
         {
           messageId,
-          line: 1,
-          column: 24,
-          endLine: 1,
-          endColumn: 48,
+          line: 2,
+          column: 34,
+          endLine: 2,
+          endColumn: 45,
         },
-      ],
-    },
-    {
-      code: stripIndent`
-        this.store.select(state => state.customers)`,
-      errors: [
         {
           messageId,
-          line: 1,
-          column: 19,
-          endLine: 1,
-          endColumn: 43,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-        this.store.pipe(select(state => state.customers.orders))`,
-      errors: [
-        {
-          messageId,
-          line: 1,
-          column: 24,
-          endLine: 1,
+          line: 2,
+          column: 47,
+          endLine: 2,
           endColumn: 55,
         },
       ],
     },
     {
       code: stripIndent`
-        this.store.select(state => state.customers.orders)`,
+        export class Component {
+          view$ = this.store.select('customers', 'orders')
+          constructor(store: Store){}
+        }`,
       errors: [
         {
           messageId,
-          line: 1,
-          column: 19,
-          endLine: 1,
+          line: 2,
+          column: 29,
+          endLine: 2,
+          endColumn: 40,
+        },
+        {
+          messageId,
+          line: 2,
+          column: 42,
+          endLine: 2,
           endColumn: 50,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        export class Component {
+          view$ = this.store.pipe(select(s => s.customers))
+          constructor(store: Store){}
+        }`,
+      errors: [
+        {
+          messageId,
+          line: 2,
+          column: 34,
+          endLine: 2,
+          endColumn: 50,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        export class Component {
+          view$ = this.store.select(s => s.customers)
+          constructor(store: Store){}
+        }`,
+      errors: [
+        {
+          messageId,
+          line: 2,
+          column: 29,
+          endLine: 2,
+          endColumn: 45,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        export class Component {
+          view$ = this.store$.select(s => s.customers)
+          constructor(store$: Store){}
+        }`,
+      errors: [
+        {
+          messageId,
+          line: 2,
+          column: 30,
+          endLine: 2,
+          endColumn: 46,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        export class Component {
+          view$ = this.store$.pipe(select('customers'))
+          constructor(store$: Store){}
+        }`,
+      errors: [
+        {
+          messageId,
+          line: 2,
+          column: 35,
+          endLine: 2,
+          endColumn: 46,
         },
       ],
     },
