@@ -19,17 +19,23 @@
   "homepage": "https://github.com/timdeschryver/eslint-plugin-ngrx#readme",
   "private": false,
   "main": "index.js",
+  "schematics": "./schematics/collection.json",
+  "ng-add": {
+    "save": "devDependencies"
+  },
   "scripts": {
     "test": "jest",
     "test:cov": "jest --coverage",
     "prebuild": "rimraf ./dist",
     "build": "tsc",
-    "postbuild": "cpy ./{package.json,README.md} ./dist",
+    "postbuild": "cpy ./{package.json,README.md} ./dist && npm run copy:schematics",
+    "copy:schematics": "cpy ./src/schematics/collection.json ./dist/schematics && cpy ./src/schematics/ng-add/schema.json ./dist/schematics/ng-add",
     "lint": "eslint --ext .ts ./src/** ./tests/**",
     "generate:config": "ts-node ./scripts/generate-config.ts",
     "pre-commit": "npm run generate:config && git add ./src/configs/**.ts && lint-staged"
   },
   "dependencies": {
+    "@angular-devkit/schematics": "^10.0.2",
     "@typescript-eslint/experimental-utils": "^2.29.0",
     "tsutils-etc": "^1.2.2"
   },
