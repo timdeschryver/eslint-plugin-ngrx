@@ -1,5 +1,5 @@
 export = {
-  plugins: ['ngrx'],
+  plugins: ['ngrx', 'rxjs'],
   rules: {
     'ngrx/action-hygiene': 'error',
     'ngrx/avoid-dispatching-multiple-actions-sequentially': 'error',
@@ -13,5 +13,8 @@ export = {
     'ngrx/no-typed-store': 'error',
     'ngrx/on-function-explicit-return-type': 'error',
     'ngrx/use-selector-in-select': 'error',
+    'rxjs/no-unsafe-catch': 'error',
+    'rxjs/no-unsafe-first': 'error',
+    'rxjs/no-unsafe-switchmap': 'error',
   },
 }

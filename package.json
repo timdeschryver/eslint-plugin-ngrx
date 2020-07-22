@@ -37,6 +37,7 @@
   "dependencies": {
     "@angular-devkit/schematics": "^10.0.2",
     "@typescript-eslint/experimental-utils": "^2.29.0",
+    "eslint-plugin-rxjs": "0.0.2-beta.28",
     "tsutils-etc": "^1.2.2"
   },
   "devDependencies": {

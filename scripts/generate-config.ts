@@ -18,9 +18,20 @@ const recommendedRules = Object.entries(rules).reduce(
   {},
 )
 
+const rxjsRules = {
+  'rxjs/no-unsafe-catch': 'error',
+  'rxjs/no-unsafe-first': 'error',
+  'rxjs/no-unsafe-switchmap': 'error',
+}
+
+const configRules = {
+  ...recommendedRules,
+  ...rxjsRules,
+}
+
 const code = `export = {
-  plugins: ['ngrx'],
-  rules: ${JSON.stringify(recommendedRules)},
+  plugins: ['ngrx', 'rxjs'],
+  rules: ${JSON.stringify(configRules)},
 }
 `
 const config = format(code, {
