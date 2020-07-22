@@ -13,5 +13,15 @@ it('should export recommended rules', () => {
         rules[ruleName].meta.docs.recommended
     })
 
-  expect(recommmendedRules).toEqual(recommended.rules)
+  const keyNames = Object.keys(recommended.rules)
+  const ngrxRules = keyNames
+    .filter((p) => p.startsWith('ngrx'))
+    .reduce((acc, key) => {
+      acc[key] = recommended.rules[key]
+      return acc
+    }, {})
+  const rxjsRules = keyNames.filter((p) => p.startsWith('rxjs'))
+
+  expect(recommmendedRules).toEqual(ngrxRules)
+  expect(rxjsRules).toHaveLength(3)
 })
