@@ -1,4 +1,5 @@
 import { stripIndent } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import rule, {
   METHOD,
   OPERATOR,
@@ -21,46 +22,29 @@ ruleTester().run(ruleName, rule, {
     },
   ],
   invalid: [
-    {
-      code: stripIndent`
-        this.store.select(selector);`,
-      errors: [
-        {
-          messageId: operatorSelectMessageId,
-          line: 1,
-          column: 1,
-          endLine: 1,
-          endColumn: 28,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-        this.store.pipe(select(selector));`,
-      options: [{ mode: METHOD }],
-      errors: [
-        {
-          messageId: methodSelectMessageId,
-          line: 1,
-          column: 17,
-          endLine: 1,
-          endColumn: 33,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-        this.store.select(selector);`,
-      options: [{ mode: OPERATOR }],
-      errors: [
-        {
-          messageId: operatorSelectMessageId,
-          line: 1,
-          column: 1,
-          endLine: 1,
-          endColumn: 28,
-        },
-      ],
-    },
+    fromFixture(
+      stripIndent`
+        this.store.select(selector);
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~         [${operatorSelectMessageId}]
+      `,
+    ),
+    fromFixture(
+      stripIndent`
+        this.store.pipe(select(selector));
+                        ~~~~~~~~~~~~~~~~   [${methodSelectMessageId}]
+      `,
+      {
+        options: [{ mode: METHOD }],
+      },
+    ),
+    fromFixture(
+      stripIndent`
+        this.store.select(selector);
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~         [${operatorSelectMessageId}]
+      `,
+      {
+        options: [{ mode: OPERATOR }],
+      },
+    ),
   ],
 })

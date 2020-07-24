@@ -1,4 +1,5 @@
 import { stripIndent } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import rule, {
   ruleName,
   messageId,
@@ -20,26 +21,18 @@ ruleTester().run(ruleName, rule, {
     }`,
   ],
   invalid: [
-    {
-      code: stripIndent`
+    fromFixture(
+      stripIndent`
       @Injectable()
       export class FixtureEffects {
         effectNOK = createEffect(() => this.actions.pipe(
           ofType('PING'),
           map(() => this.store.dispatch({ type: 'PONG' }))
-        ), { dispatch: false })
+                    ~~~~~~~~~~~~~~~~~~~ [${messageId}]
+          ), { dispatch: false })
 
         constructor(private actions: Actions, private store: Store<{}>){}
       }`,
-      errors: [
-        {
-          messageId,
-          line: 5,
-          column: 15,
-          endLine: 5,
-          endColumn: 34,
-        },
-      ],
-    },
+    ),
   ],
 })

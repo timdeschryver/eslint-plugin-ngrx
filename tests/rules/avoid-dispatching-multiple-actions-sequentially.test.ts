@@ -1,4 +1,5 @@
 import { stripIndent } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import rule, {
   ruleName,
   messageId,
@@ -17,128 +18,66 @@ ruleTester().run(ruleName, rule, {
       }`,
   ],
   invalid: [
-    {
-      code: stripIndent`
+    fromFixture(
+      stripIndent`
       @Component()
       export class FixtureComponent {
         constructor(private store: Store){}
 
         pingPong() {
           this.store.dispatch({ type: 'PING' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.store.dispatch({ type: 'PONG' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         }
       }`,
-      errors: [
-        {
-          messageId,
-          line: 6,
-          column: 5,
-          endLine: 6,
-          endColumn: 42,
-        },
-        {
-          messageId,
-          line: 7,
-          column: 5,
-          endLine: 7,
-          endColumn: 42,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
       @Component()
       export class FixtureComponent {
         constructor(private store: Store){}
 
         pong() {
           this.store.dispatch({ type: 'PING' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.ping();
           this.name = 'Bob'
           this.store.dispatch({ type: 'PONG' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         }
       }`,
-      errors: [
-        {
-          messageId,
-          line: 6,
-          column: 5,
-          endLine: 6,
-          endColumn: 42,
-        },
-        {
-          messageId,
-          line: 9,
-          column: 5,
-          endLine: 9,
-          endColumn: 42,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
       @Component()
       export class FixtureComponent {
         constructor(private store: Store){}
 
         pingPongPong() {
           this.store.dispatch({ type: 'PING' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.store.dispatch({ type: 'PONG' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.store.dispatch({ type: 'PONG' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         }
       }`,
-      errors: [
-        {
-          messageId,
-          line: 6,
-          column: 5,
-          endLine: 6,
-          endColumn: 42,
-        },
-        {
-          messageId,
-          line: 7,
-          column: 5,
-          endLine: 7,
-          endColumn: 42,
-        },
-        {
-          messageId,
-          line: 8,
-          column: 5,
-          endLine: 8,
-          endColumn: 42,
-        },
-      ],
-    },
-    {
-      // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/44
-      code: stripIndent`
+    ),
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/44
+    fromFixture(
+      stripIndent`
       @Component()
       export class FixtureComponent {
         constructor(private store$: Store){}
 
         pingPong() {
           this.store$.dispatch({ type: 'PING' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.store$.dispatch({ type: 'PONG' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         }
       }`,
-      errors: [
-        {
-          messageId,
-          line: 6,
-          column: 5,
-          endLine: 6,
-          endColumn: 43,
-        },
-        {
-          messageId,
-          line: 7,
-          column: 5,
-          endLine: 7,
-          endColumn: 43,
-        },
-      ],
-    },
+    ),
   ],
 })

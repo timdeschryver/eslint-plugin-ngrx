@@ -1,4 +1,5 @@
 import { stripIndent } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import rule, { ruleName, messageId } from '../../src/rules/no-multiple-stores'
 import { ruleTester } from '../utils'
 
@@ -11,7 +12,7 @@ ruleTester().run(ruleName, rule, {
     }`,
     `
     export class OneWithVisibilityOk {
-      constructor(private store: Store<{}>){}
+      constructor(private store: Store){}
     }`,
     `
     export class OneWithoutVisibilityOk {
@@ -19,76 +20,38 @@ ruleTester().run(ruleName, rule, {
     }`,
     `
     export class OnePlusExtraOk {
-      constructor(private store: Store<{}>, data: Service){}
+      constructor(private store: Store, data: Service){}
     }`,
   ],
   invalid: [
-    {
-      code: stripIndent`
+    fromFixture(
+      stripIndent`
       export class NotOkNoVisibility {
-        constructor(store: Store<{}>, store2: Store<{}>){}
+        constructor(store: Store, store2: Store){}
+                                  ~~~~~~~~~~~~~ [${messageId}]
       }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 33,
-          endLine: 2,
-          endColumn: 50,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
       export class NotOkOneVisibility {
-        constructor(store: Store<{}>, private store2: Store<{}>){}
+        constructor(store: Store, private store2: Store){}
+                                          ~~~~~~~~~~~~~ [${messageId}]
       }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 41,
-          endLine: 2,
-          endColumn: 58,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
       export class NotOkBothVisibility {
-        constructor(private readonly store: Store<{}>, private store2: Store<{}>){}
+        constructor(private readonly store: Store, private store2: Store){}
+                                                           ~~~~~~~~~~~~~ [${messageId}]
       }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 58,
-          endLine: 2,
-          endColumn: 75,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
       export class NotOkMultipleErrors {
-        constructor(private readonly store: Store<{}>, private store2: Store<{}>, private store3: Store){}
+        constructor(private readonly store: Store, private store2: Store, private store3: Store){}
+                                                           ~~~~~~~~~~~~~                        [${messageId}]
+                                                                                  ~~~~~~~~~~~~~ [${messageId}]
       }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 58,
-          endLine: 2,
-          endColumn: 75,
-        },
-        {
-          messageId,
-          line: 2,
-          column: 85,
-          endLine: 2,
-          endColumn: 98,
-        },
-      ],
-    },
+    ),
   ],
 })

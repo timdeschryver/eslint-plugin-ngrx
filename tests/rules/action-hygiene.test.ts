@@ -1,3 +1,5 @@
+import { stripIndent } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import rule, { ruleName, messageId } from '../../src/rules/action-hygiene'
 import { ruleTester } from '../utils'
 
@@ -9,20 +11,11 @@ ruleTester().run(ruleName, rule, {
     `export const loadCustomer = createAction(iDoNotCrash)`,
   ],
   invalid: [
-    {
-      code: `export const loadCustomer = createAction('Load Customer')`,
-      errors: [
-        {
-          messageId,
-          line: 1,
-          column: 42,
-          endLine: 1,
-          endColumn: 57,
-          data: {
-            actionType: 'Load Customer',
-          },
-        },
-      ],
-    },
+    fromFixture(
+      stripIndent`
+        export const loadCustomer = createAction('Load Customer')
+                                                 ~~~~~~~~~~~~~~~ [${messageId}]
+      `,
+    ),
   ],
 })

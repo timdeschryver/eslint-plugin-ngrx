@@ -1,27 +1,29 @@
 import { stripIndent } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import rule, { ruleName, messageId } from '../../src/rules/no-effect-decorator'
 import { ruleTester } from '../utils'
 
 ruleTester().run(ruleName, rule, {
   valid: [
-    `
-    @Injectable()
-export class FixtureEffects {
+    stripIndent`
+      @Injectable()
+      export class FixtureEffects {
 
-  effectOK = createEffect(() => this.actions.pipe(
-    ofType('PING'),
-    map(() => ({ type: 'PONG' }))
-  ))
+      effectOK = createEffect(() => this.actions.pipe(
+        ofType('PING'),
+        map(() => ({ type: 'PONG' }))
+      ))
 
-  constructor(private actions: Actions){}
-}`,
+      constructor(private actions: Actions){}
+    }`,
   ],
   invalid: [
-    {
-      code: stripIndent`
+    fromFixture(
+      stripIndent`
       @Injectable()
       export class FixtureEffects {
         @Effect()
+        ~~~~~~~~~ [${messageId}]
         effectNOK =  this.actions.pipe(
           ofType('PING'),
           map(() => ({ type: 'PONG' }))
@@ -29,21 +31,13 @@ export class FixtureEffects {
 
         constructor(private actions: Actions){}
       }`,
-      errors: [
-        {
-          messageId,
-          line: 3,
-          column: 3,
-          endLine: 3,
-          endColumn: 12,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
       @Injectable()
       export class FixtureEffects {
         @Effect({ dispatch: false })
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         effectNOK2 = this.actions.pipe(
           ofType('PING'),
           map(() => ({ type: 'PONG' }))
@@ -51,15 +45,6 @@ export class FixtureEffects {
 
         constructor(private actions: Actions){}
       }`,
-      errors: [
-        {
-          messageId,
-          line: 3,
-          column: 3,
-          endLine: 3,
-          endColumn: 31,
-        },
-      ],
-    },
+    ),
   ],
 })

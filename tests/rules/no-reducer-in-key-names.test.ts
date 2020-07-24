@@ -1,4 +1,5 @@
 import { stripIndent } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import rule, {
   ruleName,
   messageId,
@@ -37,132 +38,54 @@ ruleTester().run(ruleName, rule, {
     };`,
   ],
   invalid: [
-    {
-      code: stripIndent`
+    fromFixture(
+      stripIndent`
         @NgModule({
           imports: [
             StoreModule.forRoot({
               feeReducer,
+              ~~~~~~~~~~                        [${messageId}]
               fieReducer: fie,
+              ~~~~~~~~~~                        [${messageId}]
               'fooReducer': foo,
+              ~~~~~~~~~~~~                      [${messageId}]
               FoeReducer: FoeReducer,
+              ~~~~~~~~~~                        [${messageId}]
             }),
           ],
         })
         export class AppModule {}`,
-      errors: [
-        {
-          messageId,
-          line: 4,
-          column: 7,
-          endLine: 4,
-          endColumn: 17,
-        },
-        {
-          messageId,
-          line: 5,
-          column: 7,
-          endLine: 5,
-          endColumn: 17,
-        },
-        {
-          messageId,
-          line: 6,
-          column: 7,
-          endLine: 6,
-          endColumn: 19,
-        },
-        {
-          messageId,
-          line: 7,
-          column: 7,
-          endLine: 7,
-          endColumn: 17,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
         @NgModule({
           imports: [
             StoreModule.forFeature({
               feeReducer,
+              ~~~~~~~~~~                        [${messageId}]
               fieReducer: fie,
+              ~~~~~~~~~~                        [${messageId}]
               'fooReducer': foo,
+              ~~~~~~~~~~~~                      [${messageId}]
               FoeReducer: FoeReducer,
+              ~~~~~~~~~~                        [${messageId}]
             }),
           ],
         })
         export class AppModule {}`,
-      errors: [
-        {
-          messageId,
-          line: 4,
-          column: 7,
-          endLine: 4,
-          endColumn: 17,
-        },
-        {
-          messageId,
-          line: 5,
-          column: 7,
-          endLine: 5,
-          endColumn: 17,
-        },
-        {
-          messageId,
-          line: 6,
-          column: 7,
-          endLine: 6,
-          endColumn: 19,
-        },
-        {
-          messageId,
-          line: 7,
-          column: 7,
-          endLine: 7,
-          endColumn: 17,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
         export const reducers: ActionReducerMap<AppState> = {
           feeReducer,
+          ~~~~~~~~~~                          [${messageId}]
           fieReducer: fie,
+          ~~~~~~~~~~                          [${messageId}]
           'fooReducer': foo,
+          ~~~~~~~~~~~~                        [${messageId}]
           FoeReducer: fromFoe.reducer,
+          ~~~~~~~~~~                          [${messageId}]
         };`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 3,
-          endLine: 2,
-          endColumn: 13,
-        },
-        {
-          messageId,
-          line: 3,
-          column: 3,
-          endLine: 3,
-          endColumn: 13,
-        },
-        {
-          messageId,
-          line: 4,
-          column: 3,
-          endLine: 4,
-          endColumn: 15,
-        },
-        {
-          messageId,
-          line: 5,
-          column: 3,
-          endLine: 5,
-          endColumn: 13,
-        },
-      ],
-    },
+    ),
   ],
 })

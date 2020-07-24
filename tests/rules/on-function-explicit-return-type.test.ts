@@ -1,4 +1,5 @@
 import { stripIndent } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import rule, {
   ruleName,
   messageId,
@@ -45,62 +46,29 @@ ruleTester().run(ruleName, rule, {
     )`,
   ],
   invalid: [
-    {
-      code: stripIndent`
+    fromFixture(
+      stripIndent`
         const reducer = createReducer(
           initialState,
-          on(increment, s => ({
-            ...s,
-            counter: s.counter + 1,
-          })),
+          on(increment, s => ({ ...s, counter: s.counter + 1 })),
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         )`,
-      errors: [
-        {
-          messageId,
-          line: 3,
-          column: 17,
-          endLine: 6,
-          endColumn: 5,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
         const reducer = createReducer(
           initialState,
-          on(increase, (s, action) => ({
-            ...s,
-            counter: s.counter + action.value,
-          })),
+          on(increase, (s, action) => ({ ...s, counter: s.counter + action.value })),
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         )`,
-      errors: [
-        {
-          messageId,
-          line: 3,
-          column: 16,
-          endLine: 6,
-          endColumn: 5,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
         const reducer = createReducer(
           initialState,
-          on(increase, (s, { value }) => ({
-            ...s,
-            counter: s.counter + value,
-          })),
+          on(increase, (s, { value }) => ({ ...s, counter: s.counter + value })),
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         )`,
-      errors: [
-        {
-          messageId,
-          line: 3,
-          column: 16,
-          endLine: 6,
-          endColumn: 5,
-        },
-      ],
-    },
+    ),
   ],
 })

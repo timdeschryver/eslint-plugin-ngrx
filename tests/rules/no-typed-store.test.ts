@@ -1,4 +1,5 @@
 import { stripIndent } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import rule, { ruleName, messageId } from '../../src/rules/no-typed-store'
 import { ruleTester } from '../utils'
 
@@ -10,80 +11,40 @@ ruleTester().run(ruleName, rule, {
     }`,
   ],
   invalid: [
-    {
-      code: stripIndent`
+    fromFixture(
+      stripIndent`
         export class NotOk {
           constructor(store: Store<PersonsState>){}
+                             ~~~~~~~~~~~~~~~~~~~  [${messageId}]
         }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 22,
-          endLine: 2,
-          endColumn: 41,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
         export class NotOk2 {
           constructor(cdr: ChangeDetectionRef, private store: Store<CustomersState>){}
+                                                              ~~~~~~~~~~~~~~~~~~~~~  [${messageId}]
         }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 55,
-          endLine: 2,
-          endColumn: 76,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
       export class NotOk3 {
         constructor(private store: Store<any>, private personsService: PersonsService){}
+                                   ~~~~~~~~~~  [${messageId}]
       }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 30,
-          endLine: 2,
-          endColumn: 40,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
       export class NotOk4 {
         constructor(store: Store<{}>)
+                           ~~~~~~~~~  [${messageId}]
       }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 22,
-          endLine: 2,
-          endColumn: 31,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
       export class NotOk5 {
           constructor(store: Store<object>)
-      }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 24,
-          endLine: 2,
-          endColumn: 37,
-        },
-      ],
-    },
+                             ~~~~~~~~~~~~~  [${messageId}]
+        }`,
+    ),
   ],
 })

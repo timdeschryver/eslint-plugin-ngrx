@@ -1,4 +1,5 @@
 import { stripIndent } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import rule, {
   ruleName,
   messageId,
@@ -19,8 +20,8 @@ ruleTester().run(ruleName, rule, {
     export class AppModule {}`,
   ],
   invalid: [
-    {
-      code: stripIndent`
+    fromFixture(
+      stripIndent`
       @NgModule({
         imports: [
           StoreModule.forFeature('persons', {"foo": "bar"}),
@@ -29,36 +30,19 @@ ruleTester().run(ruleName, rule, {
           EffectsModule.forFeature([FeatEffectThree]),
         ],
         providers: [FeatEffectTwo, UnRegisteredEffect, FeatEffectThree, RootEffectTwo],
+                    ~~~~~~~~~~~~~                                                       [${messageId}]
+                                                       ~~~~~~~~~~~~~~~                  [${messageId}]
+                                                                        ~~~~~~~~~~~~~   [${messageId}]
       })
       export class AppModule {}`,
-      errors: [
-        {
-          messageId,
-          line: 8,
-          column: 15,
-          endLine: 8,
-          endColumn: 28,
-        },
-        {
-          messageId,
-          line: 8,
-          column: 50,
-          endLine: 8,
-          endColumn: 65,
-        },
-        {
-          messageId,
-          line: 8,
-          column: 67,
-          endLine: 8,
-          endColumn: 80,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
       @NgModule({
         providers: [FeatEffectTwo, UnRegisteredEffect, FeatEffectThree, RootEffectTwo],
+                    ~~~~~~~~~~~~~                                                       [${messageId}]
+                                                       ~~~~~~~~~~~~~~~                  [${messageId}]
+                                                                        ~~~~~~~~~~~~~   [${messageId}]
         imports: [
           StoreModule.forFeature('persons', {"foo": "bar"}),
           EffectsModule.forRoot([RootEffectOne, RootEffectTwo]),
@@ -67,29 +51,6 @@ ruleTester().run(ruleName, rule, {
         ],
       })
       export class AppModule {}`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 15,
-          endLine: 2,
-          endColumn: 28,
-        },
-        {
-          messageId,
-          line: 2,
-          column: 50,
-          endLine: 2,
-          endColumn: 65,
-        },
-        {
-          messageId,
-          line: 2,
-          column: 67,
-          endLine: 2,
-          endColumn: 80,
-        },
-      ],
-    },
+    ),
   ],
 })
