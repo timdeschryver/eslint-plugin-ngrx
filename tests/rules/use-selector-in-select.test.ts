@@ -1,4 +1,5 @@
 import { stripIndent } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import rule, {
   ruleName,
   messageId,
@@ -35,147 +36,71 @@ ruleTester().run(ruleName, rule, {
       }`,
   ],
   invalid: [
-    {
-      code: stripIndent`
+    fromFixture(
+      stripIndent`
         export class Component {
           view$ = this.store.pipe(select('customers'))
-          constructor(store: Store){}
+                                         ~~~~~~~~~~~  [${messageId}]
+        constructor(store: Store){}
         }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 34,
-          endLine: 2,
-          endColumn: 45,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
         export class Component {
           view$ = this.store.select('customers')
+                                    ~~~~~~~~~~~  [${messageId}]
           constructor(store: Store){}
         }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 29,
-          endLine: 2,
-          endColumn: 40,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
         export class Component {
           view$ = this.store.pipe(select('customers', 'orders'))
+                                         ~~~~~~~~~~~            [${messageId}]
+                                                      ~~~~~~~~  [${messageId}]
           constructor(store: Store){}
         }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 34,
-          endLine: 2,
-          endColumn: 45,
-        },
-        {
-          messageId,
-          line: 2,
-          column: 47,
-          endLine: 2,
-          endColumn: 55,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
         export class Component {
           view$ = this.store.select('customers', 'orders')
+                                    ~~~~~~~~~~~               [${messageId}]
+                                                 ~~~~~~~~     [${messageId}]
           constructor(store: Store){}
         }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 29,
-          endLine: 2,
-          endColumn: 40,
-        },
-        {
-          messageId,
-          line: 2,
-          column: 42,
-          endLine: 2,
-          endColumn: 50,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
         export class Component {
           view$ = this.store.pipe(select(s => s.customers))
+                                         ~~~~~~~~~~~~~~~~  [${messageId}]
           constructor(store: Store){}
         }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 34,
-          endLine: 2,
-          endColumn: 50,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
         export class Component {
           view$ = this.store.select(s => s.customers)
+                                    ~~~~~~~~~~~~~~~~  [${messageId}]
           constructor(store: Store){}
         }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 29,
-          endLine: 2,
-          endColumn: 45,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
         export class Component {
           view$ = this.store$.select(s => s.customers)
+                                     ~~~~~~~~~~~~~~~~  [${messageId}]
           constructor(store$: Store){}
         }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 30,
-          endLine: 2,
-          endColumn: 46,
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+    ),
+    fromFixture(
+      stripIndent`
         export class Component {
           view$ = this.store$.pipe(select('customers'))
+                                          ~~~~~~~~~~~  [${messageId}]
           constructor(store$: Store){}
         }`,
-      errors: [
-        {
-          messageId,
-          line: 2,
-          column: 35,
-          endLine: 2,
-          endColumn: 46,
-        },
-      ],
-    },
+    ),
   ],
 })
