@@ -26,32 +26,36 @@ ruleTester().run(ruleName, rule, {
   invalid: [
     fromFixture(
       stripIndent`
-      export class NotOkNoVisibility {
-        constructor(store: Store, store2: Store){}
-                                  ~~~~~~~~~~~~~ [${messageId}]
-      }`,
+        export class NotOkNoVisibility {
+          constructor(store: Store, store2: Store){}
+                      ~~~~~~~~~~~~                  [${messageId}]
+                                    ~~~~~~~~~~~~~   [${messageId}]
+        }`,
     ),
     fromFixture(
       stripIndent`
-      export class NotOkOneVisibility {
-        constructor(store: Store, private store2: Store){}
-                                          ~~~~~~~~~~~~~ [${messageId}]
-      }`,
+        export class NotOkOneVisibility {
+          constructor(store: Store, private store2: Store){}
+                      ~~~~~~~~~~~~                        [${messageId}]
+                                            ~~~~~~~~~~~~~ [${messageId}]
+        }`,
     ),
     fromFixture(
       stripIndent`
-      export class NotOkBothVisibility {
-        constructor(private readonly store: Store, private store2: Store){}
-                                                           ~~~~~~~~~~~~~ [${messageId}]
-      }`,
+        export class NotOkBothVisibility {
+          constructor(private readonly store: Store, private store2: Store){}
+                                       ~~~~~~~~~~~~                          [${messageId}]
+                                                             ~~~~~~~~~~~~~   [${messageId}]
+        }`,
     ),
     fromFixture(
       stripIndent`
-      export class NotOkMultipleErrors {
-        constructor(private readonly store: Store, private store2: Store, private store3: Store){}
-                                                           ~~~~~~~~~~~~~                        [${messageId}]
-                                                                                  ~~~~~~~~~~~~~ [${messageId}]
-      }`,
+        export class NotOkMultipleErrors {
+          constructor(private readonly store: Store, private store2: Store, private store3: Store){}
+                                       ~~~~~~~~~~~~                                                [${messageId}]
+                                                             ~~~~~~~~~~~~~                         [${messageId}]
+                                                                                    ~~~~~~~~~~~~~  [${messageId}]
+        }`,
     ),
   ],
 })

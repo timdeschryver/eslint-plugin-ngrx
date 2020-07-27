@@ -1,6 +1,13 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
-
-import { select, docsUrl } from '../utils'
+import {
+  docsUrl,
+  injectedStore,
+  isMemberExpression,
+  isIdentifier,
+  isLiteral,
+  isCallExpression,
+  isArrowFunctionExpression,
+} from '../utils'
 
 export const ruleName = 'use-selector-in-select'
 
@@ -27,11 +34,65 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
+    let storeName = ''
+    const selectNodes: { node: TSESTree.Node; storeName: string }[] = []
+
     return {
-      [select](node: TSESTree.Literal | TSESTree.ArrowFunctionExpression) {
-        context.report({
-          node,
-          messageId,
+      [injectedStore](node: TSESTree.Identifier) {
+        storeName = node.name
+      },
+      [`ClassDeclaration > ClassBody CallExpression[callee.property.name="select"]`](
+        node: TSESTree.CallExpression,
+      ) {
+        const invalidArguments = node.arguments.filter(
+          (arg) => isLiteral(arg) || isArrowFunctionExpression(arg),
+        )
+
+        if (
+          invalidArguments.length &&
+          isMemberExpression(node.callee) &&
+          isMemberExpression(node.callee.object) &&
+          isIdentifier(node.callee.object.property)
+        ) {
+          for (const argument of invalidArguments) {
+            selectNodes.push({
+              node: argument,
+              storeName: node.callee.object.property.name,
+            })
+          }
+        }
+      },
+      [`ClassDeclaration > ClassBody CallExpression[callee.name="select"]`](
+        node: TSESTree.CallExpression,
+      ) {
+        const invalidArguments = node.arguments.filter(
+          (arg) => isLiteral(arg) || isArrowFunctionExpression(arg),
+        )
+
+        if (
+          invalidArguments.length &&
+          isCallExpression(node.parent) &&
+          isMemberExpression(node.parent.callee) &&
+          isMemberExpression(node.parent.callee.object) &&
+          isIdentifier(node.parent.callee.object.property)
+        ) {
+          for (const argument of invalidArguments) {
+            selectNodes.push({
+              node: argument,
+              storeName: node.parent.callee.object.property.name,
+            })
+          }
+        }
+      },
+      ['Program:exit']: () => {
+        if (!storeName) return
+        selectNodes.forEach((n) => {
+          if (n.storeName === storeName) {
+            context.report({
+              node: n.node,
+              messageId,
+            })
+          }
         })
       },
     }

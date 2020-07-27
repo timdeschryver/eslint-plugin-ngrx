@@ -28,18 +28,18 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     const injectedStores: TSESTree.Identifier[] = []
 
     return {
-      [injectedStore](node: TSESTree.TSTypeReference) {
-        injectedStores.push(node.parent.parent as TSESTree.Identifier)
+      [injectedStore](node: TSESTree.Identifier) {
+        injectedStores.push(node)
       },
       [constructorExit]() {
-        injectedStores
-          .filter((_, i) => i > 0)
-          .forEach((node) => {
+        if (injectedStores.length > 1) {
+          injectedStores.forEach((node) => {
             context.report({
               node,
               messageId,
             })
           })
+        }
       },
     }
   },

@@ -19,3 +19,9 @@ export function isMemberExpression(
 ): node is TSESTree.MemberExpression {
   return node.type === AST_NODE_TYPES.MemberExpression
 }
+
+export function isArrowFunctionExpression(
+  node: TSESTree.Node,
+): node is TSESTree.ArrowFunctionExpression {
+  return node.type === AST_NODE_TYPES.ArrowFunctionExpression
+}
