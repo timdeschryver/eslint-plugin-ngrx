@@ -16,6 +16,7 @@ ruleTester().run(ruleName, rule, {
           this.store.dispatch({ type: 'PING' })
         }
       }`,
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/47
     `
       @Component()
       export class FixtureComponent {

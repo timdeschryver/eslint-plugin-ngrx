@@ -45,7 +45,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         const dispatchExpressions = node.body
           .map((expression: TSESTree.ExpressionStatement) => {
             if (
-              expression?.expression &&
               isCallExpression(expression.expression) &&
               isMemberExpression(expression.expression.callee) &&
               isIdentifier(expression.expression.callee.property) &&
