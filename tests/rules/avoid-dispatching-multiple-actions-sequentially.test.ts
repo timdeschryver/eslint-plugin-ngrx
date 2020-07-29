@@ -16,6 +16,18 @@ ruleTester().run(ruleName, rule, {
           this.store.dispatch({ type: 'PING' })
         }
       }`,
+    `
+      @Component()
+      export class FixtureComponent {
+        valid = false;
+        constructor(private store: Store){}
+
+        pingPong() {
+          if (this.valid) {
+            this.store.dispatch({ type: 'PING' })
+          }
+        }
+      }`,
   ],
   invalid: [
     fromFixture(
