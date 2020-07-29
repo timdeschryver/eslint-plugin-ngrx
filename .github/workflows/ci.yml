@@ -26,4 +26,3 @@ jobs:
         run: npm run test -- --ci --coverage
         env:
           CI: true
-      - uses: codecov/codecov-action@v1
