@@ -13,6 +13,7 @@ export = {
     'ngrx/no-typed-store': 'error',
     'ngrx/on-function-explicit-return-type': 'error',
     'ngrx/use-selector-in-select': 'error',
+    'rxjs/no-cyclic-action': 'warning',
     'rxjs/no-unsafe-catch': 'error',
     'rxjs/no-unsafe-first': 'error',
     'rxjs/no-unsafe-switchmap': 'error',
