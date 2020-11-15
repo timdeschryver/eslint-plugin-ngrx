@@ -14,7 +14,7 @@ ruleTester().run(ruleName, rule, {
     fromFixture(
       stripIndent`
         export const loadCustomer = createAction('Load Customer')
-                                                 ~~~~~~~~~~~~~~~ [${messageId}]
+                                                 ~~~~~~~~~~~~~~~ [${messageId} { "actionType": "Load Customer" }]
       `,
     ),
   ],

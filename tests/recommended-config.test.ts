@@ -23,5 +23,5 @@ it('should export recommended rules', () => {
   const rxjsRules = keyNames.filter((p) => p.startsWith('rxjs'))
 
   expect(recommmendedRules).toEqual(ngrxRules)
-  expect(rxjsRules).toHaveLength(3)
+  expect(rxjsRules).toHaveLength(4)
 })
