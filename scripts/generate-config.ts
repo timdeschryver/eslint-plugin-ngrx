@@ -19,7 +19,7 @@ const recommendedRules = Object.entries(rules).reduce(
 )
 
 const rxjsRules = {
-  'rxjs/no-cyclic-action': 'warning',
+  'rxjs/no-cyclic-action': 'warn',
   'rxjs/no-unsafe-catch': 'error',
   'rxjs/no-unsafe-first': 'error',
   'rxjs/no-unsafe-switchmap': 'error',
