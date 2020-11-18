@@ -50,6 +50,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Legiew",
+      "name": "Sebastian Weigel",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/7915599?v=4",
+      "profile": "https://www.semasquare.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "skipCi": true,
