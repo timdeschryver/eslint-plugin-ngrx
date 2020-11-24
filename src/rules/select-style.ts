@@ -43,7 +43,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         'Selectors should be used with the pipeable operator: this.store.pipe(select(selector))',
     },
   },
-  defaultOptions: [{ mode: OPERATOR }],
+  defaultOptions: [{ mode: METHOD }],
   create: (context, [{ mode }]) => {
     return {
       [pipeableSelect](node: TSESTree.CallExpression) {

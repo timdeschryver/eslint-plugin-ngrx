@@ -11,7 +11,7 @@ import { ruleTester } from '../utils'
 
 ruleTester().run(ruleName, rule, {
   valid: [
-    `this.store.pipe(select(selector));`,
+    `this.store.select(selector);`,
     {
       code: `this.store.pipe(select(selector));`,
       options: [{ mode: OPERATOR }],
@@ -24,8 +24,8 @@ ruleTester().run(ruleName, rule, {
   invalid: [
     fromFixture(
       stripIndent`
-        this.store.select(selector);
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~         [${operatorSelectMessageId}]
+        this.store.pipe(select(selector));
+                        ~~~~~~~~~~~~~~~~   [${methodSelectMessageId}]
       `,
     ),
     fromFixture(
@@ -40,7 +40,7 @@ ruleTester().run(ruleName, rule, {
     fromFixture(
       stripIndent`
         this.store.select(selector);
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~         [${operatorSelectMessageId}]
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~       [${operatorSelectMessageId}]
       `,
       {
         options: [{ mode: OPERATOR }],
