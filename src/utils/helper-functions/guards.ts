@@ -25,3 +25,9 @@ export function isArrowFunctionExpression(
 ): node is TSESTree.ArrowFunctionExpression {
   return node && node.type === AST_NODE_TYPES.ArrowFunctionExpression
 }
+
+export function isClassDeclaration(
+  node: TSESTree.Node,
+): node is TSESTree.ClassDeclaration {
+  return node && node.type === AST_NODE_TYPES.ClassDeclaration
+}

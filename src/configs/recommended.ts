@@ -12,6 +12,7 @@ export = {
     'ngrx/no-reducer-in-key-names': 'error',
     'ngrx/no-typed-store': 'error',
     'ngrx/on-function-explicit-return-type': 'error',
+    'ngrx/use-lifecycle-interface': 'warn',
     'ngrx/use-selector-in-select': 'error',
     'rxjs/no-cyclic-action': 'warn',
     'rxjs/no-unsafe-catch': 'error',

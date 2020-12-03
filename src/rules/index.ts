@@ -32,6 +32,9 @@ import onFunctionExplicitReturnType, {
   ruleName as onFunctionExplicitReturnTypeRuleName,
 } from './on-function-explicit-return-type'
 import selectStyle, { ruleName as selectStyleRuleName } from './select-style'
+import useLifecycleInterface, {
+  ruleName as useLifecycleInterfaceRuleName,
+} from './use-lifecycle-interface'
 import useSelectorInSelect, {
   ruleName as useSelectorInSelectRuleName,
 } from './use-selector-in-select'
@@ -49,6 +52,7 @@ const ruleNames = {
   noTypedStoreRuleName,
   onFunctionExplicitReturnTypeRuleName,
   selectStyleRuleName,
+  useLifecycleInterfaceRuleName,
   useSelectorInSelectRuleName,
 }
 
@@ -65,5 +69,6 @@ export const rules = {
   [ruleNames.noTypedStoreRuleName]: noTypedStore,
   [ruleNames.onFunctionExplicitReturnTypeRuleName]: onFunctionExplicitReturnType,
   [ruleNames.selectStyleRuleName]: selectStyle,
+  [ruleNames.useLifecycleInterfaceRuleName]: useLifecycleInterface,
   [ruleNames.useSelectorInSelectRuleName]: useSelectorInSelect,
 }
