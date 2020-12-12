@@ -1,9 +1,15 @@
 import actionHygiene, {
   ruleName as actionHygieneRuleName,
 } from './action-hygiene'
+import avoidCombiningSelectors, {
+  ruleName as avoidCombiningSelectorsRuleName,
+} from './avoid-combining-selectors'
 import avoidDispatchingMultipleActionsSequentially, {
   ruleName as avoidDispatchingMultipleActionsSequentiallyRuleName,
 } from './avoid-dispatching-multiple-actions-sequentially'
+import avoidMappingSelectors, {
+  ruleName as avoidMappingSelectorsRuleName,
+} from './avoid-mapping-selectors'
 import noDispatchInEffects, {
   ruleName as noDispatchInEffectsRuleName,
 } from './no-dispatch-in-effects'
@@ -41,7 +47,9 @@ import useSelectorInSelect, {
 
 const ruleNames = {
   actionHygieneRuleName,
+  avoidCombiningSelectorsRuleName,
   avoidDispatchingMultipleActionsSequentiallyRuleName,
+  avoidMappingSelectorsRuleName,
   noDispatchInEffectsRuleName,
   noEffectDecoratorAndCreatorRuleName,
   noEffectDecoratorRuleName,
@@ -58,7 +66,9 @@ const ruleNames = {
 
 export const rules = {
   [ruleNames.actionHygieneRuleName]: actionHygiene,
+  [ruleNames.avoidCombiningSelectorsRuleName]: avoidCombiningSelectors,
   [ruleNames.avoidDispatchingMultipleActionsSequentiallyRuleName]: avoidDispatchingMultipleActionsSequentially,
+  [ruleNames.avoidMappingSelectorsRuleName]: avoidMappingSelectors,
   [ruleNames.noDispatchInEffectsRuleName]: noDispatchInEffects,
   [ruleNames.noEffectDecoratorAndCreatorRuleName]: noEffectDecoratorAndCreator,
   [ruleNames.noEffectDecoratorRuleName]: noEffectDecorator,
