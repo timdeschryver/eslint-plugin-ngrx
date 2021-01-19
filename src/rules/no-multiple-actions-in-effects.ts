@@ -1,6 +1,11 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { effectsArrowReturn, effectsReturn, docsUrl, typecheck } from '../utils'
+import {
+  effectsImplicitReturn,
+  effectsReturn,
+  docsUrl,
+  typecheck,
+} from '../utils'
 
 export const ruleName = 'no-multiple-actions-in-effects'
 
@@ -26,17 +31,17 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [effectsArrowReturn](node: TSESTree.ArrayExpression) {
+      [effectsImplicitReturn](node: TSESTree.ArrayExpression) {
         context.report({
           node,
           messageId,
         })
       },
-      [effectsReturn](node: TSESTree.ReturnStatement) {
+      [effectsReturn]({ argument }: TSESTree.ReturnStatement) {
         const { couldBeOfType } = typecheck(context)
-        if (couldBeOfType(node.argument, 'Array')) {
+        if (couldBeOfType(argument, 'Array')) {
           context.report({
-            node: node.argument,
+            node: argument,
             messageId,
           })
         }

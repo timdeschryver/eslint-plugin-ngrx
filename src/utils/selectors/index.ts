@@ -28,8 +28,13 @@ export const storeActionReducerMap = `${ngModuleDecorator} ObjectExpression Prop
 
 export const actionReducerMap = `VariableDeclarator[id.typeAnnotation.typeAnnotation.typeName.name='ActionReducerMap'] > ObjectExpression > Property`
 
-const effectsOperator = `ClassProperty > CallExpression[callee.name='createEffect'] CallExpression[callee.name=/switchMap|concatMap|mergeMap|flatMap|exhaustMap/]`
+const createEffectExpression = `ClassProperty > CallExpression[callee.name='createEffect']`
 
-export const effectsArrowReturn = `${effectsOperator} > ArrowFunctionExpression > ArrayExpression`
+const mapOperators = '(concat|exhaust|flat|merge|switch)Map'
+const mapToOperators = '(concat|merge|switch)MapTo'
+const mapOperatorsExpression = `${createEffectExpression} CallExpression[callee.name=/^${mapOperators}$/]`
+const mapToOperatorsExpression = `${createEffectExpression} CallExpression[callee.name=/^${mapToOperators}$/]`
 
-export const effectsReturn = `${effectsOperator} ReturnStatement`
+export const effectsImplicitReturn = `${mapOperatorsExpression} > ArrowFunctionExpression > ArrayExpression, ${mapToOperatorsExpression} ArrayExpression`
+
+export const effectsReturn = `${mapOperatorsExpression} ReturnStatement`

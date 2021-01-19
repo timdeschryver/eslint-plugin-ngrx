@@ -37,6 +37,54 @@ ruleTester().run(ruleName, rule, {
     {
       code: `
         export class Effects {
+          thirteen$ = createEffect(() =>
+            this.actions$.pipe(mapTo(foo()))
+          )
+        }`,
+      parserOptions: {
+        project: './tsconfig.tests.eslint.json',
+      },
+      filename: 'test.ts',
+    },
+    {
+      code: `
+        export class Effects {
+          eleven$ = createEffect(() =>
+            this.actions$.pipe(switchMapTop([foo()]))
+          )
+        }`,
+      parserOptions: {
+        project: './tsconfig.tests.eslint.json',
+      },
+      filename: 'test.ts',
+    },
+    {
+      code: `
+        export class Effects {
+          twelve$ = createEffect(() =>
+            this.actions$.pipe(aconcatMapTo([bar()]))
+          )
+        }`,
+      parserOptions: {
+        project: './tsconfig.tests.eslint.json',
+      },
+      filename: 'test.ts',
+    },
+    {
+      code: `
+        export class Effects {
+          nine$ = createEffect(() =>
+            this.actions$.pipe(mergeMapTo(foo()))
+          )
+        }`,
+      parserOptions: {
+        project: './tsconfig.tests.eslint.json',
+      },
+      filename: 'test.ts',
+    },
+    {
+      code: `
+        export class Effects {
           six$ = createEffect(() =>
             this.actions$.pipe(
               exhaustMap(() => {
@@ -59,8 +107,8 @@ ruleTester().run(ruleName, rule, {
       stripIndent`
         export class Effects {
           one$ = createEffect(() =>
-            this.actions$.pipe(switchMap(_ => [foo(), bar()])),
-                                              ~~~~~~~~~~~~~~  [${messageId}]
+            this.actions$.pipe(flatMap(_ => [foo(), bar()])),
+                                            ~~~~~~~~~~~~~~  [${messageId}]
           )
       }`,
       {
@@ -91,7 +139,22 @@ ruleTester().run(ruleName, rule, {
           three$ = createEffect(() =>
             this.actions$.pipe(exhaustMap(function() { return [foo(), bar()] }))
                                                               ~~~~~~~~~~~~~~  [${messageId}]
-            )
+          )
+        }`,
+      {
+        parserOptions: {
+          project: './tsconfig.tests.eslint.json',
+        },
+        filename: 'test.ts',
+      },
+    ),
+    fromFixture(
+      stripIndent`
+        export class Effects {
+          readonly ten$ = createEffect(() =>
+            this.actions$.pipe(concatMapTo([test(), baz()]))
+                                           ~~~~~~~~~~~~~~~  [${messageId}]
+          )
         }`,
       {
         parserOptions: {
