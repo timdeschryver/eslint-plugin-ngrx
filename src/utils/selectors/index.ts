@@ -3,6 +3,7 @@ export const effectCreator = `ClassProperty[value.callee.name='createEffect']`
 export const effectDecorator = `ClassProperty > Decorator[expression.callee.name='Effect']`
 
 export const actionCreator = `CallExpression[callee.name='createAction']`
+export const actionCreatorWithLiteral = `${actionCreator}[arguments.0.type='Literal']`
 
 export const constructorExit = `MethodDefinition[kind='constructor']:exit`
 

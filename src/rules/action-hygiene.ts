@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { docsUrl, actionCreator } from '../utils'
+import { actionCreatorWithLiteral, docsUrl } from '../utils'
 
 export const ruleName = 'action-hygiene'
 
@@ -27,18 +27,20 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [actionCreator](node: TSESTree.CallExpression) {
-        if (node.arguments && node.arguments[0].type === 'Literal') {
-          const { value } = node.arguments[0] as TSESTree.Literal
-          if (typeof value === 'string' && !/[\[].*[\]]\s.*/.test(value)) {
-            context.report({
-              node: node.arguments[0],
-              messageId,
-              data: {
-                actionType: value,
-              },
-            })
-          }
+      [actionCreatorWithLiteral](node: TSESTree.CallExpression) {
+        const literal = node.arguments[0] as TSESTree.Literal
+        const { value: actionType } = literal
+        const sourceEventPattern = /[\[].*[\]]\s.*/
+
+        if (
+          typeof actionType === 'string' &&
+          !sourceEventPattern.test(actionType)
+        ) {
+          context.report({
+            node: literal,
+            messageId,
+            data: { actionType },
+          })
         }
       },
     }
