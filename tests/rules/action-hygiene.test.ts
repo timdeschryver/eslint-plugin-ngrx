@@ -9,6 +9,7 @@ ruleTester().run(ruleName, rule, {
     `export const loadCustomer = createAction('[Customer API] Load Customer Success, props<{ customer: Customer }>()')`,
     `export const loadCustomer = createAction('[Customer API] Load Customer Failed, (error: string) => ({ error, timestamp: +Date.now()})')`,
     `export const loadCustomer = createAction(iDoNotCrash)`,
+    `export const loadCustomer = createActionType('Just testing')`,
   ],
   invalid: [
     fromFixture(
