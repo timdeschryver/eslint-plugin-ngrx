@@ -4,6 +4,8 @@ export const effectDecorator = `ClassProperty > Decorator[expression.callee.name
 
 export const actionCreator = `CallExpression[callee.name='createAction']`
 export const actionCreatorWithLiteral = `${actionCreator}[arguments.0.type='Literal']`
+export const actionCreatorProps = `${actionCreator} CallExpression`
+export const actionCreatorPropsComputed = `${actionCreatorProps} > TSTypeParameterInstantiation > :matches(TSTypeReference[typeName.name!='Readonly'], [type=/^TS(.*)(Keyword|Type)$/])`
 
 export const constructorExit = `MethodDefinition[kind='constructor']:exit`
 

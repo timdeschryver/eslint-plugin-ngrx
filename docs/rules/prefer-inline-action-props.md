@@ -1,0 +1,1 @@
+# prefer-inline-action-props

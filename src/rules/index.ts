@@ -37,6 +37,9 @@ import noTypedStore, {
 import onFunctionExplicitReturnType, {
   ruleName as onFunctionExplicitReturnTypeRuleName,
 } from './on-function-explicit-return-type'
+import preferInlineActionProps, {
+  ruleName as preferInlineActionPropsRuleName,
+} from './prefer-inline-action-props'
 import selectStyle, { ruleName as selectStyleRuleName } from './select-style'
 import useLifecycleInterface, {
   ruleName as useLifecycleInterfaceRuleName,
@@ -59,6 +62,7 @@ const ruleNames = {
   noReducerInKeyNamesRuleName,
   noTypedStoreRuleName,
   onFunctionExplicitReturnTypeRuleName,
+  preferInlineActionPropsRuleName,
   selectStyleRuleName,
   useLifecycleInterfaceRuleName,
   useSelectorInSelectRuleName,
@@ -78,7 +82,8 @@ export const rules = {
   [ruleNames.noReducerInKeyNamesRuleName]: noReducerInKeyNames,
   [ruleNames.noTypedStoreRuleName]: noTypedStore,
   [ruleNames.onFunctionExplicitReturnTypeRuleName]: onFunctionExplicitReturnType,
+  [ruleNames.preferInlineActionPropsRuleName]: preferInlineActionProps,
   [ruleNames.selectStyleRuleName]: selectStyle,
   [ruleNames.useLifecycleInterfaceRuleName]: useLifecycleInterface,
   [ruleNames.useSelectorInSelectRuleName]: useSelectorInSelect,
-}
+} as const
