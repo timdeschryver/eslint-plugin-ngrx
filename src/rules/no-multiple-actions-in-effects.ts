@@ -38,6 +38,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         })
       },
       [effectsReturn]({ argument }: TSESTree.ReturnStatement) {
+        if (!argument) return
+
         const { couldBeOfType } = typecheck(context)
         if (couldBeOfType(argument, 'Array')) {
           context.report({

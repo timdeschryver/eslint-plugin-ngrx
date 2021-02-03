@@ -2,17 +2,12 @@ import { rules } from '../src/rules'
 import recommended from '../src/configs/recommended'
 
 it('should export recommended rules', () => {
-  const recommmendedRules: { [name: string]: false | 'error' | 'warn' } = {}
-
-  Object.keys(rules)
-    .filter(
-      (ruleName: string) => rules[ruleName].meta.docs.recommended !== false,
-    )
-    .forEach((ruleName) => {
-      recommmendedRules[`ngrx/${ruleName}`] =
-        rules[ruleName].meta.docs.recommended
-    })
-
+  const recommmendedRules = Object.keys(rules)
+    .filter((ruleName) => rules[ruleName].meta.docs?.recommended)
+    .reduce((acc, ruleName) => {
+      acc[`ngrx/${ruleName}`] = rules[ruleName].meta.docs?.recommended
+      return acc
+    }, {})
   const keyNames = Object.keys(recommended.rules)
   const ngrxRules = keyNames
     .filter((p) => p.startsWith('ngrx'))

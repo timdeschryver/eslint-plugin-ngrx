@@ -41,6 +41,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       ) {
         const clazz = findClassDeclarationNode(node)
 
+        if (!clazz) return
+
         const implementz = (clazz.implements || []).map((i) =>
           isIdentifier(i.expression) ? i.expression.name : '',
         )
