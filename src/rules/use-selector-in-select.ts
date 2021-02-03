@@ -71,6 +71,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
 
         if (
           invalidArguments.length &&
+          node.parent &&
           isCallExpression(node.parent) &&
           isMemberExpression(node.parent.callee) &&
           isMemberExpression(node.parent.callee.object) &&

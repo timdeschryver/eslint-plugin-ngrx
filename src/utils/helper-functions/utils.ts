@@ -3,7 +3,7 @@ import { isClassDeclaration } from './guards'
 
 export function findClassDeclarationNode(
   node: TSESTree.Node,
-): TSESTree.ClassDeclaration {
+): TSESTree.ClassDeclaration | null {
   if (isClassDeclaration(node)) {
     return node
   }
