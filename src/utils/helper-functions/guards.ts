@@ -37,3 +37,19 @@ export function isExpressionStatement(
 ): node is TSESTree.ExpressionStatement {
   return node.type === AST_NODE_TYPES.ExpressionStatement
 }
+
+export function isImportDeclaration(
+  node: TSESTree.Node,
+): node is TSESTree.ImportDeclaration {
+  return node.type === 'ImportDeclaration'
+}
+
+export function isImportSpecifier(
+  node: TSESTree.Node,
+): node is TSESTree.ImportSpecifier {
+  return node.type === 'ImportSpecifier'
+}
+
+export function isProgram(node: TSESTree.Node): node is TSESTree.Program {
+  return node.type === 'Program'
+}

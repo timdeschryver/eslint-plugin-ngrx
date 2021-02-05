@@ -1,6 +1,14 @@
-import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { docsUrl, findClassDeclarationNode, isIdentifier } from '../utils'
+import {
+  docsUrl,
+  findClassDeclarationNode,
+  findImportDeclarationNode,
+  getConditionalImportFix,
+  getImplementsSchemaFixer,
+  isIdentifier,
+} from '../utils'
 
 export const ruleName = 'use-lifecycle-interface'
 
@@ -9,13 +17,13 @@ export type MessageIds = typeof messageId
 
 type Options = []
 
-const lifecycles = [
-  'ngrxOnInitEffects',
-  'ngrxOnRunEffects',
-  'ngrxOnIdentifyEffects',
-]
-
-const lifecyclesRegexp = lifecycles.join('|')
+const lifecycleMapper = {
+  ngrxOnInitEffects: 'OnInitEffects',
+  ngrxOnRunEffects: 'OnRunEffects',
+  ngrxOnIdentifyEffects: 'OnIdentifyEffects',
+} as const
+const effectsModulePath = '@ngrx/effects'
+const lifecyclesPattern = Object.keys(lifecycleMapper).join('|')
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: ruleName,
@@ -27,6 +35,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         'Ensures classes implement lifecycle interfaces corresponding to the declared lifecycle methods',
       recommended: 'warn',
     },
+    fixable: 'code',
     schema: [],
     messages: {
       [messageId]:
@@ -36,29 +45,49 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [`ClassDeclaration > ClassBody > MethodDefinition > Identifier[name=/${lifecyclesRegexp}/]`](
+      [`ClassDeclaration > ClassBody > MethodDefinition > Identifier[name=/${lifecyclesPattern}/]`](
         node: TSESTree.Identifier,
       ) {
-        const clazz = findClassDeclarationNode(node)
+        const classDeclaration = findClassDeclarationNode(node)
 
-        if (!clazz) return
+        if (!classDeclaration) return
 
-        const implementz = (clazz.implements || []).map((i) =>
-          isIdentifier(i.expression) ? i.expression.name : '',
-        )
-        const methodName = node.name
-        const interfaceName = methodName.substr(4)
+        const interfaces = (classDeclaration.implements ?? [])
+          .map(({ expression }) => expression)
+          .filter(isIdentifier)
+          .map(({ name }) => name)
+        const methodName = node.name as keyof typeof lifecycleMapper
+        const interfaceName = lifecycleMapper[methodName]
 
-        if (!implementz.includes(interfaceName)) {
-          context.report({
-            node,
-            messageId,
-            data: {
-              methodName,
+        if (interfaces.includes(interfaceName)) return
+
+        const {
+          implementsNodeReplace,
+          implementsTextReplace,
+        } = getImplementsSchemaFixer(classDeclaration, interfaceName)
+        context.report({
+          fix: (fixer) => {
+            const importDeclaration = findImportDeclarationNode(
+              classDeclaration,
+              effectsModulePath,
+            )
+
+            return getConditionalImportFix(
+              fixer,
+              importDeclaration,
               interfaceName,
-            },
-          })
-        }
+              effectsModulePath,
+            ).concat(
+              fixer.insertTextAfter(
+                implementsNodeReplace,
+                implementsTextReplace,
+              ),
+            )
+          },
+          node,
+          messageId,
+          data: { interfaceName, methodName },
+        })
       },
     }
   },
