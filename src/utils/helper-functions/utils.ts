@@ -1,5 +1,6 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
 import {
+  isCallExpression,
   isClassDeclaration,
   isImportDeclaration,
   isImportSpecifier,
@@ -75,4 +76,10 @@ export function hasImport(
   return specifiers
     .filter(isImportSpecifier)
     .some(({ imported: { name } }) => name === importSpecifier)
+}
+
+export function getDecoratorArgument({ expression }: TSESTree.Decorator) {
+  return isCallExpression(expression) && expression.arguments.length > 0
+    ? expression.arguments[0]
+    : undefined
 }
