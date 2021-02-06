@@ -5,7 +5,8 @@ import { typedStore, docsUrl } from '../utils'
 export const ruleName = 'no-typed-store'
 
 export const messageId = 'noTypedStore'
-export type MessageIds = typeof messageId
+export const noTypedStoreSuggest = 'noTypedStoreSuggest'
+export type MessageIds = typeof messageId | typeof noTypedStoreSuggest
 
 type Options = []
 
@@ -18,18 +19,31 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       description: 'Store should not be typed',
       recommended: 'error',
     },
+    fixable: 'code',
     schema: [],
     messages: {
       [messageId]:
         'Store should not be typed, use `Store` (without generic) instead.',
+      [noTypedStoreSuggest]: 'Remove generic from `Store`.',
     },
   },
   defaultOptions: [],
   create: (context) => {
     return {
-      [typedStore](node: TSESTree.TSTypeReference) {
+      [typedStore]({
+        typeParameters,
+      }: TSESTree.TSTypeReference & {
+        typeParameters: TSESTree.TSTypeParameterInstantiation
+      }) {
         context.report({
-          node,
+          // TODO: Turn it into a fix once https://github.com/ngrx/platform/issues/2780 is fixed.
+          suggest: [
+            {
+              fix: (fixer) => fixer.remove(typeParameters),
+              messageId: noTypedStoreSuggest,
+            },
+          ],
+          node: typeParameters,
           messageId,
         })
       },
