@@ -1,8 +1,8 @@
 import { stripIndent } from 'common-tags'
-import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
-  messageId,
+  onFunctionExplicitReturnType,
+  onFunctionExplicitReturnTypeSuggest,
 } from '../../src/rules/store/on-function-explicit-return-type'
 import { ruleTester } from '../utils'
 
@@ -46,29 +46,105 @@ ruleTester().run(path.parse(__filename).name, rule, {
     )`,
   ],
   invalid: [
-    fromFixture(
-      stripIndent`
+    {
+      code: stripIndent`
+        const reducer = createReducer(
+          initialState,
+          on(increment, s => s),
+        )`,
+      errors: [
+        {
+          column: 17,
+          endColumn: 23,
+          line: 3,
+          messageId: onFunctionExplicitReturnType,
+          suggestions: [
+            {
+              messageId: onFunctionExplicitReturnTypeSuggest,
+              output: stripIndent`
+                const reducer = createReducer(
+                  initialState,
+                  on(increment, (s): State => s),
+                )`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndent`
         const reducer = createReducer(
           initialState,
           on(increment, s => ({ ...s, counter: s.counter + 1 })),
-                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         )`,
-    ),
-    fromFixture(
-      stripIndent`
+      errors: [
+        {
+          column: 17,
+          endColumn: 56,
+          line: 3,
+          messageId: onFunctionExplicitReturnType,
+          suggestions: [
+            {
+              messageId: onFunctionExplicitReturnTypeSuggest,
+              output: stripIndent`
+                const reducer = createReducer(
+                  initialState,
+                  on(increment, (s): State => ({ ...s, counter: s.counter + 1 })),
+                )`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndent`
         const reducer = createReducer(
           initialState,
           on(increase, (s, action) => ({ ...s, counter: s.counter + action.value })),
-                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         )`,
-    ),
-    fromFixture(
-      stripIndent`
+      errors: [
+        {
+          column: 16,
+          endColumn: 76,
+          line: 3,
+          messageId: onFunctionExplicitReturnType,
+          suggestions: [
+            {
+              messageId: onFunctionExplicitReturnTypeSuggest,
+              output: stripIndent`
+                const reducer = createReducer(
+                  initialState,
+                  on(increase, (s, action): State => ({ ...s, counter: s.counter + action.value })),
+                )`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndent`
         const reducer = createReducer(
           initialState,
-          on(increase, (s, { value }) => ({ ...s, counter: s.counter + value })),
-                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+          on(increase, (s, { value }) =>   (   { ...s, counter: s.counter + value   }  )   ),
         )`,
-    ),
+      errors: [
+        {
+          column: 16,
+          endColumn: 81,
+          line: 3,
+          messageId: onFunctionExplicitReturnType,
+          suggestions: [
+            {
+              messageId: onFunctionExplicitReturnTypeSuggest,
+              output: stripIndent`
+                const reducer = createReducer(
+                  initialState,
+                  on(increase, (s, { value }): State =>   (   { ...s, counter: s.counter + value   }  )   ),
+                )`,
+            },
+          ],
+        },
+      ],
+    },
   ],
 })

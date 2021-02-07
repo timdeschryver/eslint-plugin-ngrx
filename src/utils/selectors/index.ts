@@ -66,7 +66,7 @@ export const storeSelect = (storeName: string) =>
 export const createReducer = `CallExpression[callee.name='createReducer']`
 
 export const onFunctionWithoutType =
-  `${createReducer} CallExpression[callee.name='on'] > ArrowFunctionExpression:not([returnType.typeAnnotation],:has(CallExpression))` as const
+  `${createReducer} CallExpression[callee.name='on'] > ArrowFunctionExpression:not([returnType.typeAnnotation], :has(CallExpression))` as const
 
 export const storeActionReducerMap =
   `${ngModuleImports} CallExpression[callee.object.name='StoreModule'][callee.property.name=/^for(Root|Feature)$/] > ObjectExpression:first-child` as const
