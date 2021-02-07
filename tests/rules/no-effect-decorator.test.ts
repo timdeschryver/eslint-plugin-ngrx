@@ -11,14 +11,12 @@ import { ruleTester } from '../utils'
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
-      @Injectable()
-      export class FixtureEffects {
-
+    @Injectable()
+    export class FixtureEffects {
       effectOK = createEffect(() => this.actions.pipe(
         ofType('PING'),
         map(() => ({ type: 'PONG' }))
       ))
-
       constructor(private actions: Actions) {}
     }`,
   ],
@@ -33,7 +31,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ofType('PING'),
           map(() => ({ type: 'PONG' }))
         )
-
         constructor(private actions: Actions) {}
       }`,
       {
@@ -46,7 +43,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
             ofType('PING'),
             map(() => ({ type: 'PONG' }))
           )})
-
           constructor(private actions: Actions) {}
         }`,
       },
@@ -61,7 +57,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ofType('PING'),
           map(() => ({ type: 'PONG' }))
         )
-
         constructor(private actions: Actions) {}
       }`,
       {
@@ -74,7 +69,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
             ofType('PING'),
             map(() => ({ type: 'PONG' }))
           )}, { dispatch: true })
-
           constructor(private actions: Actions) {}
         }`,
       },
@@ -90,7 +84,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ofType('PING'),
           mapTo(CustomActions.pong()),
         )
-
         constructor(private actions: Actions) {}
       }`,
       {
@@ -103,7 +96,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
             ofType('PING'),
             mapTo(CustomActions.pong()),
           )}, { dispatch: false })
-
           constructor(private actions: Actions) {}
         }`,
       },
@@ -120,7 +112,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ofType('PING'),
           mapTo(CustomActions.pong()),
         )
-
         constructor(private actions: Actions) {}
       }`,
       {
@@ -134,7 +125,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
             ofType('PING'),
             mapTo(CustomActions.pong()),
           )}, config)
-
           constructor(private actions: Actions) {}
         }`,
       },
@@ -156,7 +146,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ofType('PING'),
           mapTo(CustomActions.pong()),
         ), config)
-
         constructor(private actions: Actions) {}
       }`,
       output: stripIndents`
@@ -176,7 +165,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ofType('PING'),
           mapTo(CustomActions.pong()),
         ), config)
-
         constructor(private actions: Actions) {}
       }`,
       errors: [
@@ -205,7 +193,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
                   ofType('PING'),
                   mapTo(CustomActions.pong()),
                 ), config)
-
                 constructor(private actions: Actions) {}
               }`,
             },

@@ -4,7 +4,7 @@ import path from 'path'
 import {
   classPropertyWithEffectDecorator,
   docsUrl,
-  getDecoratorArgument,
+  getDecoratorArguments,
   getImportAddFix,
   isIdentifier,
   MODULE_PATHS,
@@ -101,7 +101,7 @@ function getFixes(
     parent: { value: propertyValueExpression },
   } = node
 
-  const decoratorArgument = getDecoratorArgument(node)
+  const [decoratorArgument] = getDecoratorArguments(node)
   const configText = decoratorArgument
     ? sourceCode.getText(decoratorArgument)
     : undefined
