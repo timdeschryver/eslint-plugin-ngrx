@@ -113,7 +113,7 @@ function getFixes(
   ].concat(
     getImportAddFix({
       fixer,
-      importedName: createEffect,
+      importName: createEffect,
       moduleName: MODULE_PATHS.effects,
       node: classDeclaration,
     }),

@@ -48,7 +48,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
                 return [fixer.replaceText(node, 'concatLatestFrom')].concat(
                   getImportAddFix({
                     fixer,
-                    importedName: 'concatLatestFrom',
+                    importName: 'concatLatestFrom',
                     moduleName: MODULE_PATHS.effects,
                     node,
                   }),

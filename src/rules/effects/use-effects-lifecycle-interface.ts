@@ -70,7 +70,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
               getImportAddFix({
                 compatibleWithTypeOnlyImport: true,
                 fixer,
-                importedName: interfaceName,
+                importName: interfaceName,
                 moduleName: MODULE_PATHS.effects,
                 node: classDeclaration,
               }),

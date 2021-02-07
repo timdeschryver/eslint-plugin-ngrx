@@ -1,11 +1,12 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
-import { AST_NODE_TYPES } from '@typescript-eslint/experimental-utils'
 import {
   isCallExpression,
   isIdentifier,
+  isIdentifierOrMemberExpression,
   isImportDeclaration,
+  isImportDefaultSpecifier,
+  isImportNamespaceSpecifier,
   isImportSpecifier,
-  isMemberExpression,
   isProgram,
   isTSTypeAnnotation,
   isTSTypeReference,
@@ -15,7 +16,7 @@ export const MODULE_PATHS = {
   componentStore: '@ngrx/component-store',
   effects: '@ngrx/effects',
   store: '@ngrx/store',
-}
+} as const
 
 export function getNearestUpperNodeFrom<T extends TSESTree.Node>(
   { parent }: TSESTree.Node,
@@ -34,14 +35,14 @@ export function getNearestUpperNodeFrom<T extends TSESTree.Node>(
 
 export function getImportDeclarationSpecifier(
   importDeclarations: readonly TSESTree.ImportDeclaration[],
-  importedName: string,
+  importName: string,
 ) {
   for (const importDeclaration of importDeclarations) {
     const importSpecifier = importDeclaration.specifiers.find(
       (importClause): importClause is TSESTree.ImportSpecifier => {
         return (
           isImportSpecifier(importClause) &&
-          importClause.imported.name === importedName
+          importClause.imported.name === importName
         )
       },
     )
@@ -70,20 +71,42 @@ export function getImportDeclarations(
   )
 }
 
+function getCorrespondentImportClause(
+  importDeclarations: readonly TSESTree.ImportDeclaration[],
+  compatibleWithTypeOnlyImport = false,
+) {
+  let importClause: TSESTree.ImportClause | undefined
+
+  for (const { importKind, specifiers } of importDeclarations) {
+    const lastImportSpecifier = getLast(specifiers)
+
+    if (
+      (!compatibleWithTypeOnlyImport && importKind === 'type') ||
+      isImportNamespaceSpecifier(lastImportSpecifier)
+    ) {
+      continue
+    }
+
+    importClause = lastImportSpecifier
+  }
+
+  return importClause
+}
+
 export function getImportAddFix({
   compatibleWithTypeOnlyImport = false,
   fixer,
-  importedName,
+  importName,
   moduleName,
   node,
 }: {
   compatibleWithTypeOnlyImport?: boolean
   fixer: TSESLint.RuleFixer
-  importedName: string
+  importName: string
   moduleName: string
   node: TSESTree.Node
 }): TSESLint.RuleFix | TSESLint.RuleFix[] {
-  const fullImport = `import { ${importedName} } from '${moduleName}';\n`
+  const fullImport = `import { ${importName} } from '${moduleName}';\n`
   const importDeclarations = getImportDeclarations(node, moduleName)
 
   if (!importDeclarations?.length) {
@@ -92,35 +115,26 @@ export function getImportAddFix({
 
   const importDeclarationSpecifier = getImportDeclarationSpecifier(
     importDeclarations,
-    importedName,
+    importName,
   )
 
   if (importDeclarationSpecifier) {
     return []
   }
 
-  const [{ importKind, specifiers }] = importDeclarations
+  const importClause = getCorrespondentImportClause(
+    importDeclarations,
+    compatibleWithTypeOnlyImport,
+  )
 
-  if (!compatibleWithTypeOnlyImport && importKind === 'type') {
+  if (!importClause) {
     return fixer.insertTextAfterRange([0, 0], fullImport)
   }
 
-  const lastImportSpecifier = getLast(specifiers)
-
-  switch (lastImportSpecifier.type) {
-    case AST_NODE_TYPES.ImportDefaultSpecifier:
-      return fixer.insertTextAfter(lastImportSpecifier, `, { ${importedName} }`)
-    case AST_NODE_TYPES.ImportNamespaceSpecifier:
-      return fixer.insertTextAfterRange([0, 0], fullImport)
-    default:
-      return fixer.insertTextAfter(lastImportSpecifier, `, ${importedName}`)
-  }
-}
-
-export function isIdentifierOrMemberExpression(
-  node: TSESTree.Node,
-): node is TSESTree.Identifier | TSESTree.MemberExpression {
-  return isIdentifier(node) || isMemberExpression(node)
+  const replacementText = isImportDefaultSpecifier(importClause)
+    ? `, { ${importName} }`
+    : `, ${importName}`
+  return fixer.insertTextAfter(importClause, replacementText)
 }
 
 export function getInterfaceName(
@@ -179,19 +193,19 @@ export function getDecoratorArgument({ expression }: TSESTree.Decorator) {
 function findCorrespondingNameBy(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
   moduleName: string,
-  importedName: string,
+  importName: string,
 ): string | undefined {
   const { ast } = context.getSourceCode()
   const importDeclarations = getImportDeclarations(ast, moduleName) ?? []
   const { importSpecifier } =
-    getImportDeclarationSpecifier(importDeclarations, importedName) ?? {}
+    getImportDeclarationSpecifier(importDeclarations, importName) ?? {}
 
   if (!importSpecifier) {
     return undefined
   }
 
   const variables = context.getDeclaredVariables(importSpecifier)
-  const typedVariable = variables.find(({ name }) => name === importedName)
+  const typedVariable = variables.find(({ name }) => name === importName)
 
   return typedVariable?.references
     .map(({ identifier: { parent } }) => {
