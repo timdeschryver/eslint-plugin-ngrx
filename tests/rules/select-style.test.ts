@@ -12,6 +12,7 @@ import { ruleTester } from '../utils'
 ruleTester().run(ruleName, rule, {
   valid: [
     `this.store.select(selector);`,
+    `this.store$.select(selector);`,
     {
       code: `this.store.pipe(select(selector));`,
       options: [{ mode: OPERATOR }],
@@ -19,6 +20,12 @@ ruleTester().run(ruleName, rule, {
     {
       code: `this.store.select(selector);`,
       options: [{ mode: METHOD }],
+    },
+    {
+      code: `this.anotherName.select(selector);`,
+      settings: {
+        ngrxStoreName: 'anotherName',
+      },
     },
   ],
   invalid: [

@@ -10,7 +10,7 @@ const CONFIG_DIRECTORY = './src/configs/'
 
 const recommendedRules = Object.entries(rules).reduce(
   (rules, [ruleName, rule]) => {
-    if (rule.meta.docs.recommended) {
+    if (rule.meta.docs?.recommended) {
       rules[`${RULE_NAME_PREFIX}${ruleName}`] = rule.meta.docs.recommended
     }
     return rules

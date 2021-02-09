@@ -1,6 +1,10 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { dispatchInEffects, docsUrl } from '../utils'
+import {
+  dispatchInEffects,
+  docsUrl,
+  readNgRxStoreNameFromSettings,
+} from '../utils'
 
 export const ruleName = 'no-dispatch-in-effects'
 
@@ -26,7 +30,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [dispatchInEffects](node: TSESTree.CallExpression) {
+      [dispatchInEffects(readNgRxStoreNameFromSettings(context.settings))](
+        node: TSESTree.CallExpression,
+      ) {
         context.report({
           node,
           messageId,

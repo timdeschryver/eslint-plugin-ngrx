@@ -1,6 +1,11 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { docsUrl, pipeableSelect, storeSelect } from '../utils'
+import {
+  docsUrl,
+  pipeableSelect,
+  readNgRxStoreNameFromSettings,
+  storeSelect,
+} from '../utils'
 
 export const ruleName = 'select-style'
 
@@ -54,7 +59,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           })
         }
       },
-      [storeSelect](node: TSESTree.Identifier) {
+      [storeSelect(readNgRxStoreNameFromSettings(context.settings))](
+        node: TSESTree.Identifier,
+      ) {
         if (mode === OPERATOR) {
           context.report({
             node,

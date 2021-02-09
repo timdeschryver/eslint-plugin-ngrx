@@ -1,4 +1,5 @@
 export * from './docs'
 export * from './guards'
+export * from './settings'
 export * from './typecheck'
 export * from './utils'
