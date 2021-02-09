@@ -1,4 +1,4 @@
-import { stripIndent } from 'common-tags'
+import { stripIndents } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import rule, {
   noEffectDecorator,
@@ -9,7 +9,7 @@ import { ruleTester } from '../utils'
 
 ruleTester().run(ruleName, rule, {
   valid: [
-    stripIndent`
+    stripIndents`
       @Injectable()
       export class FixtureEffects {
 
@@ -23,7 +23,7 @@ ruleTester().run(ruleName, rule, {
   ],
   invalid: [
     fromFixture(
-      stripIndent`
+      stripIndents`
       @Injectable()
       export class FixtureEffects {
         @Effect()
@@ -36,22 +36,22 @@ ruleTester().run(ruleName, rule, {
         constructor(private actions: Actions) {}
       }`,
       {
-        output: stripIndent`
+        output: stripIndents`
         import { createEffect } from '@ngrx/effects';
         @Injectable()
         export class FixtureEffects {
-          
-          effect = createEffect(() => this.actions.pipe(
+
+          effect = createEffect(() => { return this.actions.pipe(
             ofType('PING'),
             map(() => ({ type: 'PONG' }))
-          ))
+          )})
 
           constructor(private actions: Actions) {}
         }`,
       },
     ),
     fromFixture(
-      stripIndent`
+      stripIndents`
       @Injectable()
       export class FixtureEffects {
         @Effect({ dispatch: true })
@@ -64,22 +64,22 @@ ruleTester().run(ruleName, rule, {
         constructor(private actions: Actions) {}
       }`,
       {
-        output: stripIndent`
+        output: stripIndents`
         import { createEffect } from '@ngrx/effects';
         @Injectable()
         export class FixtureEffects {
-          
-          effect = createEffect(() => this.actions.pipe(
+
+          effect = createEffect(() => { return this.actions.pipe(
             ofType('PING'),
             map(() => ({ type: 'PONG' }))
-          ), { dispatch: true })
+          )}, { dispatch: true })
 
           constructor(private actions: Actions) {}
         }`,
       },
     ),
     fromFixture(
-      stripIndent`
+      stripIndents`
       import { createEffect, Effect } from '@ngrx/effects';
       @Injectable()
       export class FixtureEffects {
@@ -93,22 +93,22 @@ ruleTester().run(ruleName, rule, {
         constructor(private actions: Actions) {}
       }`,
       {
-        output: stripIndent`
+        output: stripIndents`
         import { createEffect, Effect } from '@ngrx/effects';
         @Injectable()
         export class FixtureEffects {
-          
-          effect = createEffect(() => this.actions.pipe(
+
+          effect = createEffect(() => { return this.actions.pipe(
             ofType('PING'),
             mapTo(CustomActions.pong()),
-          ), { dispatch: false })
+          )}, { dispatch: false })
 
           constructor(private actions: Actions) {}
         }`,
       },
     ),
     fromFixture(
-      stripIndent`
+      stripIndents`
       import { Injectable } from '@angular/core';
       import { Effect } from '@ngrx/effects';
       @Injectable()
@@ -123,23 +123,23 @@ ruleTester().run(ruleName, rule, {
         constructor(private actions: Actions) {}
       }`,
       {
-        output: stripIndent`
+        output: stripIndents`
         import { Injectable } from '@angular/core';
         import { Effect, createEffect } from '@ngrx/effects';
         @Injectable()
         export class FixtureEffects {
-          
-          effect = createEffect(() => this.actions.pipe(
+
+          effect = createEffect(() => { return this.actions.pipe(
             ofType('PING'),
             mapTo(CustomActions.pong()),
-          ), config)
+          )}, config)
 
           constructor(private actions: Actions) {}
         }`,
       },
     ),
     {
-      code: stripIndent`
+      code: stripIndents`
       import { Injectable } from '@angular/core';
       import { Effect } from '@ngrx/effects';
       @Injectable()
@@ -158,16 +158,16 @@ ruleTester().run(ruleName, rule, {
 
         constructor(private actions: Actions) {}
       }`,
-      output: stripIndent`
+      output: stripIndents`
       import { Injectable } from '@angular/core';
       import { Effect, createEffect } from '@ngrx/effects';
       @Injectable()
       export class FixtureEffects {
-        
-        effect = createEffect(() => this.actions.pipe(
+
+        effect = createEffect(() => { return this.actions.pipe(
           ofType('PING'),
           mapTo(CustomActions.pong()),
-        ), config)
+        )}, config)
 
         @Effect({ dispatch: false })
         effect2 = createEffect(() => this.actions.pipe(
@@ -180,14 +180,14 @@ ruleTester().run(ruleName, rule, {
       errors: [
         { messageId: noEffectDecorator },
         {
-          column: 3,
-          endColumn: 31,
+          column: 1,
+          endColumn: 29,
           line: 11,
           messageId: noEffectDecorator,
           suggestions: [
             {
               messageId: noEffectDecoratorSuggest,
-              output: stripIndent`
+              output: stripIndents`
               import { Injectable } from '@angular/core';
               import { Effect } from '@ngrx/effects';
               @Injectable()
@@ -198,7 +198,7 @@ ruleTester().run(ruleName, rule, {
                   mapTo(CustomActions.pong()),
                 )
 
-                
+
                 effect2 = createEffect(() => this.actions.pipe(
                   ofType('PING'),
                   mapTo(CustomActions.pong()),

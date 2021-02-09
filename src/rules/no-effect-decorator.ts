@@ -77,7 +77,7 @@ function getCreateEffectFix(
 ): TSESLint.RuleFix {
   return fixer.insertTextBefore(
     propertyValueExpression,
-    `${createEffect}(() => `,
+    `${createEffect}(() => { return `,
   )
 }
 
@@ -86,10 +86,8 @@ function getCreateEffectConfigFix(
   propertyValueExpression: TSESTree.CallExpression,
   configText?: string,
 ): TSESLint.RuleFix {
-  return fixer.insertTextAfter(
-    propertyValueExpression,
-    `${configText ? `, ${configText}` : ''})`,
-  )
+  const append = configText ? `, ${configText}` : ''
+  return fixer.insertTextAfter(propertyValueExpression, `}${append})`)
 }
 
 function getFixes(
