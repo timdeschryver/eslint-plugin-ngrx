@@ -1,50 +1,133 @@
 import { stripIndent } from 'common-tags'
-import { fromFixture } from 'eslint-etc'
-import rule, { ruleName, messageId } from '../../src/rules/no-typed-store'
+import rule, {
+  messageId,
+  noTypedStoreSuggest,
+  ruleName,
+} from '../../src/rules/no-typed-store'
 import { ruleTester } from '../utils'
 
 ruleTester().run(ruleName, rule, {
   valid: [
     stripIndent`
     export class Ok {
-      constructor(store: Store)
+      constructor(store: Store) {}
     }`,
   ],
   invalid: [
-    fromFixture(
-      stripIndent`
-        export class NotOk {
-          constructor(store: Store<PersonsState>){}
-                             ~~~~~~~~~~~~~~~~~~~  [${messageId}]
-        }`,
-    ),
-    fromFixture(
-      stripIndent`
-        export class NotOk2 {
-          constructor(cdr: ChangeDetectionRef, private store: Store<CustomersState>){}
-                                                              ~~~~~~~~~~~~~~~~~~~~~  [${messageId}]
-        }`,
-    ),
-    fromFixture(
-      stripIndent`
+    {
+      code: stripIndent`
+      export class NotOk1 {
+        constructor(store: Store<PersonsState>) {}
+      }`,
+      errors: [
+        {
+          column: 27,
+          endColumn: 41,
+          line: 2,
+          messageId,
+          suggestions: [
+            {
+              messageId: noTypedStoreSuggest,
+              output: stripIndent`
+              export class NotOk1 {
+                constructor(store: Store) {}
+              }`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+      export class NotOk2 {
+        constructor(cdr: ChangeDetectionRef, private store: Store<CustomersState>) {}
+      }`,
+      errors: [
+        {
+          column: 60,
+          endColumn: 76,
+          line: 2,
+          messageId,
+          suggestions: [
+            {
+              messageId: noTypedStoreSuggest,
+              output: stripIndent`
+              export class NotOk2 {
+                constructor(cdr: ChangeDetectionRef, private store: Store) {}
+              }`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndent`
       export class NotOk3 {
-        constructor(private store: Store<any>, private personsService: PersonsService){}
-                                   ~~~~~~~~~~  [${messageId}]
+        constructor(private store: Store<any>, private personsService: PersonsService) {}
       }`,
-    ),
-    fromFixture(
-      stripIndent`
+      errors: [
+        {
+          column: 35,
+          endColumn: 40,
+          line: 2,
+          messageId,
+          suggestions: [
+            {
+              messageId: noTypedStoreSuggest,
+              output: stripIndent`
+              export class NotOk3 {
+                constructor(private store: Store, private personsService: PersonsService) {}
+              }`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndent`
       export class NotOk4 {
-        constructor(store: Store<{}>)
-                           ~~~~~~~~~  [${messageId}]
+        constructor(store: Store<{}>) {}
       }`,
-    ),
-    fromFixture(
-      stripIndent`
+      errors: [
+        {
+          column: 27,
+          endColumn: 31,
+          line: 2,
+          messageId,
+          suggestions: [
+            {
+              messageId: noTypedStoreSuggest,
+              output: stripIndent`
+              export class NotOk4 {
+                constructor(store: Store) {}
+              }`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndent`
       export class NotOk5 {
-          constructor(store: Store<object>)
-                             ~~~~~~~~~~~~~  [${messageId}]
-        }`,
-    ),
+        constructor(store: Store<object>) {}
+      }`,
+      errors: [
+        {
+          column: 27,
+          endColumn: 35,
+          line: 2,
+          messageId,
+          suggestions: [
+            {
+              messageId: noTypedStoreSuggest,
+              output: stripIndent`
+              export class NotOk5 {
+                constructor(store: Store) {}
+              }`,
+            },
+          ],
+        },
+      ],
+    },
   ],
 })
