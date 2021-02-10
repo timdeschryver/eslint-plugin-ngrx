@@ -1,6 +1,11 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { docsUrl, isCallExpression, isIdentifier } from '../utils'
+import {
+  docsUrl,
+  isCallExpression,
+  isIdentifier,
+  readNgRxStoreNameFromSettings,
+} from '../utils'
 
 export const ruleName = 'avoid-mapping-selectors'
 
@@ -28,7 +33,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [`CallExpression[callee.object.callee.object.property.name='store'][callee.object.callee.property.name='select'][callee.property.name='pipe']`](
+      [`CallExpression[callee.object.callee.object.property.name=${readNgRxStoreNameFromSettings(
+        context.settings,
+      )}][callee.object.callee.property.name='select'][callee.property.name='pipe']`](
         node: TSESTree.CallExpression,
       ) {
         const violations = node.arguments.filter(

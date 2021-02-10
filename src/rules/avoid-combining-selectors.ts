@@ -5,6 +5,7 @@ import {
   isCallExpression,
   isMemberExpression,
   isIdentifier,
+  DEFAULT_STORE_NAMES,
 } from '../utils'
 
 export const ruleName = 'avoid-combining-selectors'
@@ -42,7 +43,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
             isMemberExpression(p.callee) &&
             isMemberExpression(p.callee.object) &&
             isIdentifier(p.callee.object.property) &&
-            p.callee.object.property.name === 'store' &&
+            DEFAULT_STORE_NAMES.includes(p.callee.object.property.name) &&
             isIdentifier(p.callee.property) &&
             p.callee.property.name === 'select',
         )
