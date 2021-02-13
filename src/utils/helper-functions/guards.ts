@@ -32,7 +32,7 @@ export function isFunctionExpression(
   return node.type === AST_NODE_TYPES.FunctionExpression
 }
 
-export function isFunctionLike(
+export function isFunctionExpressionLike(
   node: TSESTree.Node,
 ): node is TSESTree.FunctionExpression | TSESTree.ArrowFunctionExpression {
   return isArrowFunctionExpression(node) || isFunctionExpression(node)

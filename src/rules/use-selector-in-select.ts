@@ -2,10 +2,10 @@ import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 import {
   docsUrl,
   isLiteral,
-  isFunctionLike,
+  isFunctionExpressionLike,
   storeSelect,
   readNgRxStoreNameFromSettings,
-  createStoreSelectCallExpressionVisitors,
+  pipeableSelect,
 } from '../utils'
 
 export const ruleName = 'use-selector-in-select'
@@ -35,7 +35,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   create: (context) => {
     const report = (callNode: TSESTree.CallExpression) => {
       for (const node of callNode.arguments) {
-        if (isLiteral(node) || isFunctionLike(node)) {
+        if (isLiteral(node) || isFunctionExpressionLike(node)) {
           context.report({
             node,
             messageId,
@@ -45,15 +45,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     }
 
     return {
-      ...createStoreSelectCallExpressionVisitors(
-        readNgRxStoreNameFromSettings(context.settings),
-        report,
-      ),
-      [storeSelect(readNgRxStoreNameFromSettings(context.settings))](
-        node: TSESTree.CallExpression,
-      ) {
-        report(node)
-      },
+      [pipeableSelect(readNgRxStoreNameFromSettings(context.settings))]: report,
+      [storeSelect(readNgRxStoreNameFromSettings(context.settings))]: report,
     }
   },
 })
