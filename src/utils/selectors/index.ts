@@ -1,3 +1,5 @@
+import { TSESTree } from '@typescript-eslint/experimental-utils'
+
 export const effectCreator = `ClassProperty[value.callee.name='createEffect']`
 
 export const effectDecorator = `Decorator[expression.callee.name='Effect']`
@@ -22,14 +24,31 @@ export const ngModuleProviders = `${ngModuleDecorator} ObjectExpression Property
 
 export const ngModuleImports = `${ngModuleDecorator} ObjectExpression Property[key.name='imports'] > ArrayExpression CallExpression[callee.object.name='EffectsModule'][callee.property.name=/forRoot|forFeature/] ArrayExpression > Identifier`
 
-export const pipeableSelect = `CallExpression[callee.property.name="pipe"] CallExpression[callee.name="select"]`
+export const pipeableSelectThis = (storeName: string) =>
+  `CallExpression[callee.object.object.type="ThisExpression"][callee.object.property.name=${storeName}][callee.property.name="pipe"] CallExpression[callee.name="select"]`
+
+export const pipeableSelect = (storeName: string) =>
+  `CallExpression[callee.object.name=${storeName}][callee.property.name="pipe"] CallExpression[callee.name="select"]`
+
+/**
+ * Returns both usages of store selectors
+ *
+ * @param storeName name of the store
+ * @param visitor callback method invoked with the call expression
+ * @returns 2 esqueries, store.select() and this.store.select()
+ */
+export const createStoreSelectCallExpressionVisitors = (
+  storeName: string,
+  visitor: (node: TSESTree.CallExpression) => void,
+) => {
+  return {
+    [pipeableSelectThis(storeName)]: visitor,
+    [pipeableSelect(storeName)]: visitor,
+  }
+}
+
 export const storeSelect = (storeName: string) =>
   `CallExpression[callee.object.property.name=${storeName}][callee.property.name='select']`
-
-export const select = (storeName: string) => {
-  const storeSelectName = storeSelect(storeName)
-  return `${pipeableSelect} Literal, ${storeSelectName} Literal, ${pipeableSelect} ArrowFunctionExpression, ${storeSelectName} ArrowFunctionExpression`
-}
 
 export const onFunctionWithoutType = `CallExpression[callee.name='createReducer'] CallExpression[callee.name='on'] > ArrowFunctionExpression:not([returnType.typeAnnotation],:has(CallExpression))`
 

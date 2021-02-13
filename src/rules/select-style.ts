@@ -1,8 +1,8 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
 import {
+  createStoreSelectCallExpressionVisitors,
   docsUrl,
-  pipeableSelect,
   readNgRxStoreNameFromSettings,
   storeSelect,
 } from '../utils'
@@ -51,16 +51,19 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [{ mode: METHOD }],
   create: (context, [{ mode }]) => {
     return {
-      [pipeableSelect](node: TSESTree.CallExpression) {
-        if (mode === METHOD) {
-          context.report({
-            node,
-            messageId: methodSelectMessageId,
-          })
-        }
-      },
+      ...createStoreSelectCallExpressionVisitors(
+        readNgRxStoreNameFromSettings(context.settings),
+        (node) => {
+          if (mode === METHOD) {
+            context.report({
+              node,
+              messageId: methodSelectMessageId,
+            })
+          }
+        },
+      ),
       [storeSelect(readNgRxStoreNameFromSettings(context.settings))](
-        node: TSESTree.Identifier,
+        node: TSESTree.CallExpression,
       ) {
         if (mode === OPERATOR) {
           context.report({

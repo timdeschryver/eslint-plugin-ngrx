@@ -26,6 +26,18 @@ export function isArrowFunctionExpression(
   return node.type === AST_NODE_TYPES.ArrowFunctionExpression
 }
 
+export function isFunctionExpression(
+  node: TSESTree.Node,
+): node is TSESTree.FunctionExpression {
+  return node.type === AST_NODE_TYPES.FunctionExpression
+}
+
+export function isFunctionLike(
+  node: TSESTree.Node,
+): node is TSESTree.FunctionExpression | TSESTree.ArrowFunctionExpression {
+  return isArrowFunctionExpression(node) || isFunctionExpression(node)
+}
+
 export function isClassDeclaration(
   node: TSESTree.Node,
 ): node is TSESTree.ClassDeclaration {
