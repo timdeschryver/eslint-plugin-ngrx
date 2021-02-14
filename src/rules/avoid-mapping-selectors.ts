@@ -4,7 +4,7 @@ import {
   docsUrl,
   isCallExpression,
   isIdentifier,
-  readNgRxStoreNameFromSettings,
+  readNgRxStoreName,
 } from '../utils'
 
 export const ruleName = 'avoid-mapping-selectors'
@@ -33,8 +33,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [`CallExpression[callee.object.callee.object.property.name=${readNgRxStoreNameFromSettings(
-        context.settings,
+      [`CallExpression[callee.object.callee.object.property.name=${readNgRxStoreName(
+        context,
       )}][callee.object.callee.property.name='select'][callee.property.name='pipe']`](
         node: TSESTree.CallExpression,
       ) {

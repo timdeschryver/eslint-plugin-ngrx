@@ -1,3 +1,5 @@
+import { TSESLint } from '@typescript-eslint/experimental-utils'
+
 export const DEFAULT_STORE_NAMES = ['store', 'store$']
 
 const defaultStoreNamesRegexp = `/^(${DEFAULT_STORE_NAMES.join('|').replace(
@@ -5,10 +7,11 @@ const defaultStoreNamesRegexp = `/^(${DEFAULT_STORE_NAMES.join('|').replace(
   '\\$',
 )})$/`
 
-export function readNgRxStoreNameFromSettings(
-  settings: Record<string, unknown>,
+export function readNgRxStoreName(
+  context: TSESLint.RuleContext<string, readonly unknown[]>,
 ): string {
   return (
-    (settings.ngrxStoreName as string | undefined) || defaultStoreNamesRegexp
+    (context.settings.ngrxStoreName as string | undefined) ||
+    defaultStoreNamesRegexp
   )
 }

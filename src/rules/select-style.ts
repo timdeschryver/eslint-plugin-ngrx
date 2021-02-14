@@ -3,7 +3,7 @@ import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 import {
   docsUrl,
   pipeableSelect,
-  readNgRxStoreNameFromSettings,
+  readNgRxStoreName,
   storeSelect,
 } from '../utils'
 
@@ -50,7 +50,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [{ mode: METHOD }],
   create: (context, [{ mode }]) => {
-    const storeName = readNgRxStoreNameFromSettings(context.settings)
+    const storeName = readNgRxStoreName(context)
 
     if (mode === METHOD) {
       return {
