@@ -1,10 +1,7 @@
 import { TSESTree } from '@typescript-eslint/experimental-utils'
 import { couldBeType } from 'tsutils-etc'
 
-function getParserServices(
-  // RuleContext<string, readonly unknown[]>>
-  context: Readonly<any>,
-) {
+function getParserServices(context: Readonly<any>) {
   if (
     !context.parserServices ||
     !context.parserServices.program ||
@@ -17,10 +14,7 @@ function getParserServices(
   return context.parserServices
 }
 
-export function typecheck(
-  // RuleContext<string, readonly unknown[]>>
-  context: Readonly<any>,
-) {
+export function typecheck(context: Readonly<any>) {
   const service = getParserServices(context)
   const nodeMap = service.esTreeNodeToTSNodeMap
   const typeChecker = service.program.getTypeChecker()

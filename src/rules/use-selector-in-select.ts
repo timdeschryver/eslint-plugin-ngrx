@@ -33,20 +33,21 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const report = (callNode: TSESTree.CallExpression) => {
-      for (const node of callNode.arguments) {
-        if (isLiteral(node) || isFunctionExpressionLike(node)) {
-          context.report({
-            node,
-            messageId,
-          })
-        }
-      }
-    }
+    const storeName = readNgRxStoreNameFromSettings(context.settings)
 
     return {
-      [pipeableSelect(readNgRxStoreNameFromSettings(context.settings))]: report,
-      [storeSelect(readNgRxStoreNameFromSettings(context.settings))]: report,
+      [`${pipeableSelect(storeName)}, ${storeSelect(storeName)}`]({
+        arguments: args,
+      }: TSESTree.CallExpression) {
+        args
+          .filter((node) => isLiteral(node) || isFunctionExpressionLike(node))
+          .forEach((node) =>
+            context.report({
+              node,
+              messageId,
+            }),
+          )
+      },
     }
   },
 })

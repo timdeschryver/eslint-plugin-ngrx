@@ -1,5 +1,3 @@
-import { TSESTree } from '@typescript-eslint/experimental-utils'
-
 export const effectCreator = `ClassProperty[value.callee.name='createEffect']`
 
 export const effectDecorator = `Decorator[expression.callee.name='Effect']`

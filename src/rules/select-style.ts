@@ -50,24 +50,25 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [{ mode: METHOD }],
   create: (context, [{ mode }]) => {
-    return {
-      [pipeableSelect(readNgRxStoreNameFromSettings(context.settings))](node) {
-        if (mode === METHOD) {
+    const storeName = readNgRxStoreNameFromSettings(context.settings)
+
+    if (mode === METHOD) {
+      return {
+        [pipeableSelect(storeName)](node: TSESTree.CallExpression) {
           context.report({
             node,
             messageId: methodSelectMessageId,
           })
-        }
-      },
-      [storeSelect(readNgRxStoreNameFromSettings(context.settings))](
-        node: TSESTree.CallExpression,
-      ) {
-        if (mode === OPERATOR) {
-          context.report({
-            node,
-            messageId: operatorSelectMessageId,
-          })
-        }
+        },
+      }
+    }
+
+    return {
+      [storeSelect(storeName)](node: TSESTree.CallExpression) {
+        context.report({
+          node,
+          messageId: operatorSelectMessageId,
+        })
       },
     }
   },
