@@ -11,8 +11,10 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
     project: './tsconfig.eslint.json',
+    extraFileExtensions: ['.json'],
   },
   rules: {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '_' }],
   },
 }

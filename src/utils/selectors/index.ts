@@ -22,14 +22,16 @@ export const ngModuleProviders = `${ngModuleDecorator} ObjectExpression Property
 
 export const ngModuleImports = `${ngModuleDecorator} ObjectExpression Property[key.name='imports'] > ArrayExpression CallExpression[callee.object.name='EffectsModule'][callee.property.name=/forRoot|forFeature/] ArrayExpression > Identifier`
 
-export const pipeableSelect = `CallExpression[callee.property.name="pipe"] CallExpression[callee.name="select"]`
-export const storeSelect = (storeName: string) =>
-  `CallExpression[callee.object.property.name=${storeName}][callee.property.name='select']`
+const storeExpression = (storeName: string) =>
+  `CallExpression:matches([callee.object.name=${storeName}], [callee.object.object.type='ThisExpression'][callee.object.property.name=${storeName}])`
 
-export const select = (storeName: string) => {
-  const storeSelectName = storeSelect(storeName)
-  return `${pipeableSelect} Literal, ${storeSelectName} Literal, ${pipeableSelect} ArrowFunctionExpression, ${storeSelectName} ArrowFunctionExpression`
-}
+export const pipeableSelect = (storeName: string) =>
+  `${storeExpression(
+    storeName,
+  )}[callee.property.name='pipe'] CallExpression[callee.name='select']`
+
+export const storeSelect = (storeName: string) =>
+  `${storeExpression(storeName)}[callee.property.name='select']`
 
 export const onFunctionWithoutType = `CallExpression[callee.name='createReducer'] CallExpression[callee.name='on'] > ArrowFunctionExpression:not([returnType.typeAnnotation],:has(CallExpression))`
 
