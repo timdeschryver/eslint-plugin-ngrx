@@ -22,6 +22,14 @@ export const ngModuleProviders = `${ngModuleDecorator} ObjectExpression Property
 
 export const ngModuleImports = `${ngModuleDecorator} ObjectExpression Property[key.name='imports'] > ArrayExpression CallExpression[callee.object.name='EffectsModule'][callee.property.name=/forRoot|forFeature/] ArrayExpression > Identifier`
 
+const actionDispatch = (storeName: string) => {
+  return `ExpressionStatement:has(CallExpression > MemberExpression:has(Identifier[name="dispatch"]):has(MemberExpression > Identifier[name=${storeName}]))`
+}
+
+export const multipleActionDispatch = (storeName: string) => {
+  return `${actionDispatch(storeName)} ~ ${actionDispatch(storeName)}`
+}
+
 const storeExpression = (storeName: string) =>
   `CallExpression:matches([callee.object.name=${storeName}], [callee.object.object.type='ThisExpression'][callee.object.property.name=${storeName}])`
 

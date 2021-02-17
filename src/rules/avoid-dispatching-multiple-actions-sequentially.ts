@@ -1,13 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import {
-  docsUrl,
-  injectedStore,
-  isCallExpression,
-  isExpressionStatement,
-  isIdentifier,
-  isMemberExpression,
-} from '../utils'
+import { docsUrl, multipleActionDispatch, readNgRxStoreName } from '../utils'
 
 export const ruleName = 'avoid-dispatching-multiple-actions-sequentially'
 
@@ -33,45 +26,15 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    let storeName = ''
     return {
-      [injectedStore]({ name }: TSESTree.Identifier) {
-        storeName = name
-      },
-      [`ClassDeclaration > ClassBody > MethodDefinition > FunctionExpression > BlockStatement`](
-        node: TSESTree.BlockStatement,
+      [multipleActionDispatch(readNgRxStoreName(context))](
+        node: TSESTree.CallExpression,
       ) {
-        if (!storeName) return
-
-        const dispatchExpressions = (node.body.filter((expression) =>
-          isStoreDispatchExpression(storeName, expression),
-        ) as TSESTree.ExpressionStatement[]).map(({ expression }) => expression)
-
-        if (dispatchExpressions.length > 1) {
-          dispatchExpressions.forEach((expression) =>
-            context.report({
-              node: expression,
-              messageId: 'AvoidDispatchingMultipleActionsSequentially',
-            }),
-          )
-        }
+        context.report({
+          node,
+          messageId,
+        })
       },
     }
   },
 })
-
-function isStoreDispatchExpression(
-  storeName: string,
-  expression: TSESTree.Statement,
-): boolean {
-  return (
-    isExpressionStatement(expression) &&
-    isCallExpression(expression.expression) &&
-    isMemberExpression(expression.expression.callee) &&
-    isIdentifier(expression.expression.callee.property) &&
-    expression.expression.callee.property.name === 'dispatch' &&
-    isMemberExpression(expression.expression.callee.object) &&
-    isIdentifier(expression.expression.callee.object.property) &&
-    expression.expression.callee.object.property.name === storeName
-  )
-}

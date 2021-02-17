@@ -39,7 +39,6 @@ ruleTester().run(ruleName, rule, {
 
         pingPong() {
           this.store.dispatch({ type: 'PING' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.store.dispatch({ type: 'PONG' })
           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         }
@@ -53,7 +52,6 @@ ruleTester().run(ruleName, rule, {
 
         pong() {
           this.store.dispatch({ type: 'PING' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.ping();
           this.name = 'Bob'
           this.store.dispatch({ type: 'PONG' })
@@ -69,7 +67,6 @@ ruleTester().run(ruleName, rule, {
 
         pingPongPong() {
           this.store.dispatch({ type: 'PING' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.store.dispatch({ type: 'PONG' })
           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.store.dispatch({ type: 'PONG' })
@@ -86,7 +83,6 @@ ruleTester().run(ruleName, rule, {
 
         pingPong() {
           this.store$.dispatch({ type: 'PING' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.store$.dispatch({ type: 'PONG' })
           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         }
