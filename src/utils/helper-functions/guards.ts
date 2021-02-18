@@ -62,6 +62,18 @@ export function isImportSpecifier(
   return node.type === 'ImportSpecifier'
 }
 
+export function isTSTypeAnnotation(
+  node: TSESTree.Node,
+): node is TSESTree.TSTypeAnnotation {
+  return node.type === AST_NODE_TYPES.TSTypeAnnotation
+}
+
+export function isTSTypeReference(
+  node: TSESTree.Node,
+): node is TSESTree.TSTypeReference {
+  return node.type === AST_NODE_TYPES.TSTypeReference
+}
+
 export function isProgram(node: TSESTree.Node): node is TSESTree.Program {
   return node.type === 'Program'
 }
