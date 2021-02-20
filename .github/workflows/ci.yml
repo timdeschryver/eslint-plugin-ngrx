@@ -4,13 +4,18 @@ on:
   pull_request:
     paths-ignore:
       - '*.md'
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '*.md'
 
 jobs:
-  build_and_test:
+  build_test_release:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [12, 14, 15]
 
     steps:
       - uses: actions/checkout@v1
@@ -26,3 +31,9 @@ jobs:
         run: npm run test -- --ci --coverage
         env:
           CI: true
+      - name: Release
+        if: success() && github.repository == 'timdeschryver/eslint-plugin-ngrx' && matrix.node_version == '15'
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
