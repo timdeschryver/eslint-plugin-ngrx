@@ -9,7 +9,7 @@ import {
 
 export const ruleName = 'avoid-dispatching-multiple-actions-sequentially'
 
-export const messageId = 'AvoidDispatchingMultipleActionsSequentially'
+export const messageId = 'avoidDispatchingMultipleActionsSequentially'
 export type MessageIds = typeof messageId
 
 type Options = []
@@ -36,7 +36,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       TSESTree.CallExpression[]
     >()
     return {
-      [`${actionDispatch(readNgRxStoreName(context))}`](
+      [actionDispatch(readNgRxStoreName(context))](
         node: TSESTree.CallExpression,
       ) {
         if (
@@ -52,7 +52,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           ])
         }
       },
-      ['Program:exit']() {
+      'Program:exit'() {
         dispatchExpressionsWithSameParent.forEach((dispatches) => {
           if (dispatches.length > 1)
             dispatches.forEach((node) =>
