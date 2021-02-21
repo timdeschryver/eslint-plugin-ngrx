@@ -4,7 +4,7 @@ import {
   actionDispatch,
   docsUrl,
   isExpressionStatement,
-  readNgRxStoreName,
+  findNgRxStoreName,
 } from '../utils'
 
 export const ruleName = 'avoid-dispatching-multiple-actions-sequentially'
@@ -35,10 +35,11 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       TSESTree.Node,
       TSESTree.CallExpression[]
     >()
+    const storeName = findNgRxStoreName(context)
+    if (!storeName) return {}
+
     return {
-      [actionDispatch(readNgRxStoreName(context))](
-        node: TSESTree.CallExpression,
-      ) {
+      [actionDispatch(storeName)](node: TSESTree.CallExpression) {
         if (
           node.parent &&
           isExpressionStatement(node.parent) &&

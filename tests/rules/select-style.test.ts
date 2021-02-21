@@ -11,34 +11,68 @@ import { ruleTester } from '../utils'
 
 ruleTester().run(ruleName, rule, {
   valid: [
-    `this.store.select(selector);`,
-    `this.store$.select(selector);`,
+    `
+    import { Store } from '@ngrx/store'
+    @Component()
+    export class FixtureComponent {
+      foo$ = this.store.select(selector);
+      constructor(private store: Store){}
+    }
+    `,
+    `
+    import { Store } from '@ngrx/store'
+    @Component()
+    export class FixtureComponent {
+      foo$ = this.customName.select(selector);
+      constructor(private customName: Store){}
+    }
+    `,
     {
-      code: `this.store.pipe(select(selector));`,
+      code: `
+      import { Store } from '@ngrx/store'
+      @Component()
+      export class FixtureComponent {
+        foo$ = this.store.pipe(select(selector));
+        constructor(private store: Store){}
+      }
+      `,
       options: [{ mode: OPERATOR }],
     },
     {
-      code: `this.store.select(selector);`,
+      code: `
+      import { Store } from '@ngrx/store'
+      @Component()
+      export class FixtureComponent {
+        foo$ = this.store.select(selector);
+        constructor(private store: Store){}
+      }
+      `,
       options: [{ mode: METHOD }],
-    },
-    {
-      code: `this.anotherName.select(selector);`,
-      settings: {
-        ngrxStoreName: 'anotherName',
-      },
     },
   ],
   invalid: [
     fromFixture(
       stripIndent`
-        this.store.pipe(select(selector));
-                        ~~~~~~~~~~~~~~~~   [${methodSelectMessageId}]
+        import { Store } from '@ngrx/store'
+        @Component()
+        export class FixtureComponent {
+          foo$ = this.store.pipe(select(selector));
+                                 ~~~~~~~~~~~~~~~~   [${methodSelectMessageId}]
+
+          constructor(private store: Store){}
+        }
       `,
     ),
     fromFixture(
       stripIndent`
-        this.store.pipe(select(selector));
-                        ~~~~~~~~~~~~~~~~   [${methodSelectMessageId}]
+        import { Store } from '@ngrx/store'
+        @Component()
+        export class FixtureComponent {
+          foo$ = this.store.pipe(select(selector));
+                                 ~~~~~~~~~~~~~~~~   [${methodSelectMessageId}]
+
+          constructor(private store: Store){}
+        }
       `,
       {
         options: [{ mode: METHOD }],
@@ -46,8 +80,14 @@ ruleTester().run(ruleName, rule, {
     ),
     fromFixture(
       stripIndent`
-        this.store.select(selector);
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~       [${operatorSelectMessageId}]
+        import { Store } from '@ngrx/store'
+        @Component()
+        export class FixtureComponent {
+          foo$ = this.store.select(selector);
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~       [${operatorSelectMessageId}]
+          constructor(private store: Store){}
+        }
+
       `,
       {
         options: [{ mode: OPERATOR }],
