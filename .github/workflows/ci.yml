@@ -32,7 +32,7 @@ jobs:
         env:
           CI: true
       - name: Release
-        if: success() && github.repository == 'timdeschryver/eslint-plugin-ngrx' && matrix.node_version == '15'
+        if: github.repository == 'timdeschryver/eslint-plugin-ngrx' && github.ref == 'ref/heads/master' && matrix.node-version == 15
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

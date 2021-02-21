@@ -26,9 +26,27 @@ ruleTester().run(ruleName, rule, {
         pingPong() {
           if (this.valid) {
             this.store.dispatch({ type: 'PING' })
+          } else {
+            this.store.dispatch({ type: 'PONG' })
           }
         }
       }`,
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/86
+    `
+    @Component()
+    export class FixtureComponent {
+      valid = false;
+      constructor(private store: Store){}
+
+      ngOnInit() {
+        this.store.subscribe(() => {
+          this.store.dispatch({ type : 'one' });
+        });
+        this.store.subscribe(() => {
+          this.store.dispatch({ type : 'another-one' });
+        });
+      }
+    }`,
   ],
   invalid: [
     fromFixture(
@@ -39,6 +57,7 @@ ruleTester().run(ruleName, rule, {
 
         pingPong() {
           this.store.dispatch({ type: 'PING' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.store.dispatch({ type: 'PONG' })
           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         }
@@ -52,6 +71,7 @@ ruleTester().run(ruleName, rule, {
 
         pong() {
           this.store.dispatch({ type: 'PING' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.ping();
           this.name = 'Bob'
           this.store.dispatch({ type: 'PONG' })
@@ -67,6 +87,7 @@ ruleTester().run(ruleName, rule, {
 
         pingPongPong() {
           this.store.dispatch({ type: 'PING' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.store.dispatch({ type: 'PONG' })
           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.store.dispatch({ type: 'PONG' })
@@ -83,6 +104,7 @@ ruleTester().run(ruleName, rule, {
 
         pingPong() {
           this.store$.dispatch({ type: 'PING' })
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
           this.store$.dispatch({ type: 'PONG' })
           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         }

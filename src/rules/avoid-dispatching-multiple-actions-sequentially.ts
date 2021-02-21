@@ -1,10 +1,15 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { docsUrl, multipleActionDispatch, readNgRxStoreName } from '../utils'
+import {
+  actionDispatch,
+  docsUrl,
+  isExpressionStatement,
+  readNgRxStoreName,
+} from '../utils'
 
 export const ruleName = 'avoid-dispatching-multiple-actions-sequentially'
 
-export const messageId = 'AvoidDispatchingMultipleActionsSequentially'
+export const messageId = 'avoidDispatchingMultipleActionsSequentially'
 export type MessageIds = typeof messageId
 
 type Options = []
@@ -26,13 +31,36 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
+    const dispatchExpressionsWithSameParent = new Map<
+      TSESTree.Node,
+      TSESTree.CallExpression[]
+    >()
     return {
-      [multipleActionDispatch(readNgRxStoreName(context))](
+      [actionDispatch(readNgRxStoreName(context))](
         node: TSESTree.CallExpression,
       ) {
-        context.report({
-          node,
-          messageId,
+        if (
+          node.parent &&
+          isExpressionStatement(node.parent) &&
+          node.parent.parent
+        ) {
+          const nodes =
+            dispatchExpressionsWithSameParent.get(node.parent.parent) || []
+          dispatchExpressionsWithSameParent.set(node.parent.parent, [
+            ...nodes,
+            node,
+          ])
+        }
+      },
+      'Program:exit'() {
+        dispatchExpressionsWithSameParent.forEach((dispatches) => {
+          if (dispatches.length > 1)
+            dispatches.forEach((node) =>
+              context.report({
+                node,
+                messageId,
+              }),
+            )
         })
       },
     }
