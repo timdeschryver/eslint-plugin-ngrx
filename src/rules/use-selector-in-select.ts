@@ -4,7 +4,7 @@ import {
   isLiteral,
   isFunctionExpressionLike,
   storeSelect,
-  readNgRxStoreName,
+  findNgRxStoreName,
   pipeableSelect,
 } from '../utils'
 
@@ -33,7 +33,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const storeName = readNgRxStoreName(context)
+    const storeName = findNgRxStoreName(context)
+    if (!storeName) return {}
 
     return {
       [`${pipeableSelect(storeName)}, ${storeSelect(storeName)}`]({

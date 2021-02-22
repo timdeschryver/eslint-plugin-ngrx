@@ -9,27 +9,32 @@ import { ruleTester } from '../utils'
 ruleTester().run(ruleName, rule, {
   valid: [
     stripIndent`
+      import { Store } from '@ngrx/store'
       export class Component {
         view$ = this.store.pipe(select(selectCustomers))
         constructor(store: Store){}
       }`,
     stripIndent`
+      import { Store } from '@ngrx/store'
       export class Component {
         view$ = this.store.select(selectCustomers)
         constructor(store: Store){}
       }`,
     stripIndent`
+      import { Store } from '@ngrx/store'
       export class Component {
         view$ = this.store.pipe(select(selectorsObj.selectCustomers))
         constructor(store: Store){}
       }`,
     stripIndent`
+      import { Store } from '@ngrx/store'
       export class Component {
         view$ = this.store.select(selectorsObj.selectCustomers)
         constructor(store: Store){}
       }`,
     // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/41
     stripIndent`
+      import { Store } from '@ngrx/store'
       export class Component {
         view$ = this.store.pipe(select(selectQueryParam('parameter')))
         constructor(store: Store){}
@@ -38,14 +43,16 @@ ruleTester().run(ruleName, rule, {
   invalid: [
     fromFixture(
       stripIndent`
+        import { Store } from '@ngrx/store'
         export class Component {
           view$ = this.store.pipe(select('customers'))
                                          ~~~~~~~~~~~  [${messageId}]
-        constructor(store: Store){}
+          constructor(store: Store){}
         }`,
     ),
     fromFixture(
       stripIndent`
+        import { Store } from '@ngrx/store'
         export class Component {
           view$ = this.store.select('customers')
                                     ~~~~~~~~~~~  [${messageId}]
@@ -54,6 +61,7 @@ ruleTester().run(ruleName, rule, {
     ),
     fromFixture(
       stripIndent`
+        import { Store } from '@ngrx/store'
         export class Component {
           view$ = this.store.pipe(select('customers', 'orders'))
                                          ~~~~~~~~~~~            [${messageId}]
@@ -63,6 +71,7 @@ ruleTester().run(ruleName, rule, {
     ),
     fromFixture(
       stripIndent`
+        import { Store } from '@ngrx/store'
         export class Component {
           view$ = this.store.select('customers', 'orders')
                                     ~~~~~~~~~~~               [${messageId}]
@@ -72,6 +81,7 @@ ruleTester().run(ruleName, rule, {
     ),
     fromFixture(
       stripIndent`
+        import { Store } from '@ngrx/store'
         export class Component {
           view$ = this.store.pipe(select(s => s.customers))
                                          ~~~~~~~~~~~~~~~~  [${messageId}]
@@ -80,6 +90,7 @@ ruleTester().run(ruleName, rule, {
     ),
     fromFixture(
       stripIndent`
+        import { Store } from '@ngrx/store'
         export class Component {
           view$ = this.store.select(s => s.customers)
                                     ~~~~~~~~~~~~~~~~  [${messageId}]
@@ -88,6 +99,7 @@ ruleTester().run(ruleName, rule, {
     ),
     fromFixture(
       stripIndent`
+        import { Store } from '@ngrx/store'
         export class Component {
           view$ = this.store$.select(s => s.customers)
                                      ~~~~~~~~~~~~~~~~  [${messageId}]
@@ -96,6 +108,7 @@ ruleTester().run(ruleName, rule, {
     ),
     fromFixture(
       stripIndent`
+        import { Store } from '@ngrx/store'
         export class Component {
           view$ = this.store$.pipe(select('customers'))
                                           ~~~~~~~~~~~  [${messageId}]

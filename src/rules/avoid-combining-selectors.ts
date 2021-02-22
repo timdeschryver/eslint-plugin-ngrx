@@ -5,7 +5,7 @@ import {
   isCallExpression,
   isMemberExpression,
   isIdentifier,
-  DEFAULT_STORE_NAMES,
+  findNgRxStoreName,
 } from '../utils'
 
 export const ruleName = 'avoid-combining-selectors'
@@ -33,6 +33,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
+    const storeName = findNgRxStoreName(context)
+    if (!storeName) return {}
+
     return {
       [`CallExpression[callee.name='combineLatest'][arguments.length>1]`](
         node: TSESTree.CallExpression,
@@ -43,7 +46,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
             isMemberExpression(p.callee) &&
             isMemberExpression(p.callee.object) &&
             isIdentifier(p.callee.object.property) &&
-            DEFAULT_STORE_NAMES.includes(p.callee.object.property.name) &&
+            p.callee.object.property.name === storeName &&
             isIdentifier(p.callee.property) &&
             p.callee.property.name === 'select',
         )

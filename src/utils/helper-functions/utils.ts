@@ -2,9 +2,12 @@ import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
 import {
   isCallExpression,
   isClassDeclaration,
+  isIdentifier,
   isImportDeclaration,
   isImportSpecifier,
   isProgram,
+  isTSTypeAnnotation,
+  isTSTypeReference,
 } from './guards'
 
 export function findClassDeclarationNode(
@@ -82,4 +85,31 @@ export function getDecoratorArgument({ expression }: TSESTree.Decorator) {
   return isCallExpression(expression) && expression.arguments.length > 0
     ? expression.arguments[0]
     : undefined
+}
+
+export function findNgRxStoreName(
+  context: TSESLint.RuleContext<string, readonly unknown[]>,
+): string | undefined {
+  const { ast } = context.getSourceCode()
+  const storeImportSpecifier = findImportDeclarationNode(ast, '@ngrx/store')
+
+  if (!storeImportSpecifier) return undefined
+
+  const [{ references }] = context.getDeclaredVariables(storeImportSpecifier)
+
+  return references
+    .map(({ identifier: { parent } }) => {
+      if (
+        parent &&
+        isTSTypeReference(parent) &&
+        parent.parent &&
+        isTSTypeAnnotation(parent.parent) &&
+        parent.parent.parent &&
+        isIdentifier(parent.parent.parent)
+      ) {
+        return parent.parent.parent.name
+      }
+      return undefined
+    })
+    .find(Boolean)
 }

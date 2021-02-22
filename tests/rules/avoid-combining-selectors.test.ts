@@ -8,21 +8,52 @@ import { ruleTester } from '../utils'
 
 ruleTester().run(ruleName, rule, {
   valid: [
-    `vm$ = this.store.select(selectItems)`,
-    `vm$ = combineLatest(this.store.select(selectItems), this.somethingElse())`,
-    `vm$ = combineLatest(this.somethingElse(), this.store.select(selectItems))`,
+    `
+    import { Store } from '@ngrx/store'
+    @Component()
+    export class FixtureComponent {
+      vm$ = this.store.select(selectItems)
+      constructor(private store: Store){}
+    }
+    `,
+    `
+    import { Store } from '@ngrx/store'
+    @Component()
+    export class FixtureComponent {
+      vm$ = combineLatest(this.store.select(selectItems), this.somethingElse())
+      constructor(private store: Store){}
+    }
+    `,
+    `
+    import { Store } from '@ngrx/store'
+    @Component()
+    export class FixtureComponent {
+      vm$ = combineLatest(this.somethingElse(), this.store.select(selectItems))
+      constructor(private store: Store){}
+    }
+    `,
   ],
   invalid: [
     fromFixture(
       stripIndent`
-        vm$ = combineLatest(this.store.select(selectItems), this.store.select(selectOtherItems))
-                                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+        import { Store } from '@ngrx/store'
+        @Component()
+        export class FixtureComponent {
+          vm$ = combineLatest(this.store.select(selectItems), this.store.select(selectOtherItems))
+                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+          constructor(private store: Store){}
+        }
       `,
     ),
     fromFixture(
       stripIndent`
-        vm$ = combineLatest(this.store.select(selectItems), this.store.select(selectOtherItems), this.somethingElse())
-                                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+        import { Store } from '@ngrx/store'
+        @Component()
+        export class FixtureComponent {
+          vm$ = combineLatest(this.customName.select(selectItems), this.customName.select(selectOtherItems), this.somethingElse())
+                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+          constructor(private customName: Store){}
+        }
       `,
     ),
   ],
