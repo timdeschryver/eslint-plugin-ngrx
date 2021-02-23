@@ -2,9 +2,9 @@ import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
 import { actionCreatorWithLiteral, docsUrl } from '../utils'
 
-export const ruleName = 'action-hygiene'
+export const ruleName = 'good-action-hygiene'
 
-export const messageId = 'actionHygiene'
+export const messageId = 'goodActionHygiene'
 export type MessageIds = typeof messageId
 
 type Options = []
@@ -15,9 +15,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       category: 'Best Practices',
-      description:
-        'Enforces the use of good action hygiene. See more at https://www.youtube.com/watch?v=JmnsEvoy-gY.',
-      recommended: 'error',
+      description: 'Enforces the use of good action hygiene.',
+      recommended: 'warn',
     },
     schema: [],
     messages: {

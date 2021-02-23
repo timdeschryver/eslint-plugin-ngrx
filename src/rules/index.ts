@@ -1,6 +1,6 @@
-import actionHygiene, {
-  ruleName as actionHygieneRuleName,
-} from './action-hygiene'
+import goodActionHygiene, {
+  ruleName as goodActionHygieneRuleName,
+} from './good-action-hygiene'
 import avoidCombiningSelectors, {
   ruleName as avoidCombiningSelectorsRuleName,
 } from './avoid-combining-selectors'
@@ -49,7 +49,7 @@ import useSelectorInSelect, {
 } from './use-selector-in-select'
 
 const ruleNames = {
-  actionHygieneRuleName,
+  actionHygieneRuleName: goodActionHygieneRuleName,
   avoidCombiningSelectorsRuleName,
   avoidDispatchingMultipleActionsSequentiallyRuleName,
   avoidMappingSelectorsRuleName,
@@ -69,7 +69,7 @@ const ruleNames = {
 }
 
 export const rules = {
-  [ruleNames.actionHygieneRuleName]: actionHygiene,
+  [ruleNames.actionHygieneRuleName]: goodActionHygiene,
   [ruleNames.avoidCombiningSelectorsRuleName]: avoidCombiningSelectors,
   [ruleNames.avoidDispatchingMultipleActionsSequentiallyRuleName]: avoidDispatchingMultipleActionsSequentially,
   [ruleNames.avoidMappingSelectorsRuleName]: avoidMappingSelectors,

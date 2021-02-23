@@ -1,7 +1,7 @@
 export = {
   plugins: ['ngrx', 'rxjs'],
   rules: {
-    'ngrx/action-hygiene': 'error',
+    'ngrx/good-action-hygiene': 'warn',
     'ngrx/avoid-combining-selectors': 'warn',
     'ngrx/avoid-dispatching-multiple-actions-sequentially': 'error',
     'ngrx/avoid-mapping-selectors': 'warn',
