@@ -6,7 +6,7 @@ You will find here the equivalent rule names to ngrx-tslint-rules
 
 | TSLint Rule                                          | ESLint Rule                                          |
 | ---------------------------------------------------- | ---------------------------------------------------- |
-| ngrx-action-hygiene                                  | ngrx/action-hygiene                                  |
+| ngrx-action-hygiene                                  | ngrx/good-action-hygiene                             |
 | ngrx-avoid-dispatching-multiple-actions-sequentially | ngrx/avoid-dispatching-multiple-actions-sequentially |
 | ngrx-effect-creator-and-decorator                    | ngrx/no-effect-decorator-and-creator                 |
 | ngrx-no-dispatch-in-effects                          | ngrx/no-dispatch-in-effects                          |
@@ -21,5 +21,4 @@ You will find here the equivalent rule names to ngrx-tslint-rules
 
 ## Not migrated
 
-`ngrx-no-duplicate-action-types` was not migrated and can be managed using `strictActionTypeUniqueness` runtime check in NGRX >= 9.2.0<br>
-See https://github.com/ngrx/platform/pull/2520
+`ngrx-no-duplicate-action-types` was not migrated and can be managed using `strictActionTypeUniqueness` runtime check in NGRX >= 9.2.0. See https://github.com/ngrx/platform/pull/2520.

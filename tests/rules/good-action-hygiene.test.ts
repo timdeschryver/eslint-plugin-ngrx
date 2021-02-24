@@ -1,6 +1,6 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
-import rule, { ruleName, messageId } from '../../src/rules/action-hygiene'
+import rule, { ruleName, messageId } from '../../src/rules/good-action-hygiene'
 import { ruleTester } from '../utils'
 
 ruleTester().run(ruleName, rule, {
