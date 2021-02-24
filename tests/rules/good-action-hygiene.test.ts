@@ -1,12 +1,9 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
-import rule, {
-  goodActionHygieneRuleName,
-  messageId,
-} from '../../src/rules/good-action-hygiene'
+import rule, { ruleName, messageId } from '../../src/rules/good-action-hygiene'
 import { ruleTester } from '../utils'
 
-ruleTester().run(goodActionHygieneRuleName, rule, {
+ruleTester().run(ruleName, rule, {
   valid: [
     `export const loadCustomer = createAction('[Customer Page] Load Customer')`,
     `export const loadCustomer = createAction('[Customer API] Load Customer Success, props<{ customer: Customer }>()')`,
