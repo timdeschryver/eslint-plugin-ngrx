@@ -1,10 +1,10 @@
 export = {
   plugins: ['ngrx', 'rxjs'],
   rules: {
-    'ngrx/good-action-hygiene': 'warn',
     'ngrx/avoid-combining-selectors': 'warn',
     'ngrx/avoid-dispatching-multiple-actions-sequentially': 'error',
     'ngrx/avoid-mapping-selectors': 'warn',
+    'ngrx/good-action-hygiene': 'warn',
     'ngrx/no-dispatch-in-effects': 'error',
     'ngrx/no-effect-decorator-and-creator': 'error',
     'ngrx/no-effect-decorator': 'error',

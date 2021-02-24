@@ -49,10 +49,10 @@ import useSelectorInSelect, {
 } from './use-selector-in-select'
 
 const ruleNames = {
-  actionHygieneRuleName: goodActionHygieneRuleName,
   avoidCombiningSelectorsRuleName,
   avoidDispatchingMultipleActionsSequentiallyRuleName,
   avoidMappingSelectorsRuleName,
+  goodActionHygieneRuleName,
   noDispatchInEffectsRuleName,
   noEffectDecoratorAndCreatorRuleName,
   noEffectDecoratorRuleName,
@@ -69,10 +69,10 @@ const ruleNames = {
 }
 
 export const rules = {
-  [ruleNames.actionHygieneRuleName]: goodActionHygiene,
   [ruleNames.avoidCombiningSelectorsRuleName]: avoidCombiningSelectors,
   [ruleNames.avoidDispatchingMultipleActionsSequentiallyRuleName]: avoidDispatchingMultipleActionsSequentially,
   [ruleNames.avoidMappingSelectorsRuleName]: avoidMappingSelectors,
+  [ruleNames.goodActionHygieneRuleName]: goodActionHygiene,
   [ruleNames.noDispatchInEffectsRuleName]: noDispatchInEffects,
   [ruleNames.noEffectDecoratorAndCreatorRuleName]: noEffectDecoratorAndCreator,
   [ruleNames.noEffectDecoratorRuleName]: noEffectDecorator,
