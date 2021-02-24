@@ -7,8 +7,8 @@
 An action should be a unique event in the application.
 An action should:
 
-- tell where they are dispatched
-- tell what event has happened
+- tell where it's dispatched
+- tell what event has occurred
 
 The template we use for an action's type is `[Source] Event`.
 
