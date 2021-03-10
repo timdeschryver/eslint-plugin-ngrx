@@ -30,6 +30,14 @@ ruleTester().run(ruleName, rule, {
       ],
     })
     export class AppModule {}`,
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/91
+    `
+    @NgModule({
+      imports: [
+        StoreModule.forRoot(reducers, {metaReducers}),
+      ],
+    })
+    export class AppModule {}`,
     `
     export const reducers: ActionReducerMap<AppState> = {
       foo,
