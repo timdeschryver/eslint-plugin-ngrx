@@ -13,11 +13,11 @@ type Options = []
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: ruleName,
   meta: {
-    type: 'problem',
+    type: 'suggestion',
     docs: {
-      category: 'Possible Errors',
-      description: 'Avoid the word "reducer" in the key names',
-      recommended: 'error',
+      category: 'Best Practices',
+      description: 'Avoid the word "reducer" in the reducer key names',
+      recommended: 'warn',
     },
     schema: [],
     messages: {

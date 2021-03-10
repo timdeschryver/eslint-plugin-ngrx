@@ -11,7 +11,7 @@ export = {
     'ngrx/no-effects-in-providers': 'error',
     'ngrx/no-multiple-actions-in-effects': 'error',
     'ngrx/no-multiple-stores': 'error',
-    'ngrx/no-reducer-in-key-names': 'error',
+    'ngrx/no-reducer-in-key-names': 'warn',
     'ngrx/no-typed-store': 'error',
     'ngrx/on-function-explicit-return-type': 'error',
     'ngrx/prefer-inline-action-props': 'error',
