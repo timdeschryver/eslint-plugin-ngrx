@@ -23,8 +23,16 @@ export class Component {
 Examples of **correct** code for this rule:
 
 ```ts
+// in selectors.ts:
+export selectCustomersAndOrders = createSelector(
+  selectCustomers,
+  selectOrders,
+  (customers, orders) => [customers, orders] // or some other combining logic
+)
+
+// in component:
 export class Component {
-  vm$ = combineLatest(this.store.select(selectCustomersAndOrders))
+  vm$ = this.store.select(selectCustomersAndOrders);
 }
 ```
 
