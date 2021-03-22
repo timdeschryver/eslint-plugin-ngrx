@@ -70,6 +70,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "Armenvardanyan95",
+      "name": "Armen Vardanyan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20133025?v=4",
+      "profile": "https://github.com/Armenvardanyan95",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "skipCi": true,
