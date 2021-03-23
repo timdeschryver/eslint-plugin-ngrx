@@ -55,7 +55,3 @@ export class Effects {
   ) {}
 }
 ```
-
-## Further reading
-
-- [Good Action Hygiene with NgRx Mike Ryan](https://www.youtube.com/watch?v=JmnsEvoy-gY)
