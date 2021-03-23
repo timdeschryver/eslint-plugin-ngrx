@@ -5,7 +5,7 @@
 ## Rule Details
 
 An action should be an event which abstracts away the details of store internals.
-An action can be a composition of several events, in which case the developer might be tempted to dispatch several actions in sequence. But a better approach is t dispatch one "combining" action, which exactly describes what that event entails, and then map it to several other actions in an Effect
+An action can be a composition of several events, in which case the developer might be tempted to dispatch several actions in sequence. But a better approach is t dispatch one "combining" action, which exactly describes what that event entails.
 
 Examples of **incorrect** code for this rule:
 
