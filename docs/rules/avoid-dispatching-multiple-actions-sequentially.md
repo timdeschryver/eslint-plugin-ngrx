@@ -41,13 +41,22 @@ export class Component implement OnInit {
 // in effect:
 export class Effects {
 
-  loadInitialDataForComponent$ = createEffect(() => this.actions.pipe(
+  loadEmployeeList$ = createEffect(() => this.actions.pipe(
     ofType(componentLoaded),
-    switchMap(() => [
-      loadEmployeeList();
-      loadCompanyList();
-      cleanData();
-    ]),
+    exhaustMap(() => this.dataService.loadEmployeeList().pipe(
+      map(response => loadEmployeeListSuccess(response)),
+      catchError(error => loadEmployeeListError(error)),
+    )),
+  ));
+
+  loadCompanyList$ = createEffect(() => this.actions.pipe(
+    ofType(componentLoaded),
+    // handle loadCompanyList
+  ));
+
+  cleanData$ = createEffect(() => this.actions.pipe(
+    ofType(componentLoaded),
+    // handle cleanData
   ));
 
   constructor(
