@@ -30,7 +30,7 @@ Examples of **correct** code for this rule:
 // in component code:
 export class Component implement OnInit {
   constructor(
-    private readonly store: Store<AppState>,
+    private readonly store: Store,
   ) {}
 
   ngOnInit() {
