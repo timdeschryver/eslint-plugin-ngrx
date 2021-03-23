@@ -1,6 +1,6 @@
 # avoid-dispatching-multiple-actions-sequentially
 
-> This rule promotes disallows dispatching multiple actions one after another.
+> This rule disallows dispatching multiple actions one after another.
 
 ## Rule Details
 
