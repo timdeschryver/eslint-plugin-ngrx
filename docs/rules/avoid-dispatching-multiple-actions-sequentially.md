@@ -16,6 +16,7 @@ export class Component implement OnInit {
   ) {}
 
   ngOnInit() {
+   // ⚠ multiple actions dispatched
     this.store.dispatch(loadEmployeeList());
     this.store.dispatch(loadCompanyList());
     this.store.dispatch(cleanData());
