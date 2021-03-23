@@ -12,7 +12,7 @@ Examples of **incorrect** code for this rule:
 ```ts
 export class Component implement OnInit {
   constructor(
-    private readonly store: Store<AppState>,
+    private readonly store: Store,
   ) {}
 
   ngOnInit() {
