@@ -1,5 +1,4 @@
 # no-dispatch-in-effects
-# avoid-dispatching-multiple-actions-sequentially
 
 > This rule disallows dispatching actions as side effects in NgRx Effects.
 
