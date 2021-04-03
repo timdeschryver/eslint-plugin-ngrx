@@ -18,12 +18,12 @@ type Options = []
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: ruleName,
   meta: {
-    type: 'problem',
+    type: 'suggestion',
     docs: {
-      category: 'Possible Errors',
+      category: 'Best Practices',
       description:
-        'Using a selector in a select function is preferred in favor of strings/props drilling',
-      recommended: 'error',
+        'Using a selector in a select method is preferred in favor of strings or props drilling',
+      recommended: 'warn',
     },
     schema: [],
     messages: {

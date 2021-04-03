@@ -25,6 +25,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test:config": "npm run generate:config && npm run test",
     "test:cov": "jest --coverage",
     "prebuild": "rimraf ./dist",
     "build": "tsc",
