@@ -12,11 +12,11 @@ type Options = []
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: ruleName,
   meta: {
-    type: 'problem',
+    type: 'suggestion',
     docs: {
-      category: 'Possible Errors',
+      category: 'Best Practices',
       description: 'An Effect should not call store.dispatch',
-      recommended: 'error',
+      recommended: 'warn',
     },
     schema: [],
     messages: {

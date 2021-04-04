@@ -19,9 +19,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   meta: {
     type: 'problem',
     docs: {
-      category: 'Possible Errors',
+      category: 'Best Practices',
       description: 'It is recommended to only dispatch one action at a time.',
-      recommended: 'error',
+      recommended: 'warn',
     },
     schema: [],
     messages: {
