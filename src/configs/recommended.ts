@@ -16,7 +16,7 @@ export = {
     'ngrx/on-function-explicit-return-type': 'error',
     'ngrx/prefer-inline-action-props': 'error',
     'ngrx/use-lifecycle-interface': 'warn',
-    'ngrx/use-selector-in-select': 'error',
+    'ngrx/use-selector-in-select': 'warn',
     'rxjs/no-cyclic-action': 'warn',
     'rxjs/no-unsafe-catch': 'error',
     'rxjs/no-unsafe-first': 'error',
