@@ -21,7 +21,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Best Practices',
       description:
-        'Prefer mapping a selector at the selector level, in the projector method of `createSelector`',
+        'Avoid to add mapping logic in the component, instead move that logic in the projector method of `createSelector`.',
       recommended: 'warn',
     },
     schema: [],
