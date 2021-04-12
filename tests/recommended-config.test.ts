@@ -1,4 +1,5 @@
 import { rules } from '../src/rules'
+import plugin from '../src'
 import recommended from '../src/configs/recommended'
 
 it('should export recommended rules', () => {
@@ -19,4 +20,8 @@ it('should export recommended rules', () => {
 
   expect(recommmendedRules).toEqual(ngrxRules)
   expect(rxjsRules).toHaveLength(4)
+})
+
+it('should export recommended config', () => {
+  expect(Object.keys(plugin.configs)).toEqual(['recommended'])
 })
