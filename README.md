@@ -87,6 +87,9 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
     <td align="center"><a href="https://github.com/rafaelss95"><img src="https://avatars0.githubusercontent.com/u/11965907?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Rafael Santana</b></sub></a><br /><a href="#ideas-rafaelss95" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=rafaelss95" title="Code">💻</a> <a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=rafaelss95" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/Armenvardanyan95"><img src="https://avatars.githubusercontent.com/u/20133025?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Armen Vardanyan</b></sub></a><br /><a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=Armenvardanyan95" title="Documentation">📖</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://michaeldeboey.be"><img src="https://avatars.githubusercontent.com/u/6643991?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Michaël De Boey</b></sub></a><br /><a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=MichaelDeBoey" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
