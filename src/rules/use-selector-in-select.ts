@@ -1,11 +1,12 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 import {
   docsUrl,
-  isLiteral,
-  isFunctionExpressionLike,
-  storeSelect,
   findNgRxStoreName,
+  isArrowFunctionExpression,
+  isFunctionExpression,
+  isLiteral,
   pipeableSelect,
+  storeSelect,
 } from '../utils'
 
 export const ruleName = 'use-selector-in-select'
@@ -41,7 +42,12 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         arguments: args,
       }: TSESTree.CallExpression) {
         args
-          .filter((node) => isLiteral(node) || isFunctionExpressionLike(node))
+          .filter(
+            (node) =>
+              isLiteral(node) ||
+              isArrowFunctionExpression(node) ||
+              isFunctionExpression(node),
+          )
           .forEach((node) =>
             context.report({
               node,
