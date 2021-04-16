@@ -5,7 +5,7 @@
 ## Rule Details
 
 An Effect should map one event (action) to a single other action.
-An action can result in several other Effects being triggered, or multiple changes in the reducer, in which case the developer might be tempted to map an Effect to several actions. A more understandable approach is to dispatch one "combining" action that describes what happened, rather than multiple actions.
+An action can result in several other Effects being triggered, or multiple changes in the reducer, in which case the developer might be tempted to map an Effect to several actions. A more understandable approach is to dispatch one "combining" action that describes what happened (a unique event), rather than multiple actions.
 
 Examples of **incorrect** code for this rule:
 
