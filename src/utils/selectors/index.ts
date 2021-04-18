@@ -49,6 +49,8 @@ const mapToOperators = '(concat|merge|switch)MapTo'
 const mapOperatorsExpression = `${createEffectExpression} CallExpression[callee.name=/^${mapOperators}$/]`
 const mapToOperatorsExpression = `${createEffectExpression} CallExpression[callee.name=/^${mapToOperators}$/]`
 
+export const createEffectBody = `${createEffectExpression} > ArrowFunctionExpression`
+
 export const effectsImplicitReturn = `${mapOperatorsExpression} > ArrowFunctionExpression > ArrayExpression, ${mapToOperatorsExpression} ArrayExpression`
 
 export const effectsReturn = `${mapOperatorsExpression} ReturnStatement`
