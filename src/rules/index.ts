@@ -37,6 +37,9 @@ import noTypedStore, {
 import onFunctionExplicitReturnType, {
   ruleName as onFunctionExplicitReturnTypeRuleName,
 } from './on-function-explicit-return-type'
+import preferEffectCallbackInBlockStatement, {
+  ruleName as preferEffectCallbackInBlockStatementRuleName,
+} from './prefer-effect-callback-in-block-statement'
 import preferInlineActionProps, {
   ruleName as preferInlineActionPropsRuleName,
 } from './prefer-inline-action-props'
@@ -62,6 +65,7 @@ const ruleNames = {
   noReducerInKeyNamesRuleName,
   noTypedStoreRuleName,
   onFunctionExplicitReturnTypeRuleName,
+  preferEffectCallbackInBlockStatementRuleName,
   preferInlineActionPropsRuleName,
   selectStyleRuleName,
   useLifecycleInterfaceRuleName,
@@ -82,6 +86,7 @@ export const rules = {
   [ruleNames.noReducerInKeyNamesRuleName]: noReducerInKeyNames,
   [ruleNames.noTypedStoreRuleName]: noTypedStore,
   [ruleNames.onFunctionExplicitReturnTypeRuleName]: onFunctionExplicitReturnType,
+  [ruleNames.preferEffectCallbackInBlockStatementRuleName]: preferEffectCallbackInBlockStatement,
   [ruleNames.preferInlineActionPropsRuleName]: preferInlineActionProps,
   [ruleNames.selectStyleRuleName]: selectStyle,
   [ruleNames.useLifecycleInterfaceRuleName]: useLifecycleInterface,
