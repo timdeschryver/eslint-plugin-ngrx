@@ -55,11 +55,7 @@ each rule has three files named with its identifie:
 - in the `src/rules` directory: a source file
 - in the `tests/rules` directory: a test file
 - in the `docs/rules` directory: a Markdown documentation file
-
-Additionally, you need to do a couple of extra things:
-
-- Include your rule in the "Supported Rules" table within the [README.md](./README.md)
-- The rule will automatically be added to the ESLINT configuration files
+- run `npm run g:all` to add the rule to the [README.md](./README.md) and additionally to the needed configuration files
 
 ## Modifying rules
 
