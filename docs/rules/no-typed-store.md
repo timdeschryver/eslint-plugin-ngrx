@@ -10,7 +10,7 @@ and if provided wrong can result in unexpected type-related problems. It can als
 Examples of **incorrect** code for this rule:
 
 ```ts
-export class SomeComponent {
+export class Component {
 
   data$ = this.store.select(data);
 
