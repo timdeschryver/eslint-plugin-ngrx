@@ -4,7 +4,7 @@
 
 ## Rule Details
 
-Typing the `Store` is redundant, and selectors are type safe, so mentioning the `AppState` type when injecting the store is unnecessary,
+Typing the global `Store` is redundant, and selectors are type safe, so mentioning the state interface while injecting the store is unnecessary.
 and if provided wrong can result in unexpected type-related problems. It can also cause a misconception that that are multiple stores, and even that multiple stores are injected into the same component.
 
 Examples of **incorrect** code for this rule:
