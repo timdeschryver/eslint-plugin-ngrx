@@ -1,3 +1,4 @@
+import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
 import {
@@ -7,15 +8,13 @@ import {
   findNgRxStoreName,
 } from '../utils'
 
-export const ruleName = 'avoid-dispatching-multiple-actions-sequentially'
-
 export const messageId = 'avoidDispatchingMultipleActionsSequentially'
 export type MessageIds = typeof messageId
 
 type Options = []
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
-  name: ruleName,
+  name: path.parse(__filename).name,
   meta: {
     type: 'problem',
     docs: {

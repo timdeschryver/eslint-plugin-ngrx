@@ -1,3 +1,4 @@
+import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 import {
   docsUrl,
@@ -9,15 +10,13 @@ import {
   storeSelect,
 } from '../utils'
 
-export const ruleName = 'use-selector-in-select'
-
 export const messageId = 'useSelectorInSelect'
 export type MessageIds = typeof messageId
 
 type Options = []
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
-  name: ruleName,
+  name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
     docs: {

@@ -1,9 +1,10 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
-import rule, { ruleName, messageId } from '../../src/rules/no-multiple-stores'
+import path from 'path'
+import rule, { messageId } from '../../src/rules/no-multiple-stores'
 import { ruleTester } from '../utils'
 
-ruleTester().run(ruleName, rule, {
+ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `export class NoCtorOK {}`,
     `
