@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12, 14, 15]
+        node-version: [12, 14, 16]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
       - name: install
@@ -32,7 +32,7 @@ jobs:
         env:
           CI: true
       - name: Release
-        if: github.repository == 'timdeschryver/eslint-plugin-ngrx' && github.ref == 'refs/heads/master' && matrix.node-version == 15
+        if: github.repository == 'timdeschryver/eslint-plugin-ngrx' && github.ref == 'refs/heads/master' && matrix.node-version == 16
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
