@@ -1,15 +1,15 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
+import path from 'path'
 import rule, {
   METHOD,
   OPERATOR,
   operatorSelectMessageId,
-  ruleName,
   methodSelectMessageId,
 } from '../../src/rules/select-style'
 import { ruleTester } from '../utils'
 
-ruleTester().run(ruleName, rule, {
+ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
     import { Store } from '@ngrx/store'

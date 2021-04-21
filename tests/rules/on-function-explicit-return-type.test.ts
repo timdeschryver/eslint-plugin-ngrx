@@ -1,12 +1,12 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
+import path from 'path'
 import rule, {
-  ruleName,
   messageId,
 } from '../../src/rules/on-function-explicit-return-type'
 import { ruleTester } from '../utils'
 
-ruleTester().run(ruleName, rule, {
+ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
       const reducer = createReducer(
