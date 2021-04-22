@@ -4,7 +4,9 @@
 
 ## Rule Details
 
-An effect should handle actions and map it to a singular action. Each effect should be clear and concise and must be readily understandable as to what it does affect. Dispatching from inside an effect instead (or together with) mapping it to a new a action can result in painfully hard-to-find bugs and is generally considered a bad practice.
+An effect should handle actions and map them to a singular action. 
+Each effect should be clear and concise and must be understandable to what it does affect. 
+Dispatching an action from inside an effect instead of (or together with) mapping it to an action can result in painfully hard-to-find bugs and is generally considered a bad practice.
 
 Examples of **incorrect** code for this rule:
 
