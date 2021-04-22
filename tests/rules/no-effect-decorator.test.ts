@@ -1,13 +1,13 @@
 import { stripIndents } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
+import path from 'path'
 import rule, {
   noEffectDecorator,
   noEffectDecoratorSuggest,
-  ruleName,
 } from '../../src/rules/no-effect-decorator'
 import { ruleTester } from '../utils'
 
-ruleTester().run(ruleName, rule, {
+ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     stripIndents`
       @Injectable()

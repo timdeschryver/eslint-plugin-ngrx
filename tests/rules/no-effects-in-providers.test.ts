@@ -1,12 +1,10 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
-import rule, {
-  ruleName,
-  messageId,
-} from '../../src/rules/no-effects-in-providers'
+import path from 'path'
+import rule, { messageId } from '../../src/rules/no-effects-in-providers'
 import { ruleTester } from '../utils'
 
-ruleTester().run(ruleName, rule, {
+ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
     @NgModule({

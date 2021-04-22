@@ -1,12 +1,12 @@
 import { stripIndent } from 'common-tags'
+import path from 'path'
 import rule, {
   messageId,
   noTypedStoreSuggest,
-  ruleName,
 } from '../../src/rules/no-typed-store'
 import { ruleTester } from '../utils'
 
-ruleTester().run(ruleName, rule, {
+ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     stripIndent`
     export class Ok {

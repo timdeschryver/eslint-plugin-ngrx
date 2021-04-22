@@ -25,14 +25,16 @@
   },
   "scripts": {
     "test": "jest",
+    "test:config": "npm run g:config && npm run test",
     "test:cov": "jest --coverage",
     "prebuild": "rimraf ./dist",
     "build": "tsc",
-    "postbuild": "cpy ./{package.json,README.md} ./dist && npm run copy:schematics",
-    "copy:schematics": "cpy ./src/schematics/collection.json ./dist/schematics && cpy ./src/schematics/ng-add/schema.json ./dist/schematics/ng-add",
+    "postbuild": "cpy ./{package.json,README.md} ./dist",
     "lint": "eslint --ext .ts ./src/** ./tests/**",
-    "generate:config": "ts-node ./scripts/generate-config.ts",
-    "pre-commit": "npm run generate:config && git add ./src/configs/**.ts && lint-staged"
+    "g:config": "ts-node ./scripts/generate-config.ts",
+    "g:readme": "ts-node ./scripts/generate-readme.ts",
+    "g:all": "npm run g:config && npm run g:readme",
+    "pre-commit": "npm run g:all && git add ./src/configs/**.ts && lint-staged"
   },
   "dependencies": {
     "@angular-devkit/schematics": "^11.0.1",

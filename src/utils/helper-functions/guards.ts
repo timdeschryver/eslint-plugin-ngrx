@@ -1,79 +1,27 @@
 import { AST_NODE_TYPES, TSESTree } from '@typescript-eslint/experimental-utils'
 
-export function isIdentifier(node: TSESTree.Node): node is TSESTree.Identifier {
-  return node.type === AST_NODE_TYPES.Identifier
-}
-
-export function isLiteral(node: TSESTree.Node): node is TSESTree.Literal {
-  return node.type === AST_NODE_TYPES.Literal
-}
-
-export function isCallExpression(
+const isNodeOfType = <NodeType extends AST_NODE_TYPES>(nodeType: NodeType) => (
   node: TSESTree.Node,
-): node is TSESTree.CallExpression {
-  return node.type === AST_NODE_TYPES.CallExpression
-}
+): node is TSESTree.Node & { type: NodeType } => node.type === nodeType
 
-export function isMemberExpression(
-  node: TSESTree.Node,
-): node is TSESTree.MemberExpression {
-  return node.type === AST_NODE_TYPES.MemberExpression
-}
-
-export function isArrowFunctionExpression(
-  node: TSESTree.Node,
-): node is TSESTree.ArrowFunctionExpression {
-  return node.type === AST_NODE_TYPES.ArrowFunctionExpression
-}
-
-export function isFunctionExpression(
-  node: TSESTree.Node,
-): node is TSESTree.FunctionExpression {
-  return node.type === AST_NODE_TYPES.FunctionExpression
-}
-
-export function isFunctionExpressionLike(
-  node: TSESTree.Node,
-): node is TSESTree.FunctionExpression | TSESTree.ArrowFunctionExpression {
-  return isArrowFunctionExpression(node) || isFunctionExpression(node)
-}
-
-export function isClassDeclaration(
-  node: TSESTree.Node,
-): node is TSESTree.ClassDeclaration {
-  return node.type === AST_NODE_TYPES.ClassDeclaration
-}
-
-export function isExpressionStatement(
-  node: TSESTree.Node,
-): node is TSESTree.ExpressionStatement {
-  return node.type === AST_NODE_TYPES.ExpressionStatement
-}
-
-export function isImportDeclaration(
-  node: TSESTree.Node,
-): node is TSESTree.ImportDeclaration {
-  return node.type === 'ImportDeclaration'
-}
-
-export function isImportSpecifier(
-  node: TSESTree.Node,
-): node is TSESTree.ImportSpecifier {
-  return node.type === 'ImportSpecifier'
-}
-
-export function isTSTypeAnnotation(
-  node: TSESTree.Node,
-): node is TSESTree.TSTypeAnnotation {
-  return node.type === AST_NODE_TYPES.TSTypeAnnotation
-}
-
-export function isTSTypeReference(
-  node: TSESTree.Node,
-): node is TSESTree.TSTypeReference {
-  return node.type === AST_NODE_TYPES.TSTypeReference
-}
-
-export function isProgram(node: TSESTree.Node): node is TSESTree.Program {
-  return node.type === 'Program'
-}
+export const isArrowFunctionExpression = isNodeOfType(
+  AST_NODE_TYPES.ArrowFunctionExpression,
+)
+export const isCallExpression = isNodeOfType(AST_NODE_TYPES.CallExpression)
+export const isClassDeclaration = isNodeOfType(AST_NODE_TYPES.ClassDeclaration)
+export const isExpressionStatement = isNodeOfType(
+  AST_NODE_TYPES.ExpressionStatement,
+)
+export const isFunctionExpression = isNodeOfType(
+  AST_NODE_TYPES.FunctionExpression,
+)
+export const isIdentifier = isNodeOfType(AST_NODE_TYPES.Identifier)
+export const isImportDeclaration = isNodeOfType(
+  AST_NODE_TYPES.ImportDeclaration,
+)
+export const isImportSpecifier = isNodeOfType(AST_NODE_TYPES.ImportSpecifier)
+export const isLiteral = isNodeOfType(AST_NODE_TYPES.Literal)
+export const isMemberExpression = isNodeOfType(AST_NODE_TYPES.MemberExpression)
+export const isProgram = isNodeOfType(AST_NODE_TYPES.Program)
+export const isTSTypeAnnotation = isNodeOfType(AST_NODE_TYPES.TSTypeAnnotation)
+export const isTSTypeReference = isNodeOfType(AST_NODE_TYPES.TSTypeReference)

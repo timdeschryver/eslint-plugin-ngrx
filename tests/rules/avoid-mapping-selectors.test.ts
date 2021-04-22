@@ -1,12 +1,10 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
-import rule, {
-  ruleName,
-  messageId,
-} from '../../src/rules/avoid-mapping-selectors'
+import path from 'path'
+import rule, { messageId } from '../../src/rules/avoid-mapping-selectors'
 import { ruleTester } from '../utils'
 
-ruleTester().run(ruleName, rule, {
+ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
     import { Store } from '@ngrx/store'

@@ -1,8 +1,7 @@
+import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
 import { dispatchInEffects, docsUrl, findNgRxStoreName } from '../utils'
-
-export const ruleName = 'no-dispatch-in-effects'
 
 export const messageId = 'NoDispatchInEffects'
 export type MessageIds = typeof messageId
@@ -10,13 +9,13 @@ export type MessageIds = typeof messageId
 type Options = []
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
-  name: ruleName,
+  name: path.parse(__filename).name,
   meta: {
-    type: 'problem',
+    type: 'suggestion',
     docs: {
-      category: 'Possible Errors',
+      category: 'Best Practices',
       description: 'An Effect should not call store.dispatch',
-      recommended: 'error',
+      recommended: 'warn',
     },
     schema: [],
     messages: {

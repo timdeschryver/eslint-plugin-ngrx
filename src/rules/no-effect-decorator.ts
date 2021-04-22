@@ -1,3 +1,4 @@
+import path from 'path'
 import { ESLintUtils, TSESLint } from '@typescript-eslint/experimental-utils'
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import {
@@ -9,8 +10,6 @@ import {
   getDecoratorArgument,
   isIdentifier,
 } from '../utils'
-
-export const ruleName = 'no-effect-decorator'
 
 export const noEffectDecorator = 'noEffectDecorator'
 export const noEffectDecoratorSuggest = 'noEffectDecoratorSuggest'
@@ -27,7 +26,7 @@ const effectsModulePath = '@ngrx/effects'
 const createEffect = 'createEffect'
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
-  name: ruleName,
+  name: path.parse(__filename).name,
   meta: {
     type: 'problem',
     docs: {

@@ -1,3 +1,4 @@
+import path from 'path'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 
@@ -9,8 +10,6 @@ import {
   getImplementsSchemaFixer,
   isIdentifier,
 } from '../utils'
-
-export const ruleName = 'use-lifecycle-interface'
 
 export const messageId = 'useLifecycleInterface'
 export type MessageIds = typeof messageId
@@ -26,7 +25,7 @@ const effectsModulePath = '@ngrx/effects'
 const lifecyclesPattern = Object.keys(lifecycleMapper).join('|')
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
-  name: ruleName,
+  name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
     docs: {

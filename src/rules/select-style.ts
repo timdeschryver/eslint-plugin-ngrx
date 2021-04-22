@@ -1,3 +1,4 @@
+import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
 import {
@@ -6,8 +7,6 @@ import {
   findNgRxStoreName,
   storeSelect,
 } from '../utils'
-
-export const ruleName = 'select-style'
 
 export const methodSelectMessageId = 'storeSelect'
 export const operatorSelectMessageId = 'operatorSelect'
@@ -22,7 +21,7 @@ export const METHOD = 'method'
 type Options = [{ mode: string }]
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
-  name: ruleName,
+  name: path.parse(__filename).name,
   meta: {
     type: 'problem',
     docs: {

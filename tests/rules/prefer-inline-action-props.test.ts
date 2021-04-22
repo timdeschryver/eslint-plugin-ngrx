@@ -1,11 +1,11 @@
+import path from 'path'
 import rule, {
   preferInlineActionProps,
   preferInlineActionPropsSuggest,
-  ruleName,
 } from '../../src/rules/prefer-inline-action-props'
 import { ruleTester } from '../utils'
 
-ruleTester().run(ruleName, rule, {
+ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `const ok0 = createAction('ok0', props<{ id: number, name: string }>())`,
     `const ok1 = createAction('ok1', props<Readonly<{ description: string }>>())`,

@@ -1,3 +1,4 @@
+import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
 import {
@@ -7,21 +8,19 @@ import {
   findNgRxStoreName,
 } from '../utils'
 
-export const ruleName = 'avoid-mapping-selectors'
-
 export const messageId = 'avoidMapppingSelectors'
 export type MessageIds = typeof messageId
 
 type Options = []
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
-  name: ruleName,
+  name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
     docs: {
       category: 'Best Practices',
       description:
-        'Prefer mapping a selector at the selector level, in the projector method of `createSelector`',
+        'Avoid to add mapping logic in the component, instead move that logic in the projector method of `createSelector`.',
       recommended: 'warn',
     },
     schema: [],
