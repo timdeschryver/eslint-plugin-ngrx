@@ -5,7 +5,9 @@
 ## Rule Details
 
 Typing the global `Store` is redundant, and selectors are type safe, so mentioning the state interface while injecting the store is unnecessary.
-and if provided wrong can result in unexpected type-related problems. It can also cause a misconception that that are multiple stores, and even that multiple stores are injected into the same component.
+Providing the wrong type can also result in unexpected type-related problems. 
+
+To prevent a misconception that that are multiple stores (and even that multiple stores are injected into the same component), we only want to inject 1 global store into components, effects, and services.
 
 Examples of **incorrect** code for this rule:
 
@@ -23,7 +25,7 @@ export class Component {
 Examples of **correct** code for this rule:
 
 ```ts
-export class SomeComponent {
+export class Component {
 
   data$ = this.store.select(data);
 
