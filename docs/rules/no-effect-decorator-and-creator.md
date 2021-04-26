@@ -4,7 +4,7 @@
 
 ## Rule Details
 
-There are two ways we can register an Effect in NgRx. One is using the `@Effect` decorator, the other is with the help of the `createEffect` function. Using both simultaneously will result in the Effect being registered twice, and the side-effect will be performed twice every time the corresponding action is dispatched.
+There are two ways we can register an Effect in NgRx. One is using the `@Effect` decorator (this is currently deprecated), the other is with the help of the `createEffect` function. Using both simultaneously will result in the Effect being registered twice, and the side-effect will be performed twice every time the corresponding action is dispatched.
 
 Examples of **incorrect** code for this rule:
 
