@@ -1,9 +1,8 @@
+import path from 'path'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 
 import { actionCreatorPropsComputed, docsUrl } from '../utils'
-
-export const ruleName = 'prefer-inline-action-props'
 
 export const preferInlineActionProps = 'preferInlineActionProps'
 export const preferInlineActionPropsSuggest = 'preferInlineActionPropsSuggest'
@@ -14,7 +13,7 @@ export type MessageIds =
 type Options = []
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
-  name: ruleName,
+  name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
     docs: {

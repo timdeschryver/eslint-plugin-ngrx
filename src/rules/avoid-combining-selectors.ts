@@ -1,3 +1,4 @@
+import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
 import {
@@ -8,15 +9,13 @@ import {
   findNgRxStoreName,
 } from '../utils'
 
-export const ruleName = 'avoid-combining-selectors'
-
 export const messageId = 'avoidCombiningSelectors'
 export type MessageIds = typeof messageId
 
 type Options = []
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
-  name: ruleName,
+  name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
     docs: {

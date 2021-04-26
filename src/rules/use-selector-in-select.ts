@@ -1,14 +1,14 @@
+import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 import {
   docsUrl,
-  isLiteral,
-  isFunctionExpressionLike,
-  storeSelect,
   findNgRxStoreName,
+  isArrowFunctionExpression,
+  isFunctionExpression,
+  isLiteral,
   pipeableSelect,
+  storeSelect,
 } from '../utils'
-
-export const ruleName = 'use-selector-in-select'
 
 export const messageId = 'useSelectorInSelect'
 export type MessageIds = typeof messageId
@@ -16,14 +16,14 @@ export type MessageIds = typeof messageId
 type Options = []
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
-  name: ruleName,
+  name: path.parse(__filename).name,
   meta: {
-    type: 'problem',
+    type: 'suggestion',
     docs: {
-      category: 'Possible Errors',
+      category: 'Best Practices',
       description:
-        'Using a selector in a select function is preferred in favor of strings/props drilling',
-      recommended: 'error',
+        'Using a selector in a select method is preferred in favor of strings or props drilling',
+      recommended: 'warn',
     },
     schema: [],
     messages: {
@@ -41,7 +41,12 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         arguments: args,
       }: TSESTree.CallExpression) {
         args
-          .filter((node) => isLiteral(node) || isFunctionExpressionLike(node))
+          .filter(
+            (node) =>
+              isLiteral(node) ||
+              isArrowFunctionExpression(node) ||
+              isFunctionExpression(node),
+          )
           .forEach((node) =>
             context.report({
               node,

@@ -25,7 +25,7 @@ export function findImportDeclarationNode(
   module: string,
 ): TSESTree.ImportDeclaration | undefined {
   if (isProgram(node)) {
-    return node.body.find(
+    return (node.body || []).find(
       (node) => isImportDeclaration(node) && node.source.value === module,
     ) as TSESTree.ImportDeclaration | undefined
   }

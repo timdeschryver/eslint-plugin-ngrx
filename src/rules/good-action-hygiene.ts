@@ -1,8 +1,7 @@
+import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
 import { actionCreatorWithLiteral, docsUrl } from '../utils'
-
-export const ruleName = 'good-action-hygiene'
 
 export const messageId = 'goodActionHygiene'
 export type MessageIds = typeof messageId
@@ -10,7 +9,7 @@ export type MessageIds = typeof messageId
 type Options = []
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
-  name: ruleName,
+  name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
     docs: {
