@@ -17,12 +17,50 @@ class Effect {
 }
 ```
 
+```ts
+class Effect {
+  constructor(private actions$: Actions) {}
+
+  ngrxOnRunEffects(resolvedEffects$: Observable<EffectNotification>) {
+    return this.actions$.pipe(
+      ofType('LOGGED_IN'),
+      exhaustMap(() =>
+        resolvedEffects$.pipe(
+          takeUntil(this.actions$.pipe(ofType('LOGGED_OUT'))),
+        ),
+      ),
+    )
+  }
+}
+```
+
 Examples of **correct** code for this rule:
 
 ```ts
+import { OnInitEffects } from '@ngrx/effects'
+
 class Effect implements OnInitEffects {
   ngrxOnInitEffects(): Action {
     return { type: '[Effect] Init' }
+  }
+}
+```
+
+```ts
+import { OnRunEffects } from '@ngrx/effects'
+
+class Effect implements OnRunEffects {
+  constructor(private actions$: Actions) {}
+
+  ngrxOnRunEffects(resolvedEffects$: Observable<EffectNotification>) {
+    return this.actions$.pipe(
+      ofType('LOGGED_IN'),
+      exhaustMap(() =>
+        resolvedEffects$.pipe(
+          takeUntil(this.actions$.pipe(ofType('LOGGED_OUT'))),
+        ),
+      ),
+    )
   }
 }
 ```
