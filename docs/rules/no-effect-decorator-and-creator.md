@@ -28,7 +28,7 @@ Examples of **correct** code for this rule:
 export class Effects {
 
   loadData$ = createEffect(() => {
-    return this.actions.pipe(
+    return this.actions$.pipe(
       ofType(loadData),
       // performing the side effect
     ))
