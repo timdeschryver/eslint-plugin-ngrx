@@ -27,10 +27,12 @@ Examples of **correct** code for this rule:
 ```ts
 export class Effects {
 
-  loadData$ = createEffect(() => this.actions.pipe(
-    ofType(loadData),
-    // performing the side effect
-  ));
+  loadData$ = createEffect(() => {
+    return this.actions.pipe(
+      ofType(loadData),
+      // performing the side effect
+    ))
+  };
 
   constructor(
     private readonly actions$: Actions,
