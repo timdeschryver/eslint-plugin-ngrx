@@ -11,7 +11,7 @@ Examples of **incorrect** code for this rule:
 ```ts
 export class Effects {
 
-  @Effect() loadData$ = createEffect(() => this.actions.pipe(
+  @Effect() loadData$ = createEffect(() => this.actions$.pipe(
     ofType(loadData),
     // performing the side effect
   ));
