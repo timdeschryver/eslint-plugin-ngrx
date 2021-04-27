@@ -3,7 +3,7 @@ import path from 'path'
 import rule, {
   messageId,
   noTypedStoreSuggest,
-} from '../../src/rules/no-typed-store'
+} from '../../src/rules/no-typed-global-store'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {
