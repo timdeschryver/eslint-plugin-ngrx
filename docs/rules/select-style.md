@@ -18,7 +18,6 @@ export class Component {
 Examples of **correct** code for this rule:
 
 ```ts
-// in selectors.ts:
 export class Component {
   someData$ = this.store.select(someData);
   otherData$ = this.store.select(otherData);
