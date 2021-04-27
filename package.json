@@ -34,7 +34,7 @@
     "g:config": "ts-node ./scripts/generate-config.ts",
     "g:readme": "ts-node ./scripts/generate-readme.ts",
     "g:all": "npm run g:config && npm run g:readme",
-    "pre-commit": "npm run g:all && git add ./src/configs/**.ts && lint-staged"
+    "pre-commit": "npm run g:all && git add ./src/configs/**.ts && git add ./README.md && lint-staged"
   },
   "dependencies": {
     "@angular-devkit/schematics": "^11.0.1",
