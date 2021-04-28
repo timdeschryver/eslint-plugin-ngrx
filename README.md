@@ -41,6 +41,7 @@ To enable the recommended configuration, add it to your ESLint configuration fil
 
 ## Rules
 
+<!-- DO NOT EDIT, This table is automatically generated (as a pre-commit step) -->
 <!-- RULES-TABLE:START -->
 
 | Name                                                                                                                                                                                  | Description                                                                                                                    | Recommended | Category                | Fixable |
