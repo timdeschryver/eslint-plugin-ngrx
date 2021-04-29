@@ -4,7 +4,9 @@
 
 ## Rule Details
 
-There are two ways of selecting data from the store, either by using the `this.store.select(selectorFn)` method, or by using the `this.store.pipe(select(selectorFn))` operator. Either way is considered correct (although the first way is preferred as it requires less code and no importing of the operator), but it is important to keep things consistent, so this rule will disallow using both across the same codebase.
+There are two ways of selecting data from the store, either by using the `this.store.select(selectorFn)` method, or by using the `this.store.pipe(select(selectorFn))` operator. Either way is considered correct , although the first way is preferred as it requires less code and it doesn't require the need to import the `selector` operator. 
+
+Because it's important to keep things consistent, this rule disallows using both across the same codebase.
 
 Examples of **incorrect** code for this rule:
 
