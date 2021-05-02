@@ -5,15 +5,20 @@ import { rules } from '../src/rules'
 
 const prettierConfig = resolveConfig.sync(__dirname)
 
-const ngrxRules = Object.entries(rules).map(([ruleName, rule]) => [
-  `[ngrx/${ruleName}](${rule.meta.docs?.url})`,
-  rule.meta.docs?.description,
-  rule.meta.type,
-  `${rule.meta.docs?.recommended} (${rule.meta.docs?.category})`,
-  rule.meta.fixable ? 'Yes' : 'No',
-])
+const moduleRules = Object.entries(rules).reduce((all, [ruleName, rule]) => {
+  all[rule.meta.module] = (all[rule.meta.module] || []).concat([
+    [
+      `[ngrx/${ruleName}](${rule.meta.docs?.url})`,
+      rule.meta.docs?.description ?? 'TODO',
+      rule.meta.type,
+      `${rule.meta.docs?.recommended} (${rule.meta.docs?.category})`,
+      rule.meta.fixable ? 'Yes' : 'No',
+    ],
+  ])
+  return all
+}, {} as Record<string, string[][]>)
 
-const rxjsRules = [
+moduleRules['effects'] = moduleRules['effects'].concat([
   [
     '[rxjs/no-cyclic-action](https://github.com/cartant/eslint-plugin-rxjs/blob/main/docs/rules/no-cyclic-action.md)',
     'Forbids effects that re-emit filtered actions.',
@@ -42,22 +47,25 @@ const rxjsRules = [
     'error (Possible Errors)',
     'No',
   ],
-]
-
-const pluginRules = [...ngrxRules, ...rxjsRules]
+])
 
 const tableHeader = `| Name | Description | Recommended | Category | Fixable |
 | --- | --- | --- | --- | --- |`
-const tableBody = pluginRules.map((rule) => `|${rule.join('|')}|`).join(EOL)
-const table = [tableHeader, tableBody].join(EOL)
+
+const config = Object.entries(moduleRules).map(([module, pluginRules]) => {
+  const tableBody = pluginRules.map((rule) => `|${rule.join('|')}|`).join(EOL)
+  const table = [tableHeader, tableBody].join(EOL)
+
+  return [`### ${module}`, table].join(EOL)
+})
 
 const readme = readFileSync('README.md', 'utf-8')
-const start = readme.indexOf('<!-- RULES-TABLE:START -->')
-const end = readme.indexOf('<!-- RULES-TABLE:END -->')
+const start = readme.indexOf('<!-- RULES-CONFIG:START -->')
+const end = readme.indexOf('<!-- RULES-CONFIG:END -->')
 
 const newReadme = format(
-  `${readme.substring(0, start + '<!-- RULES-TABLE:START -->'.length)}
-${table}
+  `${readme.substring(0, start + '<!-- RULES-CONFIG:START -->'.length)}
+${config.join(EOL)}
 ${readme.substring(end)}`,
   {
     parser: 'markdown',

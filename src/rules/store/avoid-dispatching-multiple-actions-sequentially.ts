@@ -6,7 +6,7 @@ import {
   docsUrl,
   isExpressionStatement,
   findNgRxStoreName,
-} from '../utils'
+} from '../../utils'
 
 export const messageId = 'avoidDispatchingMultipleActionsSequentially'
 export type MessageIds = typeof messageId

@@ -2,7 +2,7 @@ import path from 'path'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { actionCreatorPropsComputed, docsUrl } from '../utils'
+import { actionCreatorPropsComputed, docsUrl } from '../../utils'
 
 export const preferInlineActionProps = 'preferInlineActionProps'
 export const preferInlineActionPropsSuggest = 'preferInlineActionPropsSuggest'

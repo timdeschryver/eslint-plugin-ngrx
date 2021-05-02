@@ -1,7 +1,7 @@
 import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { effectCreator, effectDecorator, docsUrl } from '../utils'
+import { effectCreator, effectDecorator, docsUrl } from '../../utils'
 
 export const messageId = 'noEffectDecoratorAndCreator'
 export type MessageIds = typeof messageId

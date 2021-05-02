@@ -1,4 +1,4 @@
-# Use Lifecycle Interface
+# Use Effects Lifecycle Interface
 
 > Ensures classes implement lifecycle interfaces corresponding to the declared lifecycle methods.
 

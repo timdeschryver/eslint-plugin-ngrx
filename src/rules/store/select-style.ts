@@ -6,7 +6,7 @@ import {
   pipeableSelect,
   findNgRxStoreName,
   storeSelect,
-} from '../utils'
+} from '../../utils'
 
 export const methodSelectMessageId = 'storeSelect'
 export const operatorSelectMessageId = 'operatorSelect'

@@ -6,7 +6,7 @@ import {
   isCallExpression,
   isIdentifier,
   findNgRxStoreName,
-} from '../utils'
+} from '../../utils'
 
 export const messageId = 'avoidMapppingSelectors'
 export type MessageIds = typeof messageId

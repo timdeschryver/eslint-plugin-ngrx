@@ -2,7 +2,7 @@ import path from 'path'
 import rule, {
   preferInlineActionProps,
   preferInlineActionPropsSuggest,
-} from '../../src/rules/prefer-inline-action-props'
+} from '../../src/rules/store/prefer-inline-action-props'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {

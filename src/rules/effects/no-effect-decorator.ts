@@ -9,7 +9,7 @@ import {
   getConditionalImportFix,
   getDecoratorArgument,
   isIdentifier,
-} from '../utils'
+} from '../../utils'
 
 export const noEffectDecorator = 'noEffectDecorator'
 export const noEffectDecoratorSuggest = 'noEffectDecoratorSuggest'

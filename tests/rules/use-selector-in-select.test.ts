@@ -1,7 +1,7 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
-import rule, { messageId } from '../../src/rules/use-selector-in-select'
+import rule, { messageId } from '../../src/rules/store/use-selector-in-select'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {

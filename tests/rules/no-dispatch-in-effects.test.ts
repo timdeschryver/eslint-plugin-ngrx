@@ -1,7 +1,7 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
-import rule, { messageId } from '../../src/rules/no-dispatch-in-effects'
+import rule, { messageId } from '../../src/rules/effects/no-dispatch-in-effects'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {
