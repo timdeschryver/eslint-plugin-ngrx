@@ -1,9 +1,11 @@
-import { readdirSync } from 'fs'
-import { join, parse } from 'path'
+import fs from 'fs'
+import path from 'path'
 
 import { TSESLint } from '@typescript-eslint/experimental-utils'
 
-type RuleModule = TSESLint.RuleModule<string, unknown[]>
+type RuleModule = TSESLint.RuleModule<string, unknown[]> & {
+  meta: { module: string }
+}
 
 // Copied from https://github.com/jest-community/eslint-plugin-jest/blob/main/src/index.ts
 
@@ -18,13 +20,32 @@ const importDefault = (moduleName: string) =>
 const rulesDir = __dirname
 const excludedFiles = ['index']
 
-export const rules = readdirSync(rulesDir)
-  .map((rule) => parse(rule).name)
-  .filter((ruleName) => !excludedFiles.includes(ruleName))
-  .reduce(
-    (allRules, ruleName) => ({
+export const rules = Array.from(traverseFolder(rulesDir))
+  .filter((rule) => !excludedFiles.includes(rule.file))
+  .reduce((allRules, rule) => {
+    const ruleModule = importDefault(rule.path) as RuleModule
+    ruleModule.meta.module = path.basename(path.dirname(rule.path))
+    return {
       ...allRules,
-      [ruleName]: importDefault(join(rulesDir, ruleName)) as RuleModule,
-    }),
-    {} as Record<string, RuleModule>,
-  )
+      [rule.file]: ruleModule,
+    }
+  }, {} as Record<string, RuleModule>)
+
+function* traverseFolder(
+  folder: string,
+  extension = '.ts',
+): Generator<{ folder: string; file: string; path: string }> {
+  const folders = fs.readdirSync(folder, { withFileTypes: true }) as fs.Dirent[]
+  for (const folderEntry of folders) {
+    if (folderEntry.name.includes('node_modules')) {
+      // ignore folder
+      continue
+    }
+    const entryPath = path.resolve(folder, folderEntry.name)
+    if (folderEntry.isDirectory()) {
+      yield* traverseFolder(entryPath, extension)
+    } else if (path.extname(entryPath) === extension) {
+      yield { folder, file: path.parse(folderEntry.name).name, path: entryPath }
+    }
+  }
+}

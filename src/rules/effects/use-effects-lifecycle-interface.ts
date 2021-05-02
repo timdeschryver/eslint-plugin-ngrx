@@ -9,9 +9,9 @@ import {
   getConditionalImportFix,
   getImplementsSchemaFixer,
   isIdentifier,
-} from '../utils'
+} from '../../utils'
 
-export const messageId = 'useLifecycleInterface'
+export const messageId = 'useEffectsLifecycleInterface'
 export type MessageIds = typeof messageId
 
 type Options = []

@@ -1,7 +1,7 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
-import rule, { messageId } from '../../src/rules/good-action-hygiene'
+import rule, { messageId } from '../../src/rules/store/good-action-hygiene'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {

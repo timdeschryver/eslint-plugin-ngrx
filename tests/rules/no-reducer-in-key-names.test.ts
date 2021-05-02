@@ -1,7 +1,7 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
-import rule, { messageId } from '../../src/rules/no-reducer-in-key-names'
+import rule, { messageId } from '../../src/rules/store/no-reducer-in-key-names'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {

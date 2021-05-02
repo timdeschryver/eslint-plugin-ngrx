@@ -1,7 +1,7 @@
 import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { docsUrl, createEffectBody, isCallExpression } from '../utils'
+import { docsUrl, createEffectBody, isCallExpression } from '../../utils'
 
 export const messageId = 'preferEffectCallbackInBlockStatement'
 

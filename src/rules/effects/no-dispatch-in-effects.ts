@@ -1,9 +1,9 @@
 import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { onFunctionWithoutType, docsUrl } from '../utils'
+import { dispatchInEffects, docsUrl, findNgRxStoreName } from '../../utils'
 
-export const messageId = 'onFunctionExplicitReturnType'
+export const messageId = 'NoDispatchInEffects'
 export type MessageIds = typeof messageId
 
 type Options = []
@@ -11,22 +11,24 @@ type Options = []
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'problem',
+    type: 'suggestion',
     docs: {
-      category: 'Possible Errors',
-      description: 'On function should have an explicit return type',
-      recommended: 'error',
+      category: 'Best Practices',
+      description: 'An Effect should not call store.dispatch',
+      recommended: 'warn',
     },
     schema: [],
     messages: {
-      [messageId]:
-        'On functions should have an explicit return type when using arrow functions, on(action, (state):State => {}',
+      [messageId]: 'Calling `store.dispatch` in an Effect is forbidden',
     },
   },
   defaultOptions: [],
   create: (context) => {
+    const storeName = findNgRxStoreName(context)
+    if (!storeName) return {}
+
     return {
-      [onFunctionWithoutType](node: TSESTree.TSTypeReference) {
+      [dispatchInEffects(storeName)](node: TSESTree.CallExpression) {
         context.report({
           node,
           messageId,

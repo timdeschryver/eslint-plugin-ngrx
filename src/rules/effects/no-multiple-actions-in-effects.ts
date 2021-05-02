@@ -6,7 +6,7 @@ import {
   effectsReturn,
   docsUrl,
   typecheck,
-} from '../utils'
+} from '../../utils'
 
 export const messageId = 'noMultipleActionsInEffects'
 export type MessageIds = typeof messageId

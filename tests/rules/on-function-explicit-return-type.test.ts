@@ -3,7 +3,7 @@ import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
   messageId,
-} from '../../src/rules/on-function-explicit-return-type'
+} from '../../src/rules/store/on-function-explicit-return-type'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {

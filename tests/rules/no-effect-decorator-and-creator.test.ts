@@ -3,7 +3,7 @@ import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
   messageId,
-} from '../../src/rules/no-effect-decorator-and-creator'
+} from '../../src/rules/effects/no-effect-decorator-and-creator'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {

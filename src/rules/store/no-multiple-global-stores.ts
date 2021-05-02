@@ -1,7 +1,7 @@
 import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { constructorExit, injectedStore, docsUrl } from '../utils'
+import { constructorExit, injectedStore, docsUrl } from '../../utils'
 
 export const messageId = 'noMultipleGlobalStores'
 export type MessageIds = typeof messageId

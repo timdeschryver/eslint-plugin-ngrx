@@ -3,7 +3,7 @@ import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
   messageId,
-} from '../../src/rules/avoid-dispatching-multiple-actions-sequentially'
+} from '../../src/rules/store/avoid-dispatching-multiple-actions-sequentially'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {

@@ -4,7 +4,7 @@ import path from 'path'
 import rule, {
   noEffectDecorator,
   noEffectDecoratorSuggest,
-} from '../../src/rules/no-effect-decorator'
+} from '../../src/rules/effects/no-effect-decorator'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {
