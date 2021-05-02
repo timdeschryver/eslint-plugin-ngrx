@@ -9,6 +9,7 @@ import {
   getConditionalImportFix,
   getDecoratorArgument,
   isIdentifier,
+  MODULE_PATHS,
 } from '../../utils'
 
 export const noEffectDecorator = 'noEffectDecorator'
@@ -22,7 +23,6 @@ type EffectDecorator = TSESTree.Decorator & {
   parent: TSESTree.ClassProperty & { value: TSESTree.CallExpression }
 }
 
-const effectsModulePath = '@ngrx/effects'
 const createEffect = 'createEffect'
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
@@ -101,10 +101,7 @@ function getFixes(
   const {
     parent: { value: propertyValueExpression },
   } = node
-  const importDeclaration = findImportDeclarationNode(
-    classDeclaration,
-    effectsModulePath,
-  )
+
   const decoratorArgument = getDecoratorArgument(node)
   const configText = decoratorArgument
     ? sourceCode.getText(decoratorArgument)
@@ -112,9 +109,9 @@ function getFixes(
 
   return getConditionalImportFix(
     fixer,
-    importDeclaration,
+    classDeclaration,
     createEffect,
-    effectsModulePath,
+    MODULE_PATHS.effects,
   ).concat(
     fixer.remove(node),
     getCreateEffectFix(fixer, propertyValueExpression),

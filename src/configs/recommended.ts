@@ -12,6 +12,7 @@ export = {
     'ngrx/no-effect-decorator': 'error',
     'ngrx/no-effects-in-providers': 'error',
     'ngrx/no-multiple-actions-in-effects': 'error',
+    'ngrx/prefer-concat-latest-from': 'warn',
     'ngrx/prefer-effect-callback-in-block-statement': 'error',
     'ngrx/use-effects-lifecycle-interface': 'warn',
     'ngrx/avoid-combining-selectors': 'warn',
