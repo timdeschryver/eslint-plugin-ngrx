@@ -2,6 +2,7 @@ import { stripIndents } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
+  MessageIds,
   noEffectDecorator,
   noEffectDecoratorSuggest,
 } from '../../src/rules/effects/no-effect-decorator'
@@ -186,7 +187,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           messageId: noEffectDecorator,
           suggestions: [
             {
-              messageId: noEffectDecoratorSuggest,
+              messageId: noEffectDecoratorSuggest as MessageIds,
               output: stripIndents`
               import { Injectable } from '@angular/core';
               import { Effect } from '@ngrx/effects';
