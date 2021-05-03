@@ -6,7 +6,7 @@ import rule, {
   OPERATOR,
   operatorSelectMessageId,
   methodSelectMessageId,
-} from '../../src/rules/select-style'
+} from '../../src/rules/store/select-style'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {

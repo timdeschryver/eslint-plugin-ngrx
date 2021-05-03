@@ -1,9 +1,7 @@
-import { readdirSync } from 'fs'
-import { join, parse } from 'path'
+import path from 'path'
 
-import { TSESLint } from '@typescript-eslint/experimental-utils'
-
-type RuleModule = TSESLint.RuleModule<string, unknown[]>
+import { traverseFolder } from '../utils'
+import { RuleModule } from '../utils/types'
 
 // Copied from https://github.com/jest-community/eslint-plugin-jest/blob/main/src/index.ts
 
@@ -18,13 +16,13 @@ const importDefault = (moduleName: string) =>
 const rulesDir = __dirname
 const excludedFiles = ['index']
 
-export const rules = readdirSync(rulesDir)
-  .map((rule) => parse(rule).name)
-  .filter((ruleName) => !excludedFiles.includes(ruleName))
-  .reduce(
-    (allRules, ruleName) => ({
+export const rules = Array.from(traverseFolder(rulesDir))
+  .filter((rule) => !excludedFiles.includes(rule.file))
+  .reduce((allRules, rule) => {
+    const ruleModule = importDefault(rule.path) as RuleModule
+    ruleModule.meta.module = path.basename(path.dirname(rule.path))
+    return {
       ...allRules,
-      [ruleName]: importDefault(join(rulesDir, ruleName)) as RuleModule,
-    }),
-    {} as Record<string, RuleModule>,
-  )
+      [rule.file]: ruleModule,
+    }
+  }, {} as Record<string, RuleModule>)

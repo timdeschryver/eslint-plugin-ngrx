@@ -6,7 +6,7 @@ import {
   ngModuleImports,
   ngModuleProviders,
   docsUrl,
-} from '../utils'
+} from '../../utils'
 
 export const messageId = 'noEffectsInProviders'
 export type MessageIds = typeof messageId

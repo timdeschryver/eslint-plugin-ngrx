@@ -8,7 +8,7 @@ import {
   isLiteral,
   pipeableSelect,
   storeSelect,
-} from '../utils'
+} from '../../utils'
 
 export const messageId = 'useSelectorInSelect'
 export type MessageIds = typeof messageId

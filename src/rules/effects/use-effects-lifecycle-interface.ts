@@ -9,9 +9,10 @@ import {
   getConditionalImportFix,
   getImplementsSchemaFixer,
   isIdentifier,
-} from '../utils'
+  MODULE_PATHS,
+} from '../../utils'
 
-export const messageId = 'useLifecycleInterface'
+export const messageId = 'useEffectsLifecycleInterface'
 export type MessageIds = typeof messageId
 
 type Options = []
@@ -21,7 +22,6 @@ const lifecycleMapper = {
   ngrxOnRunEffects: 'OnRunEffects',
   ngrxOnIdentifyEffects: 'OnIdentifyEffects',
 } as const
-const effectsModulePath = '@ngrx/effects'
 const lifecyclesPattern = Object.keys(lifecycleMapper).join('|')
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
@@ -66,16 +66,11 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         } = getImplementsSchemaFixer(classDeclaration, interfaceName)
         context.report({
           fix: (fixer) => {
-            const importDeclaration = findImportDeclarationNode(
-              classDeclaration,
-              effectsModulePath,
-            )
-
             return getConditionalImportFix(
               fixer,
-              importDeclaration,
+              node,
               interfaceName,
-              effectsModulePath,
+              MODULE_PATHS.effects,
             ).concat(
               fixer.insertTextAfter(
                 implementsNodeReplace,

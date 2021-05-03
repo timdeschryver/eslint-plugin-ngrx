@@ -7,7 +7,7 @@ import {
   isMemberExpression,
   isIdentifier,
   findNgRxStoreName,
-} from '../utils'
+} from '../../utils'
 
 export const messageId = 'avoidCombiningSelectors'
 export type MessageIds = typeof messageId

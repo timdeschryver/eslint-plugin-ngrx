@@ -15,7 +15,8 @@
     "target": "es5",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "downlevelIteration": true
   },
   "include": ["./src/**/*.ts"]
 }

@@ -42,7 +42,7 @@ export const storeActionReducerMap = `${ngModuleDecorator} ObjectExpression Prop
 
 export const actionReducerMap = `VariableDeclarator[id.typeAnnotation.typeAnnotation.typeName.name='ActionReducerMap'] > ObjectExpression > Property`
 
-const createEffectExpression = `ClassProperty > CallExpression[callee.name='createEffect']`
+export const createEffectExpression = `ClassProperty > CallExpression[callee.name='createEffect']`
 
 const mapOperators = '(concat|exhaust|flat|merge|switch)Map'
 const mapToOperators = '(concat|merge|switch)MapTo'

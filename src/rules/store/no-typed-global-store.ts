@@ -1,7 +1,7 @@
 import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { typedStore, docsUrl } from '../utils'
+import { typedStore, docsUrl } from '../../utils'
 
 export const messageId = 'noTypedStore'
 export const noTypedStoreSuggest = 'noTypedStoreSuggest'
@@ -12,11 +12,11 @@ type Options = []
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'problem',
+    type: 'suggestion',
     docs: {
-      category: 'Possible Errors',
+      category: 'Best Practices',
       description: 'Store should not be typed',
-      recommended: 'error',
+      recommended: 'warn',
     },
     fixable: 'code',
     schema: [],

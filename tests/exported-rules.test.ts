@@ -1,12 +1,12 @@
 import * as lib from '../src/rules'
-import * as fs from 'fs'
 import * as path from 'path'
+import { traverseFolder } from '../src/utils'
 
-const rulesDirectory = fs.readdirSync(path.join(__dirname, '../src/rules'))
+const rulesDirectory = path.join(__dirname, '../src/rules')
 
-it('should export all rules', () => {
-  const availableRules = rulesDirectory
-    .map((rule) => rule.replace('.ts', ''))
+test('exports all rules', () => {
+  const availableRules = [...traverseFolder(rulesDirectory)]
+    .map((rule) => rule.file)
     .filter((rule) => rule !== 'index')
   expect(Object.keys(lib.rules)).toEqual(availableRules)
 })
