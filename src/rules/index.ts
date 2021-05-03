@@ -1,12 +1,7 @@
-import fs from 'fs'
 import path from 'path'
 
-import { TSESLint } from '@typescript-eslint/experimental-utils'
 import { traverseFolder } from '../utils'
-
-type RuleModule = TSESLint.RuleModule<string, unknown[]> & {
-  meta: { module: string }
-}
+import { RuleModule } from '../utils/types'
 
 // Copied from https://github.com/jest-community/eslint-plugin-jest/blob/main/src/index.ts
 
