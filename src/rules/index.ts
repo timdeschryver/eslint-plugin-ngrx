@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { TSESLint } from '@typescript-eslint/experimental-utils'
+import { traverseFolder } from '../utils'
 
 type RuleModule = TSESLint.RuleModule<string, unknown[]> & {
   meta: { module: string }
@@ -30,22 +31,3 @@ export const rules = Array.from(traverseFolder(rulesDir))
       [rule.file]: ruleModule,
     }
   }, {} as Record<string, RuleModule>)
-
-function* traverseFolder(
-  folder: string,
-  extension = '.ts',
-): Generator<{ folder: string; file: string; path: string }> {
-  const folders = fs.readdirSync(folder, { withFileTypes: true }) as fs.Dirent[]
-  for (const folderEntry of folders) {
-    if (folderEntry.name.includes('node_modules')) {
-      // ignore folder
-      continue
-    }
-    const entryPath = path.resolve(folder, folderEntry.name)
-    if (folderEntry.isDirectory()) {
-      yield* traverseFolder(entryPath, extension)
-    } else if (path.extname(entryPath) === extension) {
-      yield { folder, file: path.parse(folderEntry.name).name, path: entryPath }
-    }
-  }
-}

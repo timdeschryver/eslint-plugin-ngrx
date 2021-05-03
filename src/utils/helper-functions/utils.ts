@@ -10,6 +10,10 @@ import {
   isTSTypeReference,
 } from './guards'
 
+export const MODULE_PATHS = {
+  effects: '@ngrx/effects',
+}
+
 export function findClassDeclarationNode(
   node: TSESTree.Node,
 ): TSESTree.ClassDeclaration | null {
@@ -35,10 +39,11 @@ export function findImportDeclarationNode(
 
 export function getConditionalImportFix(
   fixer: TSESLint.RuleFixer,
-  importDeclaration: TSESTree.ImportDeclaration | undefined,
+  node: TSESTree.Node,
   importSpecifier: string,
-  modulePath: string,
+  module: string,
 ): TSESLint.RuleFix[] {
+  const importDeclaration = findImportDeclarationNode(node, module)
   if (importDeclaration && hasImport(importDeclaration, importSpecifier)) {
     return []
   }
@@ -47,7 +52,7 @@ export function getConditionalImportFix(
     return [
       fixer.insertTextAfterRange(
         [0, 0],
-        `import { ${importSpecifier} } from '${modulePath}';\n`,
+        `import { ${importSpecifier} } from '${module}';\n`,
       ),
     ]
   }

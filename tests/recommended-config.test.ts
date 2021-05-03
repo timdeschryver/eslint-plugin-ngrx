@@ -2,7 +2,7 @@ import { rules } from '../src/rules'
 import plugin from '../src'
 import recommended from '../src/configs/recommended'
 
-it('should export recommended rules', () => {
+test('exports recommended rules', () => {
   const recommmendedRules = Object.keys(rules)
     .filter((ruleName) => rules[ruleName].meta.docs?.recommended)
     .reduce((acc, ruleName) => {
@@ -22,6 +22,6 @@ it('should export recommended rules', () => {
   expect(rxjsRules).toHaveLength(4)
 })
 
-it('should export recommended config', () => {
+test('exports recommended config', () => {
   expect(Object.keys(plugin.configs)).toEqual(['recommended'])
 })
