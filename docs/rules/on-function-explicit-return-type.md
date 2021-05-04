@@ -4,7 +4,7 @@
 
 ## Rule Details
 
-When we use the `on` function to create reducers, we usually copy the state into a new object, and then add the properties that are being modified after that certain action. This may result in unexpected typing problems: we can add new properties into the state that did not exist previously, and TypeScript would not infer the problem. The solution is to provide an explicit return type to the `on` function callback.
+When we use the `on` function to create reducers, we usually copy the state into a new object, and then add the properties that are being modified after that certain action. This may result in unexpected typing problems, we can add new properties into the state that did not exist previously. TypeScript doesn't see this as a problem, and might change the state's interface. The solution is to provide an explicit return type to the `on` function callback.
 
 
 Examples of **incorrect** code for this rule:
