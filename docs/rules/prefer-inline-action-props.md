@@ -4,7 +4,9 @@
 
 ## Rule Details
 
-Lots of actions in an NgRx codebase have props (the action `payload`), and we need to define its type when creating an action. It might seem better to use named interfaces or types when defining those types, but in reality it will obscure their meaning to the developer using them. Actions props are essentially like function arguments, and the function caller needs to know exactly what type of data to provide (which will result in better IDE experience).
+Lots of actions in an NgRx codebase have props, and we need to define the props type of an action when the action is defined. It might seem better to use named interfaces or types while defining those types, but in reality, it will obscure their meaning to the developer using them. Actions props are essentially like function arguments, and the function caller needs to know exactly what type of data to provide (which results in better IDE experience).
+
+Note: some property names are not allowed to be used, such as `type`
 
 Examples of **incorrect** code for this rule:
 
