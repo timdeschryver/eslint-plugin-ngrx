@@ -13,7 +13,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   meta: {
     type: 'suggestion',
     docs: {
-      category: 'Best Practices',
+      category: 'Possible Errors',
       description: 'An Effect should not call store.dispatch',
       recommended: 'warn',
     },

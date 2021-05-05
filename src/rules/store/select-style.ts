@@ -25,9 +25,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   meta: {
     type: 'problem',
     docs: {
-      category: 'Possible Errors',
+      category: 'Best Practices',
       description: `Selectors can be used either with 'select' as a pipeable operator or as a method`,
-      recommended: false,
+      recommended: 'warn',
     },
     schema: [
       {

@@ -1,6 +1,6 @@
 # No Multiple Stores
 
-> There should only be one global store injected
+> There should only be one global store injected.
 
 ## Rule Details
 

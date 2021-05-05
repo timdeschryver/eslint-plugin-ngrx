@@ -15,7 +15,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Possible Errors',
       description: 'On function should have an explicit return type',
-      recommended: 'error',
+      recommended: 'warn',
     },
     schema: [],
     messages: {

@@ -1,4 +1,4 @@
-# no-multiple-actions-in-effects
+# No Multiple Actions In Effects
 
 > This rule disallows mapping to multiple actions in a single Effect.
 
@@ -11,66 +11,75 @@ Examples of **incorrect** code for this rule:
 
 ```ts
 export class Effects {
+  loadEmployeeList$ = createEffect(() =>
+    this.actions.pipe(
+      ofType(componentLoaded),
+      exhaustMap(() =>
+        this.dataService.loadEmployeeList().pipe(
+          switchMap((response) => [
+            loadEmployeeListSuccess(response),
+            loadCompanyList(),
+            cleanData(),
+          ]),
+          catchError((error) => loadEmployeeListError(error)),
+        ),
+      ),
+    ),
+  )
 
-  loadEmployeeList$ = createEffect(() => this.actions.pipe(
-    ofType(componentLoaded),
-    exhaustMap(() => this.dataService.loadEmployeeList().pipe(
-      switchMap(response => [
-        loadEmployeeListSuccess(response),
-        loadCompanyList(),
-        cleanData(),
-      ]),
-      catchError(error => loadEmployeeListError(error)),
-    )),
-  ));
+  loadCompanyList$ = createEffect(() =>
+    this.actions.pipe(
+      ofType(loadCompanyList),
+      // handle loadCompanyList
+    ),
+  )
 
-  loadCompanyList$ = createEffect(() => this.actions.pipe(
-    ofType(loadCompanyList),
-    // handle loadCompanyList
-  ));
+  cleanData$ = createEffect(() =>
+    this.actions.pipe(
+      ofType(cleanData),
+      // handle cleanData
+    ),
+  )
 
-  cleanData$ = createEffect(() => this.actions.pipe(
-    ofType(cleanData),
-    // handle cleanData
-  ));
-
-  constructor(
-    private readonly actions$: Actions,
-  ) {}
+  constructor(private readonly actions$: Actions) {}
 }
 ```
 
 Examples of **correct** code for this rule:
 
 ```ts
-
 // in effect:
 export class Effects {
-
-  loadEmployeeList$ = createEffect(() => this.actions.pipe(
-    ofType(componentLoaded),
-    exhaustMap(() => this.dataService.loadEmployeeList().pipe(
-      map(response => loadEmployeeListSuccess(response)),
-      catchError(error => loadEmployeeListError(error)),
-    )),
-  ));
+  loadEmployeeList$ = createEffect(() =>
+    this.actions.pipe(
+      ofType(componentLoaded),
+      exhaustMap(() =>
+        this.dataService.loadEmployeeList().pipe(
+          map((response) => loadEmployeeListSuccess(response)),
+          catchError((error) => loadEmployeeListError(error)),
+        ),
+      ),
+    ),
+  )
 
   // use the one dispatched action
 
-  loadCompanyList$ = createEffect(() => this.actions.pipe(
-    ofType(loadEmployeeListSuccess),
-    // handle loadCompanyList
-  ));
+  loadCompanyList$ = createEffect(() =>
+    this.actions.pipe(
+      ofType(loadEmployeeListSuccess),
+      // handle loadCompanyList
+    ),
+  )
 
   //use the one dispatched action
 
-  cleanData$ = createEffect(() => this.actions.pipe(
-    ofType(loadEmployeeListSuccess),
-    // handle cleanData
-  ));
+  cleanData$ = createEffect(() =>
+    this.actions.pipe(
+      ofType(loadEmployeeListSuccess),
+      // handle cleanData
+    ),
+  )
 
-  constructor(
-    private readonly actions$: Actions,
-  ) {}
+  constructor(private readonly actions$: Actions) {}
 }
 ```

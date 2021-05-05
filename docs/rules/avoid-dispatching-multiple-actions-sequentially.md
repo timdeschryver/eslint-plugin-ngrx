@@ -1,10 +1,10 @@
-# avoid-dispatching-multiple-actions-sequentially
+# Avoid Dispatching Multiple Actions Sequentially
 
 > This rule disallows dispatching multiple actions one after another.
 
 ## Rule Details
 
-An action should be an event which abstracts away the details of store internals.
+An action should be an event that abstracts away the details of store internals.
 An action can be a composition of several events, in which case the developer might be tempted to dispatch several actions in sequence. But a better approach is to dispatch one "combining" action, which exactly describes what that event entails.
 
 Examples of **incorrect** code for this rule:

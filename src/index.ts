@@ -1,10 +1,7 @@
 import { rules } from './rules'
-
-import recommended from './configs/recommended'
+import { configs } from './configs'
 
 export = {
   rules,
-  configs: {
-    recommended,
-  },
+  configs,
 }

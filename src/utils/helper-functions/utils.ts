@@ -100,9 +100,12 @@ export function findNgRxStoreName(
 
   if (!storeImportSpecifier) return undefined
 
-  const [{ references }] = context.getDeclaredVariables(storeImportSpecifier)
+  const variables = context.getDeclaredVariables(storeImportSpecifier)
+  const storeVariable = variables.find((v) => v.name === 'Store')
 
-  return references
+  if (!storeVariable) return undefined
+
+  return storeVariable.references
     .map(({ identifier: { parent } }) => {
       if (
         parent &&

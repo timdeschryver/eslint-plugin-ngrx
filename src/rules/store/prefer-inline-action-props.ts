@@ -19,7 +19,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Best Practices',
       description: 'Prefer using inline types instead of interfaces/classes.',
-      recommended: 'error',
+      recommended: 'warn',
     },
     schema: [],
     messages: {

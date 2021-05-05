@@ -9,11 +9,11 @@ export = {
   rules: {
     'ngrx/no-dispatch-in-effects': 'warn',
     'ngrx/no-effect-decorator-and-creator': 'error',
-    'ngrx/no-effect-decorator': 'error',
+    'ngrx/no-effect-decorator': 'warn',
     'ngrx/no-effects-in-providers': 'error',
-    'ngrx/no-multiple-actions-in-effects': 'error',
+    'ngrx/no-multiple-actions-in-effects': 'warn',
     'ngrx/prefer-concat-latest-from': 'warn',
-    'ngrx/prefer-effect-callback-in-block-statement': 'error',
+    'ngrx/prefer-effect-callback-in-block-statement': 'warn',
     'ngrx/use-effects-lifecycle-interface': 'warn',
   },
 }

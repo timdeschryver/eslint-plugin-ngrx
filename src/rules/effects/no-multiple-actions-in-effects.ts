@@ -18,13 +18,13 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   meta: {
     type: 'problem',
     docs: {
-      category: 'Possible Errors',
+      category: 'Best Practices',
       description: 'An Effect should not return multiple actions.',
-      recommended: 'error',
+      recommended: 'warn',
     },
     schema: [],
     messages: {
-      [messageId]: 'An Effect should not return multiple actions.',
+      [messageId]: 'An Effect should return a single action.',
     },
   },
   defaultOptions: [],

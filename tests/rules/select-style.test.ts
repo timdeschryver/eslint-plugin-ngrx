@@ -53,6 +53,18 @@ ruleTester().run(path.parse(__filename).name, rule, {
   invalid: [
     fromFixture(
       stripIndent`
+        import { select, Store } from '@ngrx/store'
+        @Component()
+        export class FixtureComponent {
+          foo$ = this.store.pipe(select(selector));
+                                 ~~~~~~~~~~~~~~~~   [${methodSelectMessageId}]
+
+          constructor(private store: Store){}
+        }
+      `,
+    ),
+    fromFixture(
+      stripIndent`
         import { Store } from '@ngrx/store'
         @Component()
         export class FixtureComponent {
@@ -60,6 +72,20 @@ ruleTester().run(path.parse(__filename).name, rule, {
                                  ~~~~~~~~~~~~~~~~   [${methodSelectMessageId}]
 
           constructor(private store: Store){}
+        }
+      `,
+    ),
+    fromFixture(
+      stripIndent`
+        import { Store, select } from '@ngrx/store'
+        @Component()
+        export class FixtureComponent {
+          foo$;
+
+          constructor(private store: Store){
+            this.foo$ = store.pipe(select(selector));
+                                   ~~~~~~~~~~~~~~~~   [${methodSelectMessageId}]
+          }
         }
       `,
     ),

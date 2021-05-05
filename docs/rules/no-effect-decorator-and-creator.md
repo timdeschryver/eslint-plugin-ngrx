@@ -1,6 +1,6 @@
-# no-effect-decorator-and-creator
+# No Effect Decorator And Creator
 
-> This rule disallows using the `@Effect` decorator and the `createEffect` function simultaneously
+> This rule disallows using the `@Effect` decorator and the `createEffect` function simultaneously.
 
 ## Rule Details
 
@@ -10,15 +10,14 @@ Examples of **incorrect** code for this rule:
 
 ```ts
 export class Effects {
+  @Effect() loadData$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loadData),
+      // performing the side effect
+    ),
+  )
 
-  @Effect() loadData$ = createEffect(() => this.actions$.pipe(
-    ofType(loadData),
-    // performing the side effect
-  ));
-
-  constructor(
-    private readonly actions$: Actions,
-  ) {}
+  constructor(private readonly actions$: Actions) {}
 }
 ```
 
@@ -26,7 +25,6 @@ Examples of **correct** code for this rule:
 
 ```ts
 export class Effects {
-
   loadData$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(loadData),

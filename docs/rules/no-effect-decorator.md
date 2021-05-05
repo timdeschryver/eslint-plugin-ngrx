@@ -1,6 +1,6 @@
-# no-effect-decorator
+# No Effect Decorator
 
-> This rule disallows using the `@Effect` decorator
+> This rule disallows using the `@Effect` decorator.
 
 ## Rule Details
 
@@ -10,15 +10,12 @@ Examples of **incorrect** code for this rule:
 
 ```ts
 export class Effects {
-
   @Effect() loadData$ = this.actions$.pipe(
     ofType(loadData),
     // performing the side effect
-  );
+  )
 
-  constructor(
-    private readonly actions$: Actions,
-  ) {}
+  constructor(private readonly actions$: Actions) {}
 }
 ```
 

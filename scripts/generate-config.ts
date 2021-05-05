@@ -9,20 +9,22 @@ const prettierConfig = resolveConfig.sync(__dirname)
 const RULE_NAME_PREFIX = 'ngrx/'
 const CONFIG_DIRECTORY = './src/configs/'
 
-const getRules = (predicate: (rule: RuleModule) => boolean) =>
+const getRules = (
+  predicate: (rule: RuleModule) => boolean,
+  setting = (rule: RuleModule) => rule.meta.docs?.recommended || 'warn',
+) =>
   Object.entries(rules).reduce((rules, [ruleName, rule]) => {
     if (predicate(rule)) {
-      rules[`${RULE_NAME_PREFIX}${ruleName}`] =
-        rule.meta.docs?.recommended || 'warn'
+      rules[`${RULE_NAME_PREFIX}${ruleName}`] = setting(rule)
     }
     return rules
-  }, {})
+  }, {} as Record<string, string>)
 
 const rxjsRules = {
-  'rxjs/no-cyclic-action': 'error',
-  'rxjs/no-unsafe-catch': 'error',
-  'rxjs/no-unsafe-first': 'error',
-  'rxjs/no-unsafe-switchmap': 'error',
+  'rxjs/no-cyclic-action': 'warn',
+  'rxjs/no-unsafe-catch': 'warn',
+  'rxjs/no-unsafe-first': 'warn',
+  'rxjs/no-unsafe-switchmap': 'warn',
 }
 
 writeConfig('recommended', {
@@ -31,7 +33,15 @@ writeConfig('recommended', {
 })
 
 writeConfig('all', {
-  ...getRules((_) => true),
+  ...getRules(() => true),
+  ...rxjsRules,
+})
+
+writeConfig('strict', {
+  ...getRules(
+    () => true,
+    () => 'error',
+  ),
   ...rxjsRules,
 })
 
@@ -52,7 +62,7 @@ writeConfig(
 )
 
 function writeConfig(
-  configName: 'recommended' | 'all' | 'store' | 'effects',
+  configName: 'recommended' | 'all' | 'store' | 'effects' | 'strict',
   configRules: Record<string, string>,
   plugins = ['ngrx', 'rxjs'],
 ) {
