@@ -1,6 +1,6 @@
-# Use selector in select
+# Use Selector In Select
 
-> Using a selector in a select method is preferred in favor of strings or props drilling
+> Using a selector in a select method is preferred in favor of strings or props drilling.
 
 It's recommended to use selectors to get data out of the state tree.
 A selector is memoized, thus this has the benefit that it's faster because the result is cached and will only be recalculated when it's needed.

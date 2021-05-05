@@ -4,7 +4,7 @@
 
 ## Rule Details
 
-This rule prefers that the callback of an effect is a block statements.
+This rule prefers that the callback of an effect is a block statement.
 This makes it easier to troubleshoot type errors, for when example an RxJS operator isn't imported.
 
 Examples of **incorrect** code for this rule:

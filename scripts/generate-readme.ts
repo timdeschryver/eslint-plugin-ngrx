@@ -13,6 +13,7 @@ const moduleRules = Object.entries(rules).reduce((all, [ruleName, rule]) => {
       rule.meta.type,
       `${rule.meta.docs?.recommended} (${rule.meta.docs?.category})`,
       rule.meta.fixable ? 'Yes' : 'No',
+      rule.meta.schema.length ? 'Yes' : 'No',
     ],
   ])
   return all
@@ -25,12 +26,14 @@ moduleRules['effects'] = moduleRules['effects'].concat([
     'problem',
     'error (Possible Errors)',
     'No',
+    'No',
   ],
   [
     '[rxjs/no-unsafe-catch](https://github.com/cartant/eslint-plugin-rxjs/blob/main/docs/rules/no-unsafe-catch.md)',
     'Forbids unsafe `catchError` usage in effects.',
     'problem',
     'error (Possible Errors)',
+    'No',
     'No',
   ],
   [
@@ -39,6 +42,7 @@ moduleRules['effects'] = moduleRules['effects'].concat([
     'problem',
     'error (Possible Errors)',
     'No',
+    'No',
   ],
   [
     '[rxjs/no-unsafe-switchmap](https://github.com/cartant/eslint-plugin-rxjs/blob/main/docs/rules/no-unsafe-switchmap.md)',
@@ -46,11 +50,12 @@ moduleRules['effects'] = moduleRules['effects'].concat([
     'problem',
     'error (Possible Errors)',
     'No',
+    'No',
   ],
 ])
 
-const tableHeader = `| Name | Description | Recommended | Category | Fixable |
-| --- | --- | --- | --- | --- |`
+const tableHeader = `| Name | Description | Recommended | Category | Fixable | Configurable |
+| --- | --- | --- | --- | --- | --- |`
 
 const config = Object.entries(moduleRules).map(([module, pluginRules]) => {
   const tableBody = pluginRules.map((rule) => `|${rule.join('|')}|`).join(EOL)

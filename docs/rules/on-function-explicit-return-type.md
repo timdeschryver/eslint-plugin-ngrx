@@ -1,21 +1,20 @@
-# on-function-explicit-return-type
+# On Function Explicit Return Type
 
 > This rule disallows using the `on` reducer function without providing an explicit return type.
 
 ## Rule Details
 
-When we use the `on` function to create reducers, we usually copy the state into a new object, and then add the properties that are being modified after that certain action. This may result in unexpected typing problems, we can add new properties into the state that did not exist previously. TypeScript doesn't see this as a problem, and might change the state's interface. The solution is to provide an explicit return type to the `on` function callback.
-
+When we use the `on` function to create reducers, we usually copy the state into a new object, and then add the properties that are being modified after that certain action. This may result in unexpected typing problems, we can add new properties into the state that did not exist previously. TypeScript doesn't see this as a problem and might change the state's interface. The solution is to provide an explicit return type to the `on` function callback.
 
 Examples of **incorrect** code for this rule:
 
 ```ts
 export interface AppState {
-  username: string;
+  username: string
 }
 
 const reducer = createReducer<AppState>(
-  {username: ''},
+  { username: '' },
   on(setUsername, (state, action) => ({
     ...state,
     username: action.payload,
@@ -28,15 +27,18 @@ Examples of **correct** code for this rule:
 
 ```ts
 export interface AppState {
-  username: string;
+  username: string
 }
 
 const reducer = createReducer<AppState>(
-  {username: ''},
-  on(setUsername, (state, action): AppState => ({
-    ...state,
-    username: action.payload,
-    // adding new properties that do not exist on `AppState` is impossible, as the function return type is explicitly stated
-  })),
+  { username: '' },
+  on(
+    setUsername,
+    (state, action): AppState => ({
+      ...state,
+      username: action.payload,
+      // adding new properties that do not exist on `AppState` is impossible, as the function return type is explicitly stated
+    }),
+  ),
 )
 ```

@@ -5,7 +5,6 @@ import {
   classPropertyWithEffectDecorator,
   docsUrl,
   findClassDeclarationNode,
-  findImportDeclarationNode,
   getConditionalImportFix,
   getDecoratorArgument,
   isIdentifier,
@@ -30,9 +29,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   meta: {
     type: 'problem',
     docs: {
-      category: 'Possible Errors',
+      category: 'Best Practices',
       description: 'The createEffect creator function is preferred',
-      recommended: 'error',
+      recommended: 'warn',
     },
     fixable: 'code',
     schema: [],

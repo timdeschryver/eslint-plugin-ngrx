@@ -1,6 +1,6 @@
 # Avoid Combining Selectors
 
-> Prefer combining selectors at the selector level with `createSelector`
+> Prefer combining selectors at the selector level with `createSelector`.
 
 ## Rule Details
 

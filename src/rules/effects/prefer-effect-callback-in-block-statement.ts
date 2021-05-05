@@ -16,7 +16,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Best Practices',
       description: 'A block statement is easier to troubleshoot.',
-      recommended: 'error',
+      recommended: 'warn',
     },
     schema: [],
     messages: {

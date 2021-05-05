@@ -5,7 +5,6 @@ import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import {
   docsUrl,
   findClassDeclarationNode,
-  findImportDeclarationNode,
   getConditionalImportFix,
   getImplementsSchemaFixer,
   isIdentifier,
