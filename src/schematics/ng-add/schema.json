@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsEslintPluginNgRx",
+  "$id": "SchematicsEslintPluginNgRx",
   "title": "eslint-plugin-ngrx schema",
   "type": "object",
   "properties": {},
