@@ -7,12 +7,12 @@
 Install and configure the ESLint NgRx Plugin with the `ng-add` command.
 This command:
 
-- adds `ngrx-eslint-plugin` as a dev dependency;
+- adds `eslint-plugin-ngrx` as a dev dependency;
 - adds the plugin to the ESLint plugins property;
 - adds the recommended config to the `extends` property of ESLint;
 
 ```bash
-ng add ngrx-eslint-plugin
+ng add eslint-plugin-ngrx
 ```
 
 ### Manual
