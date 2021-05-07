@@ -29,7 +29,7 @@ class Effect {
   detail$ = createEffect(() => {
     return this.actions.pipe(
       ofType(ProductDetailPage.loaded),
-      concatLatestFrom(this.store.select(selectProducts)),
+      concatLatestFrom(() => this.store.select(selectProducts)),
       mergeMap(([action, products]) => {
         ...
       })
