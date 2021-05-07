@@ -97,6 +97,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "qirex",
+      "name": "qirex",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3652328?v=4",
+      "profile": "https://github.com/qirex",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "skipCi": true,
