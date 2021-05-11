@@ -37,22 +37,23 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     if (!storeName) return {}
 
     return {
-      [`${pipeableSelect(storeName)}, ${storeSelect(storeName)}`]({
-        arguments: args,
-      }: TSESTree.CallExpression) {
-        args
-          .filter(
-            (node) =>
-              isLiteral(node) ||
-              isArrowFunctionExpression(node) ||
-              isFunctionExpression(node),
-          )
-          .forEach((node) =>
+      [`${pipeableSelect(storeName)}, ${storeSelect(storeName)}`](
+        node: TSESTree.CallExpression,
+      ) {
+        for (const arg of node.arguments) {
+          if (
+            isLiteral(arg) ||
+            isArrowFunctionExpression(arg) ||
+            isFunctionExpression(arg)
+          ) {
             context.report({
-              node,
+              node: arg,
               messageId,
-            }),
-          )
+            })
+          } else {
+            break
+          }
+        }
       },
     }
   },

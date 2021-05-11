@@ -37,6 +37,13 @@ ruleTester().run(path.parse(__filename).name, rule, {
         view$ = this.store.pipe(select(selectQueryParam('parameter')))
         constructor(store: Store){}
       }`,
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/135
+    stripIndent`
+      import { Store } from '@ngrx/store'
+      export class Component {
+        view$ = this.store.select(this.store.select(hasAuthorization, 'ADMIN'));
+        constructor(store: Store){}
+      }`,
   ],
   invalid: [
     fromFixture(
