@@ -11,28 +11,77 @@ That's why it's recommended to build a view model by composing multiple selector
 
 Examples of **incorrect** code for this rule:
 
+### Enrich state with other state in component
+
 ```ts
 export class Component {
   vm$ = combineLatest(
     this.store.select(selectCustomers),
     this.store.select(selectOrders),
+  ).pipe(
+    map(([customers, orders]) => {
+      return customers.map((c) => {
+        return {
+          customerId: c.id,
+          name: c.name,
+          orders: orders.filter((o) => o.customerId === c.id),
+        }
+      })
+    }),
   )
+}
+```
+
+### Filter state in component
+
+```ts
+export class Component {
+  customer$ = this.store
+    .select(selectCustomers)
+    .pipe(withLatestFrom(this.store.select(selectActiveCustomerId)))
+    .pipe(
+      map(([customers, customerId]) => {
+        return customers[customerId]
+      }),
+    )
 }
 ```
 
 Examples of **correct** code for this rule:
 
+### Enrich state with other state in selector
+
 ```ts
-// in selectors.ts:
 export selectCustomersAndOrders = createSelector(
   selectCustomers,
   selectOrders,
-  (customers, orders) => [customers, orders] // or some other combining logic
+  (customers, orders) => {
+    return {
+      customerId: c.id,
+      name: c.name,
+      orders: orders.filter((o) => o.customerId === c.id),
+    }
+  }
 )
 
-// in component:
 export class Component {
   vm$ = this.store.select(selectCustomersAndOrders);
+}
+```
+
+### Filter state in selector
+
+```ts
+export selectActiveCustomer = createSelector(
+  selectCustomers,
+  selectActiveCustomerId,
+  ([customers, customerId]) => {
+    return customers[customerId];
+  }
+)
+
+export class Component {
+  customer$ = this.store.select(selectActiveCustomer);
 }
 ```
 
