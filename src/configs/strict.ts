@@ -25,6 +25,7 @@ export = {
     'ngrx/on-function-explicit-return-type': 'error',
     'ngrx/prefer-inline-action-props': 'error',
     'ngrx/select-style': 'error',
+    'ngrx/use-consistent-global-store-name': 'error',
     'ngrx/use-selector-in-select': 'error',
     'rxjs/no-cyclic-action': 'warn',
     'rxjs/no-unsafe-catch': 'warn',
