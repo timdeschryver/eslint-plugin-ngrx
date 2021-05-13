@@ -20,6 +20,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     schema: [
       {
         type: 'string',
+        additionalProperties: false,
       },
     ],
     messages: {
