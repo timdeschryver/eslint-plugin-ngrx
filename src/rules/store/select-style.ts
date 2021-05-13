@@ -18,7 +18,7 @@ export type MessageIds =
 export const OPERATOR = 'operator'
 export const METHOD = 'method'
 
-type Options = [{ mode: string }]
+type Options = [typeof OPERATOR | typeof METHOD]
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: path.parse(__filename).name,
@@ -31,24 +31,20 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
     schema: [
       {
-        type: 'object',
-        properties: {
-          mode: {
-            enum: [OPERATOR, METHOD],
-          },
-        },
+        type: 'string',
+        enum: [OPERATOR, METHOD],
         additionalProperties: false,
       },
     ],
     messages: {
       [methodSelectMessageId]:
-        'Selectors should be used with select method: this.store.select(selector)',
+        'Selectors should be used with select method, `this.store.select(selector)`',
       [operatorSelectMessageId]:
-        'Selectors should be used with the pipeable operator: this.store.pipe(select(selector))',
+        'Selectors should be used with the pipeable operator, `this.store.pipe(select(selector))`',
     },
   },
-  defaultOptions: [{ mode: METHOD }],
-  create: (context, [{ mode }]) => {
+  defaultOptions: [METHOD],
+  create: (context, [mode]) => {
     const storeName = findNgRxStoreName(context)
     if (!storeName) return {}
 
