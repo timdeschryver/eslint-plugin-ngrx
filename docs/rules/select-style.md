@@ -29,12 +29,13 @@ export class Component {
 ## Rule Config
 
 To configure this rule you can change the preferred `mode` of the selectors, the allowed values are `method` and `operator`.
+The default is `method`.
 
 To prefer the **method** syntax (`this.store.select(selector)`) use:
 
 ```json
 "rules": {
-  "ngrx/select-style": ["warn", { "mode": "method" }]
+  "ngrx/select-style": ["warn", "method"]
 }
 ```
 
@@ -42,6 +43,6 @@ To prefer the **operator** syntax (`this.store.pipe(select(selector))`) use:
 
 ```json
 "rules": {
-  "ngrx/select-style": ["warn", { "mode": "operator" }]
+  "ngrx/select-style": ["warn", "operator"]
 }
 ```

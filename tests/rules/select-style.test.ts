@@ -36,7 +36,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private store: Store){}
       }
       `,
-      options: [{ mode: OPERATOR }],
+      options: [OPERATOR],
     },
     {
       code: `
@@ -47,7 +47,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private store: Store){}
       }
       `,
-      options: [{ mode: METHOD }],
+      options: [METHOD],
     },
   ],
   invalid: [
@@ -101,7 +101,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }
       `,
       {
-        options: [{ mode: METHOD }],
+        options: [METHOD],
       },
     ),
     fromFixture(
@@ -116,7 +116,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
 
       `,
       {
-        options: [{ mode: OPERATOR }],
+        options: [OPERATOR],
       },
     ),
   ],
