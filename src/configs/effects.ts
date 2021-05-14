@@ -7,6 +7,7 @@
 export = {
   plugins: ['ngrx'],
   rules: {
+    'ngrx/avoid-cyclic-effects': 'error',
     'ngrx/no-dispatch-in-effects': 'warn',
     'ngrx/no-effect-decorator-and-creator': 'error',
     'ngrx/no-effect-decorator': 'warn',

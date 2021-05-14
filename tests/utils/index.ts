@@ -5,7 +5,8 @@ export function ruleTester() {
   return new RuleTester({
     parser: resolve('./node_modules/@typescript-eslint/parser'),
     parserOptions: {
-      ecmaVersion: 6,
+      project: resolve('./tests/tsconfig.json'),
+      ecmaVersion: 2020,
       sourceType: 'module',
     },
   })
