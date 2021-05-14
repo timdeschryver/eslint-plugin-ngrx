@@ -121,3 +121,32 @@ export function findNgRxStoreName(
     })
     .find(Boolean)
 }
+
+export function findNgRxEffectActionsName(
+  context: TSESLint.RuleContext<string, readonly unknown[]>,
+): string | undefined {
+  const { ast } = context.getSourceCode()
+  const effectsImportSpecifier = findImportDeclarationNode(ast, '@ngrx/effects')
+  if (!effectsImportSpecifier) return undefined
+
+  const variables = context.getDeclaredVariables(effectsImportSpecifier)
+  const actionsVariable = variables.find((v) => v.name === 'Actions')
+
+  if (!actionsVariable) return undefined
+
+  return actionsVariable.references
+    .map(({ identifier: { parent } }) => {
+      if (
+        parent &&
+        isTSTypeReference(parent) &&
+        parent.parent &&
+        isTSTypeAnnotation(parent.parent) &&
+        parent.parent.parent &&
+        isIdentifier(parent.parent.parent)
+      ) {
+        return parent.parent.parent.name
+      }
+      return undefined
+    })
+    .find(Boolean)
+}

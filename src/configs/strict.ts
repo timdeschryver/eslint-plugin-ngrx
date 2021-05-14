@@ -7,6 +7,7 @@
 export = {
   plugins: ['ngrx', 'rxjs'],
   rules: {
+    'ngrx/avoid-cyclic-effects': 'error',
     'ngrx/no-dispatch-in-effects': 'error',
     'ngrx/no-effect-decorator-and-creator': 'error',
     'ngrx/no-effect-decorator': 'error',
@@ -27,7 +28,6 @@ export = {
     'ngrx/select-style': 'error',
     'ngrx/use-consistent-global-store-name': 'error',
     'ngrx/use-selector-in-select': 'error',
-    'rxjs/no-cyclic-action': 'warn',
     'rxjs/no-unsafe-catch': 'warn',
     'rxjs/no-unsafe-first': 'warn',
     'rxjs/no-unsafe-switchmap': 'warn',

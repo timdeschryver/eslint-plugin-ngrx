@@ -21,7 +21,6 @@ const getRules = (
   }, {} as Record<string, string>)
 
 const rxjsRules = {
-  'rxjs/no-cyclic-action': 'warn',
   'rxjs/no-unsafe-catch': 'warn',
   'rxjs/no-unsafe-first': 'warn',
   'rxjs/no-unsafe-switchmap': 'warn',

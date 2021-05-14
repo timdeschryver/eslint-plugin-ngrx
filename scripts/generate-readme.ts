@@ -21,14 +21,6 @@ const moduleRules = Object.entries(rules).reduce((all, [ruleName, rule]) => {
 
 moduleRules['effects'] = moduleRules['effects'].concat([
   [
-    '[rxjs/no-cyclic-action](https://github.com/cartant/eslint-plugin-rxjs/blob/main/docs/rules/no-cyclic-action.md)',
-    'Forbids effects that re-emit filtered actions.',
-    'problem',
-    'error (Possible Errors)',
-    'No',
-    'No',
-  ],
-  [
     '[rxjs/no-unsafe-catch](https://github.com/cartant/eslint-plugin-rxjs/blob/main/docs/rules/no-unsafe-catch.md)',
     'Forbids unsafe `catchError` usage in effects.',
     'problem',
