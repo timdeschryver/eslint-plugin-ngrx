@@ -1,4 +1,4 @@
 module.exports = {
   pkgRoot: 'dist',
-  branches: ['master', { name: 'beta', prerelease: true }],
+  branches: ['main', { name: 'beta', prerelease: true }],
 }
