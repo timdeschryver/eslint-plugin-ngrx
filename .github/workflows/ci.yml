@@ -1,21 +1,18 @@
 name: ci
 
 on:
-  pull_request:
-    paths-ignore:
-      - '*.md'
   push:
+  pull_request:
     branches:
-      - master
-    paths-ignore:
-      - '*.md'
+      - main
 
 jobs:
   build_test_release:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12, 14, 16]
+        os: [ubuntu-latest, windows-latest]
+        node: [12, 14, 16]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
@@ -32,7 +29,7 @@ jobs:
         env:
           CI: true
       - name: Release
-        if: github.repository == 'timdeschryver/eslint-plugin-ngrx' && github.ref == 'refs/heads/master' && matrix.node-version == 16
+        if: github.repository == 'timdeschryver/eslint-plugin-ngrx' && github.ref == 'refs/heads/main' && matrix.node-version == 16 && matrix.os == 'ubuntu-latest'
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
