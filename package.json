@@ -31,7 +31,7 @@
     "build": "tsc",
     "postbuild": "cpy ./{package.json,README.md} ./dist && npm run copy:schematics",
     "copy:schematics": "cpy ./schematics/**/*.json ../dist --cwd=src --parents",
-    "lint": "eslint --ext .ts ./src/** ./tests/**",
+    "lint": "eslint ./src/**/*.ts ./tests/**/*.ts",
     "g:config": "ts-node ./scripts/generate-config.ts",
     "g:readme": "ts-node ./scripts/generate-readme.ts",
     "g:all": "npm run g:config && npm run g:readme",

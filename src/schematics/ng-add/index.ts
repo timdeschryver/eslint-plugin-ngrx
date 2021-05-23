@@ -19,8 +19,16 @@ Please see ${docs} to configure the NgRx ESLint Plugin.
 
     try {
       const json = JSON.parse(eslint)
-      json.plugins = [...(json.plugins || []), 'ngrx']
-      json.extends = [...(json.extends || []), 'plugin:ngrx/recommended']
+      if (json.overrides) {
+        json.overrides
+          .filter((override: { files?: string[] }) =>
+            override.files?.some((file: string) => file.endsWith('*.ts')),
+          )
+          .forEach(configurePlugin)
+      } else {
+        configurePlugin(json)
+      }
+
       host.overwrite(eslintConfigPath, JSON.stringify(json, null, 2))
 
       context.logger.info(`
@@ -41,4 +49,12 @@ ${err.message}
 `)
     }
   }
+}
+
+function configurePlugin(json: {
+  plugins?: string[]
+  extends?: string[]
+}): void {
+  json.plugins = [...(json.plugins || []), 'ngrx']
+  json.extends = [...(json.extends || []), 'plugin:ngrx/recommended']
 }
