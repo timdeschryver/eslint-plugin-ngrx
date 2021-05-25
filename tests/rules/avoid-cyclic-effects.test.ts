@@ -11,6 +11,11 @@ const setup = `
 
   const foo = createAction('FOO');
   const bar = createAction('BAR');
+
+  const fromFoo = {
+    foo,
+    bar
+  }
 `
 
 ruleTester().run(path.parse(__filename).name, rule, {
@@ -33,12 +38,42 @@ ruleTester().run(path.parse(__filename).name, rule, {
     fromFixture(stripIndent`
       ${setup}
       class Effect {
-        foo$ = createEffect(() =>
-          this.actions.pipe(
+        foo$ = createEffect(() => {
+          return this.actions$.pipe(
+            ofType(foo),
+            map(() => bar()),
+          )
+        })
+
+        constructor(
+          private actions$: Actions,
+        ) {}
+      }
+    `),
+    fromFixture(stripIndent`
+      ${setup}
+      class Effect {
+        foo$ = createEffect(() => {
+          return this.actions$.pipe(
+            ofType(fromFoo.foo),
+            map(() => fromFoo.bar()),
+          )
+        })
+
+        constructor(
+          private actions$: Actions,
+        ) {}
+      }
+    `),
+    fromFixture(stripIndent`
+      ${setup}
+      class Effect {
+        foo$ = createEffect(() => {
+          return this.actions.pipe(
             ofType(foo),
             mapTo(bar()),
-          ),
-        )
+          )
+        })
 
         constructor(
           private actions: Actions,
@@ -48,12 +83,12 @@ ruleTester().run(path.parse(__filename).name, rule, {
     fromFixture(stripIndent`
       ${setup}
       class Effect {
-        foo$ = createEffect(() =>
-          this.actions$.pipe(
+        foo$ = createEffect(() => {
+          return this.actions$.pipe(
             ofType(foo),
             tap(() => alert('hi'))
-          ),
-          { dispatch: false }
+          )
+          }, { dispatch: false }
         )
 
         constructor(
@@ -70,6 +105,54 @@ ruleTester().run(path.parse(__filename).name, rule, {
             this.actions$.pipe(
             ~~~~~~~~~~~~~~~~~~ [${messageId}]
               ofType(foo),
+              tap(() => alert('hi'))
+            ),
+          )
+
+          constructor(
+            private actions$: Actions,
+          ) {}
+        }
+    `),
+    fromFixture(stripIndent`
+        ${setup}
+        class Effect {
+          foo$ = createEffect(() => {
+            return this.actions$.pipe(
+                   ~~~~~~~~~~~~~~~~~~ [${messageId}]
+              ofType(foo),
+              tap(() => alert('hi'))
+            )
+          })
+
+          constructor(
+            private actions$: Actions,
+          ) {}
+        }
+    `),
+    fromFixture(stripIndent`
+        ${setup}
+        class Effect {
+          foo$ = createEffect(() => {
+            return this.actions$.pipe(
+                  ~~~~~~~~~~~~~~~~~~ [${messageId}]
+              ofType(foo),
+              tap(() => alert('hi'))
+            )
+          }, { dispatch: true })
+
+          constructor(
+            private actions$: Actions,
+          ) {}
+        }
+    `),
+    fromFixture(stripIndent`
+        ${setup}
+        class Effect {
+          foo$ = createEffect(() =>
+            this.actions$.pipe(
+            ~~~~~~~~~~~~~~~~~~ [${messageId}]
+              ofType(fromFoo.foo),
               tap(() => alert('hi'))
             ),
           )
