@@ -41,7 +41,7 @@ export class Effects {
     );
   })
 
-  constructor(private readonly actions: Actions) {}
+  constructor(private readonly actions$: Actions) {}
 }
 ```
 
@@ -80,6 +80,6 @@ export class Effects {
     );
   })
 
-  constructor(private readonly actions: Actions) {}
+  constructor(private readonly actions$: Actions) {}
 }
 ```
