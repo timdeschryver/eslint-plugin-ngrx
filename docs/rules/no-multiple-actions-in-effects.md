@@ -12,7 +12,7 @@ Examples of **incorrect** code for this rule:
 ```ts
 export class Effects {
   loadEmployeeList$ = createEffect(() => {
-    return this.actions.pipe(
+    return this.actions$.pipe(
       ofType(componentLoaded),
       exhaustMap(() =>
         this.dataService.loadEmployeeList().pipe(
@@ -28,14 +28,14 @@ export class Effects {
   })
 
   loadCompanyList$ = createEffect(() => {
-    return this.actions.pipe(
+    return this.actions$.pipe(
       ofType(loadCompanyList),
       // handle loadCompanyList
     );
   })
 
   cleanData$ = createEffect(() => {
-    return this.actions.pipe(
+    return this.actions$.pipe(
       ofType(cleanData),
       // handle cleanData
     );
@@ -51,7 +51,7 @@ Examples of **correct** code for this rule:
 // in effect:
 export class Effects {
   loadEmployeeList$ = createEffect(() => {
-    return this.actions.pipe(
+    return this.actions$.pipe(
       ofType(componentLoaded),
       exhaustMap(() =>
         this.dataService.loadEmployeeList().pipe(
@@ -65,7 +65,7 @@ export class Effects {
   // use the one dispatched action
 
   loadCompanyList$ = createEffect(() => {
-    return this.actions.pipe(
+    return this.actions$.pipe(
       ofType(loadEmployeeListSuccess),
       // handle loadCompanyList
     );
@@ -74,7 +74,7 @@ export class Effects {
   //use the one dispatched action
 
   cleanData$ = createEffect(() => {
-    return this.actions.pipe(
+    return this.actions$.pipe(
       ofType(loadEmployeeListSuccess),
       // handle cleanData
     );
