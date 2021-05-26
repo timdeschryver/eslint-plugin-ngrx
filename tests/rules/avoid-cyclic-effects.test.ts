@@ -135,7 +135,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         class Effect {
           foo$ = createEffect(() => {
             return this.actions$.pipe(
-                  ~~~~~~~~~~~~~~~~~~ [${messageId}]
+                   ~~~~~~~~~~~~~~~~~~ [${messageId}]
               ofType(foo),
               tap(() => alert('hi'))
             )

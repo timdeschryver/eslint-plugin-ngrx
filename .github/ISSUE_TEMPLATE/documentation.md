@@ -1,13 +1,10 @@
 ---
 name: Documentation
 about: Report missing or inaccurate documentation
+title: [name-of-the-rule] title
 ---
 
-## Rule Name
-
-<!-- The name of the rule, e.g. no-typed-global-store -->
-
-## Other information
+## Information
 
 ## I would be willing to submit a PR for the docs :heart:
 

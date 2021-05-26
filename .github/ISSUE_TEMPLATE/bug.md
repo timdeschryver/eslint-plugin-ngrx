@@ -1,11 +1,8 @@
 ---
 name: Bug
 about: Report a bug
+title: [name-of-the-rule] title
 ---
-
-## Rule Name
-
-<!-- The name of the rule, e.g. no-typed-global-store -->
 
 ## Behavior
 
