@@ -16,7 +16,13 @@ const setup = `
     foo,
     bar
   }
-`
+`.concat(
+  [
+    "const subject = 'SUBJECT'",
+    'const genericFoo = createAction(`${subject} FOO`);',
+    'const genericBar = createAction(`${subject} BAR`);',
+  ].join('\n'),
+)
 
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
@@ -89,6 +95,36 @@ ruleTester().run(path.parse(__filename).name, rule, {
             tap(() => alert('hi'))
           )
           }, { dispatch: false }
+        )
+
+        constructor(
+          private actions$: Actions,
+        ) {}
+      }
+    `),
+    fromFixture(stripIndent`
+      ${setup}
+      class Effect {
+        foo$ = createEffect(() =>
+          this.actions$.pipe(
+            ofType(genericFoo),
+            map(() => genericBar()),
+          ),
+        )
+
+        constructor(
+          private actions$: Actions,
+        ) {}
+      }
+    `),
+    // TODO: this needs to be invalid
+    fromFixture(stripIndent`
+      ${setup}
+      class Effect {
+        foo$ = createEffect(() =>
+          this.actions$.pipe(
+            ofType(genericFoo),
+          ),
         )
 
         constructor(

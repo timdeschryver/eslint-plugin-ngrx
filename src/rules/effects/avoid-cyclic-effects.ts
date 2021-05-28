@@ -111,6 +111,12 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         symbol,
         symbol.valueDeclaration,
       )
+
+      // TODO: support "dynamic" types
+      // e.g. const genericFoo = createAction(`${subject} FOO`); (resolves to 'string')
+      if (typeChecker.typeToString(actionType) === 'string') {
+        return []
+      }
       return [typeChecker.typeToString(actionType)]
     }
 
