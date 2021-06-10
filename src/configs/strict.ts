@@ -18,6 +18,7 @@ export = {
     'ngrx/use-effects-lifecycle-interface': 'error',
     'ngrx/avoid-combining-selectors': 'error',
     'ngrx/avoid-dispatching-multiple-actions-sequentially': 'error',
+    'ngrx/avoid-duplicate-actions-in-reducer': 'error',
     'ngrx/avoid-mapping-selectors': 'error',
     'ngrx/good-action-hygiene': 'error',
     'ngrx/no-multiple-global-stores': 'error',
