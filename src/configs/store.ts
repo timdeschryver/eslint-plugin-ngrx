@@ -9,6 +9,7 @@ export = {
   rules: {
     'ngrx/avoid-combining-selectors': 'warn',
     'ngrx/avoid-dispatching-multiple-actions-sequentially': 'warn',
+    'ngrx/avoid-duplicate-actions-in-reducer': 'warn',
     'ngrx/avoid-mapping-selectors': 'warn',
     'ngrx/good-action-hygiene': 'warn',
     'ngrx/no-multiple-global-stores': 'warn',
