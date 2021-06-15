@@ -60,8 +60,22 @@ writeConfig(
   ['ngrx'],
 )
 
+writeConfig(
+  'component-store',
+  {
+    ...getRules((rule) => rule.meta.module === 'component-store'),
+  },
+  ['ngrx'],
+)
+
 function writeConfig(
-  configName: 'recommended' | 'all' | 'store' | 'effects' | 'strict',
+  configName:
+    | 'recommended'
+    | 'all'
+    | 'store'
+    | 'effects'
+    | 'component-store'
+    | 'strict',
   configRules: Record<string, string>,
   plugins = ['ngrx', 'rxjs'],
 ) {
