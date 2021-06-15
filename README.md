@@ -59,6 +59,12 @@ To enable the recommended configuration, add it to your ESLint configuration fil
 <!-- DO NOT EDIT, This table is automatically generated (as a pre-commit step) -->
 <!-- RULES-CONFIG:START -->
 
+### component-store
+
+| Name                                                                                                                                          | Description                                 | Recommended | Category               | Fixable | Configurable |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ----------- | ---------------------- | ------- | ------------ |
+| [ngrx/updater-explicit-return-type](https://github.com/timdeschryver/eslint-plugin-ngrx/tree/main/docs/rules/updater-explicit-return-type.md) | Updater should have an explicit return type | problem     | warn (Possible Errors) | No      | No           |
+
 ### effects
 
 | Name                                                                                                                                                                    | Description                                                                                                                    | Recommended | Category                | Fixable | Configurable |
