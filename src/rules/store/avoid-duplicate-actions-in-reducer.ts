@@ -1,15 +1,14 @@
+import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
-import { isIdentifier } from '../../utils'
-
-export const ruleName = 'avoid-duplicate-actions-in-reducer'
+import { docsUrl, isIdentifier } from '../../utils'
 
 export const messageId = 'avoidDuplicateActionsInReducer'
 export type MessageIds = typeof messageId
 
 type Options = []
 
-export default ESLintUtils.RuleCreator((name) => name)<Options, MessageIds>({
-  name: ruleName,
+export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+  name: path.parse(__filename).name,
   meta: {
     type: 'problem',
     docs: {
