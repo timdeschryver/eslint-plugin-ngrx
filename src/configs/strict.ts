@@ -27,6 +27,7 @@ export = {
     'ngrx/no-typed-global-store': 'error',
     'ngrx/on-function-explicit-return-type': 'error',
     'ngrx/prefer-inline-action-props': 'error',
+    'ngrx/prefer-one-generic-in-create-for-feature-selector': 'error',
     'ngrx/select-style': 'error',
     'ngrx/use-consistent-global-store-name': 'error',
     'ngrx/use-selector-in-select': 'error',
