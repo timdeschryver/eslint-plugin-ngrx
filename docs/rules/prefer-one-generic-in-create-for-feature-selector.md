@@ -6,6 +6,11 @@
 
 `createFeatureSelector` is typically used with `forFeature`, which should not be aware about the shape of the Global Store. Most of the time, feature states are lazy-loaded. As such, they only need to know (and care) about their own shape.
 
+This doesn't affect the [composability of these selectors](https://timdeschryver.dev/blog/sharing-data-between-modules-is-peanuts) across features.
+You can still use multiple selectors from different feature states together.
+
+> Tip: If you're accessing a lazy loaded feature that isn't loaded yet, the state returned by `createFeatureSelector` is `undefined`.
+
 Examples of **incorrect** code for this rule:
 
 ```ts
