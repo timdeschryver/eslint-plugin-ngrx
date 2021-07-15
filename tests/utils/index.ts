@@ -1,8 +1,8 @@
 import { resolve } from 'path'
-import { RuleTester } from '@typescript-eslint/experimental-utils/dist/ts-eslint'
+import { TSESLint } from '@typescript-eslint/experimental-utils'
 
 export function ruleTester() {
-  return new RuleTester({
+  return new TSESLint.RuleTester({
     parser: resolve('./node_modules/@typescript-eslint/parser'),
     parserOptions: {
       project: resolve('./tests/tsconfig.json'),
