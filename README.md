@@ -141,6 +141,7 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
     <td align="center"><a href="https://github.com/qirex"><img src="https://avatars.githubusercontent.com/u/3652328?v=4?s=100" width="100px;" alt=""/><br /><sub><b>qirex</b></sub></a><br /><a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=qirex" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Plondrein"><img src="https://avatars.githubusercontent.com/u/7114556?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dominik</b></sub></a><br /><a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=Plondrein" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/dangrussell"><img src="https://avatars.githubusercontent.com/u/4387475?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dan Russell</b></sub></a><br /><a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=dangrussell" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/ValentinBossi"><img src="https://avatars.githubusercontent.com/u/19373754?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Valentin</b></sub></a><br /><a href="https://github.com/timdeschryver/eslint-plugin-ngrx/pulls?q=is%3Apr+reviewed-by%3AValentinBossi" title="Reviewed Pull Requests">👀</a></td>
   </tr>
 </table>
 
