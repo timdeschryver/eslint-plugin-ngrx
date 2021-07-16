@@ -24,21 +24,21 @@ export class Effects {
           catchError((error) => loadEmployeeListError(error)),
         ),
       ),
-    );
+    )
   })
 
   loadCompanyList$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(loadCompanyList),
       // handle loadCompanyList
-    );
+    )
   })
 
   cleanData$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(cleanData),
       // handle cleanData
-    );
+    )
   })
 
   constructor(private readonly actions$: Actions) {}
@@ -59,7 +59,7 @@ export class Effects {
           catchError((error) => loadEmployeeListError(error)),
         ),
       ),
-    );
+    )
   })
 
   // use the one dispatched action
@@ -68,7 +68,7 @@ export class Effects {
     return this.actions$.pipe(
       ofType(loadEmployeeListSuccess),
       // handle loadCompanyList
-    );
+    )
   })
 
   //use the one dispatched action
@@ -77,7 +77,7 @@ export class Effects {
     return this.actions$.pipe(
       ofType(loadEmployeeListSuccess),
       // handle cleanData
-    );
+    )
   })
 
   constructor(private readonly actions$: Actions) {}

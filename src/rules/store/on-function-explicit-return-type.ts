@@ -26,7 +26,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [onFunctionWithoutType](node: TSESTree.TSTypeReference) {
+      [onFunctionWithoutType](node: TSESTree.ArrowFunctionExpression) {
         context.report({
           node,
           messageId,
