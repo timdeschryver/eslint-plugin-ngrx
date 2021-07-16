@@ -28,7 +28,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     if (!storeName) return {}
 
     return {
-      [dispatchInEffects(storeName)](node: TSESTree.CallExpression) {
+      [dispatchInEffects(storeName)](node: TSESTree.MemberExpression) {
         context.report({
           node,
           messageId,

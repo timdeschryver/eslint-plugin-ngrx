@@ -37,7 +37,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       .join(',')
 
     return {
-      [selectors](node: TSESTree.TSTypeReference) {
+      [selectors](node: TSESTree.ArrowFunctionExpression) {
         context.report({
           node,
           messageId,

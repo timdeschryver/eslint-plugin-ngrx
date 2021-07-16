@@ -28,7 +28,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [`${createEffectBody}`](node: TSESTree.ArrowFunctionExpression) {
+      [createEffectBody](node: TSESTree.ArrowFunctionExpression) {
         if (node.body && isCallExpression(node.body)) {
           context.report({
             node: node.body,
