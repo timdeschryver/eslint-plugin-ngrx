@@ -40,14 +40,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         node: TSESTree.CallExpression,
       ) {
         const [, ...violations] = node.arguments.filter(
-          (p) =>
-            isCallExpression(p) &&
-            isMemberExpression(p.callee) &&
-            isMemberExpression(p.callee.object) &&
-            isIdentifier(p.callee.object.property) &&
-            p.callee.object.property.name === storeName &&
-            isIdentifier(p.callee.property) &&
-            p.callee.property.name === 'select',
+          (n) => selectMethod(n, storeName) || selectPipe(n, storeName),
         )
 
         for (const node of violations) {
@@ -60,3 +53,33 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     }
   },
 })
+
+function selectMethod(node: TSESTree.Expression, storeName: string) {
+  return (
+    isCallExpression(node) &&
+    isMemberExpression(node.callee) &&
+    isMemberExpression(node.callee.object) &&
+    isIdentifier(node.callee.object.property) &&
+    node.callee.object.property.name === storeName &&
+    isIdentifier(node.callee.property) &&
+    node.callee.property.name === 'select'
+  )
+}
+
+function selectPipe(node: TSESTree.Expression, storeName: string) {
+  return (
+    isCallExpression(node) &&
+    isMemberExpression(node.callee) &&
+    isMemberExpression(node.callee.object) &&
+    isIdentifier(node.callee.object.property) &&
+    node.callee.object.property.name === storeName &&
+    isIdentifier(node.callee.property) &&
+    node.callee.property.name === 'pipe' &&
+    node.arguments.some(
+      (a) =>
+        isCallExpression(a) &&
+        isIdentifier(a.callee) &&
+        a.callee.name === 'select',
+    )
+  )
+}

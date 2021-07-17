@@ -1,9 +1,10 @@
 import { AST_NODE_TYPES, TSESTree } from '@typescript-eslint/experimental-utils'
 import ts from 'typescript'
 
-const isNodeOfType = <NodeType extends AST_NODE_TYPES>(nodeType: NodeType) => (
-  node: TSESTree.Node,
-): node is TSESTree.Node & { type: NodeType } => node.type === nodeType
+const isNodeOfType =
+  <NodeType extends AST_NODE_TYPES>(nodeType: NodeType) =>
+  (node: TSESTree.Node): node is TSESTree.Node & { type: NodeType } =>
+    node.type === nodeType
 
 export const isArrowFunctionExpression = isNodeOfType(
   AST_NODE_TYPES.ArrowFunctionExpression,
