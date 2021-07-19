@@ -25,7 +25,7 @@ export const ngModuleImports = `${ngModuleDecorator} ObjectExpression Property[k
 export const actionDispatch = (storeName: string) =>
   `ExpressionStatement > CallExpression:matches([callee.object.name=${storeName}][callee.property.name="dispatch"], [callee.object.object.type='ThisExpression'][callee.object.property.name=${storeName}][callee.property.name="dispatch"])`
 
-const storeExpression = (storeName: string) =>
+export const storeExpression = (storeName: string) =>
   `CallExpression:matches([callee.object.name=${storeName}], [callee.object.object.type='ThisExpression'][callee.object.property.name=${storeName}])`
 
 export const pipeableSelect = (storeName: string) =>

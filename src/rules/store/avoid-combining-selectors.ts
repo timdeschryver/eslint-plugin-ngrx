@@ -3,10 +3,9 @@ import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
 import {
   docsUrl,
-  isCallExpression,
-  isMemberExpression,
-  isIdentifier,
   findNgRxStoreName,
+  storeSelect,
+  storeExpression,
 } from '../../utils'
 
 export const messageId = 'avoidCombiningSelectors'
@@ -35,27 +34,20 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     const storeName = findNgRxStoreName(context)
     if (!storeName) return {}
 
+    const pipeableOrStoreSelect = `:matches(${storeExpression(
+      storeName,
+    )}[callee.property.name='pipe']:has(CallExpression[callee.name='select']), ${storeSelect(
+      storeName,
+    )})`
+
     return {
-      [`CallExpression[callee.name='combineLatest'][arguments.length>1]`](
+      [`CallExpression[callee.name='combineLatest'][arguments.length>1] ${pipeableOrStoreSelect} ~ ${pipeableOrStoreSelect}`](
         node: TSESTree.CallExpression,
       ) {
-        const [, ...violations] = node.arguments.filter(
-          (p) =>
-            isCallExpression(p) &&
-            isMemberExpression(p.callee) &&
-            isMemberExpression(p.callee.object) &&
-            isIdentifier(p.callee.object.property) &&
-            p.callee.object.property.name === storeName &&
-            isIdentifier(p.callee.property) &&
-            p.callee.property.name === 'select',
-        )
-
-        for (const node of violations) {
-          context.report({
-            node,
-            messageId,
-          })
-        }
+        context.report({
+          node,
+          messageId,
+        })
       },
     }
   },
