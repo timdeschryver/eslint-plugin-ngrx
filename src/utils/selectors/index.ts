@@ -36,6 +36,9 @@ export const pipeableSelect = (storeName: string) =>
 export const storeSelect = (storeName: string) =>
   `${storeExpression(storeName)}[callee.property.name='select']`
 
+export const storePipe = (storeName: string) =>
+  `${storeExpression(storeName)}[callee.property.name='pipe']`
+
 export const onFunctionWithoutType = `CallExpression[callee.name='createReducer'] CallExpression[callee.name='on'] > ArrowFunctionExpression:not([returnType.typeAnnotation],:has(CallExpression))`
 
 export const storeActionReducerMap = `${ngModuleDecorator} ObjectExpression Property[key.name='imports'] > ArrayExpression CallExpression[callee.object.name='StoreModule'][callee.property.name=/forRoot|forFeature/] > ObjectExpression:first-child > Property`

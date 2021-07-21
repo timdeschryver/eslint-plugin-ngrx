@@ -6,6 +6,8 @@ import {
   isCallExpression,
   isIdentifier,
   findNgRxStoreName,
+  storeSelect,
+  storePipe,
 } from '../../utils'
 
 export const messageId = 'avoidMapppingSelectors'
@@ -35,7 +37,11 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     if (!storeName) return {}
 
     return {
-      [`CallExpression[callee.object.callee.object.property.name=${storeName}][callee.object.callee.property.name='select'][callee.property.name='pipe']`](
+      [`CallExpression:has(${storeSelect(
+        storeName,
+      )})[callee.property.name='pipe'], ${storePipe(
+        storeName,
+      )}:has(CallExpression[callee.name="select"])`](
         node: TSESTree.CallExpression,
       ) {
         const violations = node.arguments.filter(
