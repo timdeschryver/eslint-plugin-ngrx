@@ -28,16 +28,14 @@ export const actionDispatch = (storeName: string) =>
 export const storeExpression = (storeName: string) =>
   `CallExpression:matches([callee.object.name=${storeName}], [callee.object.object.type='ThisExpression'][callee.object.property.name=${storeName}])`
 
+export const storePipe = (storeName: string) =>
+  `${storeExpression(storeName)}[callee.property.name='pipe']`
+
 export const pipeableSelect = (storeName: string) =>
-  `${storeExpression(
-    storeName,
-  )}[callee.property.name='pipe'] CallExpression[callee.name='select']`
+  `${storePipe(storeName)} CallExpression[callee.name='select']`
 
 export const storeSelect = (storeName: string) =>
   `${storeExpression(storeName)}[callee.property.name='select']`
-
-export const storePipe = (storeName: string) =>
-  `${storeExpression(storeName)}[callee.property.name='pipe']`
 
 export const onFunctionWithoutType = `CallExpression[callee.name='createReducer'] CallExpression[callee.name='on'] > ArrowFunctionExpression:not([returnType.typeAnnotation],:has(CallExpression))`
 
