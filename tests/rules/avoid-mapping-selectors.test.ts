@@ -38,6 +38,21 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private store: Store){}
       }
     `,
+    `
+      import { Store, select } from '@ngrx/store'
+      @Injectable()
+      export class FixtureEffect {
+        loginUserSuccess$ = createEffect(() => {
+            return this.actions$.pipe(
+              ofType(AuthActions.loginUserSuccess),
+              concatLatestFrom(action => this.store.select(startUrl)),
+              map(([action, url]) => AuthActions.setStartUrl({data: ''})),
+            );
+          }
+        );
+        constructor(private store: Store){}
+      }
+    `,
   ],
   invalid: [
     fromFixture(

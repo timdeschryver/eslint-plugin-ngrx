@@ -29,16 +29,16 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     const storeName = findNgRxStoreName(context)
     if (!storeName) return {}
 
-    const mapInSelect = `CallExpression:has(${storeSelect(
+    const mapInSelect = `CallExpression:has(MemberExpression:has(${storeSelect(
       storeName,
-    )})[callee.property.name='pipe']`
+    )}))[callee.property.name='pipe']`
     const mapInPipe = `${storePipe(
       storeName,
     )}:has(CallExpression[callee.name="select"])`
     const pipeExpressions = [mapInSelect, mapInPipe].join(', ')
 
     return {
-      [`:matches(${pipeExpressions}) CallExpression[callee.name='map']`](
+      [`:matches(${pipeExpressions}) > CallExpression[callee.name='map']`](
         node: TSESTree.CallExpression,
       ) {
         context.report({
