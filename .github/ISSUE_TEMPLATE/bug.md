@@ -1,7 +1,7 @@
 ---
 name: Bug
 about: Report a bug
-title: [name-of-the-rule] title
+title: Bug name-of-the-rule
 ---
 
 ## Behavior

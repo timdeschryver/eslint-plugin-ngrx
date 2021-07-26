@@ -1,7 +1,7 @@
 ---
 name: Documentation
 about: Report missing or inaccurate documentation
-title: [name-of-the-rule] title
+title: Documentation name-of-the-rule
 ---
 
 ## Information
