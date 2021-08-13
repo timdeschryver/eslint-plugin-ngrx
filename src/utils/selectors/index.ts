@@ -58,5 +58,5 @@ export const effectsReturn = `${mapOperatorsExpression} ReturnStatement`
 
 const selectorsNames = 'createSelector|createFeatureSelector' // How to handle createSelectorFactory???
 const selectorsExpression = `CallExpression[callee.name=/^${selectorsNames}$/]`
-const memorizedSelectorType 'MemoizedSelector|MemoizedSelectorWithProps'
+const memorizedSelectorType = 'MemoizedSelector|MemoizedSelectorWithProps'
 const memorizedSelector = `VariableDeclarator[id.typeAnnotation.typeAnnotation.typeName.name=/^${memorizedSelectorType}$/] > ObjectExpression > Property`
