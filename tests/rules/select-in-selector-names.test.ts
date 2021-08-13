@@ -13,6 +13,12 @@ ruleTester().run(path.parse(__filename).name, rule, {
 
     export const selectFeature:MemoizedSelector<any, any> = (state: AppState) => state.feature`,
     `
+    interface AppState {
+      feature: FeatureState;
+    }
+
+    export const selectFeature = createSelector((state: AppState) => state.feature)`,
+    `
    export const featureKey = 'feature';
  
     export interface FeatureState {
@@ -32,7 +38,16 @@ ruleTester().run(path.parse(__filename).name, rule, {
           feature: FeatureState;
         }
 
-        export const getFeature:MemoizedSelector<any, any> = (state: AppState) => state.feature
+        export const getFeature: MemoizedSelector<any, any> = (state: AppState) => state.feature
+                     ~~~~~~~~~~                        [${messageId}]`,
+    ),
+    fromFixture(
+      stripIndent`
+        interface AppState {
+          feature: FeatureState;
+        }
+
+        export const getFeature = createSelector((state: AppState) => state.feature)
                      ~~~~~~~~~~                        [${messageId}]`,
     ),
   ],
