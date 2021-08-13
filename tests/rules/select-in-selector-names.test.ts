@@ -28,52 +28,12 @@ ruleTester().run(path.parse(__filename).name, rule, {
   invalid: [
     fromFixture(
       stripIndent`
-        @NgModule({
-          imports: [
-            StoreModule.forRoot({
-              feeReducer,
-              ~~~~~~~~~~                        [${messageId}]
-              fieReducer: fie,
-              ~~~~~~~~~~                        [${messageId}]
-              'fooReducer': foo,
-              ~~~~~~~~~~~~                      [${messageId}]
-              FoeReducer: FoeReducer,
-              ~~~~~~~~~~                        [${messageId}]
-            }),
-          ],
-        })
-        export class AppModule {}`,
-    ),
-    fromFixture(
-      stripIndent`
-        @NgModule({
-          imports: [
-            StoreModule.forFeature({
-              feeReducer,
-              ~~~~~~~~~~                        [${messageId}]
-              fieReducer: fie,
-              ~~~~~~~~~~                        [${messageId}]
-              'fooReducer': foo,
-              ~~~~~~~~~~~~                      [${messageId}]
-              FoeReducer: FoeReducer,
-              ~~~~~~~~~~                        [${messageId}]
-            }),
-          ],
-        })
-        export class AppModule {}`,
-    ),
-    fromFixture(
-      stripIndent`
-        export const reducers: ActionReducerMap<AppState> = {
-          feeReducer,
-          ~~~~~~~~~~                          [${messageId}]
-          fieReducer: fie,
-          ~~~~~~~~~~                          [${messageId}]
-          'fooReducer': foo,
-          ~~~~~~~~~~~~                        [${messageId}]
-          FoeReducer: fromFoe.reducer,
-          ~~~~~~~~~~                          [${messageId}]
-        };`,
+        interface AppState {
+          feature: FeatureState;
+        }
+
+        export const getFeature:MemoizedSelector<any, any> = (state: AppState) => state.feature
+                     ~~~~~~~~~~                        [${messageId}]`,
     ),
   ],
 })
