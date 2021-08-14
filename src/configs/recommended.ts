@@ -24,6 +24,7 @@ export = {
     'ngrx/good-action-hygiene': 'warn',
     'ngrx/no-multiple-global-stores': 'warn',
     'ngrx/no-reducer-in-key-names': 'warn',
+    'ngrx/no-store-subscription': 'warn',
     'ngrx/no-typed-global-store': 'warn',
     'ngrx/on-function-explicit-return-type': 'warn',
     'ngrx/prefer-inline-action-props': 'warn',
