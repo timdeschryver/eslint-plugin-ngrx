@@ -20,8 +20,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
     schema: [],
     messages: {
-      [messageId]:
-        'Name Selector Functions as selectThing',
+      [messageId]: 'Name Selector Functions as selectThing',
     },
   },
   defaultOptions: [],
@@ -29,22 +28,30 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     const includedKeyword = 'select'
 
     function hasKeyword(name: string): boolean {
+      console.log(name.toLowerCase().startsWith(includedKeyword))
       return name.toLowerCase().startsWith(includedKeyword)
     }
 
     return {
-      [`${memorizedSelector}`](
-        node: TSESTree.Property,
+      [`VariableDeclaration[declarations.length>0]`](
+        node: TSESTree.VariableDeclaration,
       ) {
-        const key = node.key
-        if (
-          (isLiteral(key) && !hasKeyword(key.raw)) ||
-          (isIdentifier(key) && !hasKeyword(key.name))
-        ) {
-          context.report({
-            node: key,
-            messageId,
-          })
+        for (const dec of node.declarations) {
+          const id: TSESTree.Identifier = (dec.id as any) as TSESTree.Identifier
+          console.log(id.name) //, dec.id.typeAnnotation?.typeAnnotation)
+          if (dec.id.typeAnnotation?.typeAnnotation) {
+            if (
+              /${memorizedSelector}/.exec(
+                ((dec.id.typeAnnotation
+                  ?.typeAnnotation as TSESTree.TSTypeReference)
+                  .typeName as TSESTree.Identifier).name as string,
+              ) === null
+            ) {
+              if (!hasKeyword(id.name)) {
+                context.report({ node, messageId })
+              }
+            }
+          }
         }
       },
     }
