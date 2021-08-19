@@ -39,7 +39,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }
 
         export const getFeature: MemoizedSelector<any, any> = (state: AppState) => state.feature
-                     ~~~~~~~~~~                        [${messageId}]`,
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[${messageId}]`,
     ),
     fromFixture(
       stripIndent`
