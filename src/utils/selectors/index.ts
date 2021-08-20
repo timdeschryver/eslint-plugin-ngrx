@@ -55,9 +55,3 @@ export const createEffectBody = `${createEffectExpression} > ArrowFunctionExpres
 export const effectsImplicitReturn = `${mapOperatorsExpression} > ArrowFunctionExpression > ArrayExpression, ${mapToOperatorsExpression} ArrayExpression`
 
 export const effectsReturn = `${mapOperatorsExpression} ReturnStatement`
-
-export const selectorsNames = 'createSelector|createFeatureSelector' // How to handle createSelectorFactory???
-export const selectorsExpression = `CallExpression[callee.name=/${selectorsNames}/]`
-export const memorizedSelectorTypes =
-  'MemoizedSelector|MemoizedSelectorWithProps'
-export const memorizedSelector = `VariableDeclarator[id.typeAnnotation?.typeAnnotation.typeName.name=/^${memorizedSelectorTypes}$/]`
