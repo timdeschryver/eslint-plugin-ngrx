@@ -65,9 +65,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       if (!isTypeReference(operatorReturnType)) {
         return
       }
-      const [operatorElementType] = typeChecker.getTypeArguments(
-        operatorReturnType,
-      )
+      const [operatorElementType] =
+        typeChecker.getTypeArguments(operatorReturnType)
       if (!operatorElementType) {
         return
       }
@@ -121,7 +120,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     }
 
     return {
-      [`${createEffectExpression}:not([arguments.1]:has(Property[key.name="dispatch"][value.value=false])) CallExpression[callee.property.name='pipe'][callee.object.property.name="${actionsName}"]`]: checkNode,
+      [`${createEffectExpression}:not([arguments.1]:has(Property[key.name="dispatch"][value.value=false])) CallExpression[callee.property.name='pipe'][callee.object.property.name="${actionsName}"]`]:
+        checkNode,
     }
   },
 })

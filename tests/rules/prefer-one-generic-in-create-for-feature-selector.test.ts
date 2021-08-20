@@ -28,7 +28,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           messageId: preferOneGenericInCreateForFeatureSelector,
           suggestions: [
             {
-              messageId: preferOneGenericInCreateForFeatureSelectorSuggest as MessageIds,
+              messageId:
+                preferOneGenericInCreateForFeatureSelectorSuggest as MessageIds,
               output: stripIndent`
                 const featureA = createFeatureSelector<FeatureState>('feature-state')
               `,
