@@ -28,48 +28,12 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
   },
   defaultOptions: [],
-  create: (context) => {
-    const includedKeyword = 'select'
-
-    function hasKeyword(name: string): boolean {
-      // console.log(name.toLowerCase().startsWith(includedKeyword))
-      return name.toLowerCase().startsWith(includedKeyword)
-    }
-
+  create(context) {
     return {
-      [`VariableDeclaration[declarations.length>0]`](
-        node: TSESTree.VariableDeclaration,
-      ) {
-        for (const dec of node.declarations) {
-          const id: TSESTree.Identifier = (dec.id as any) as TSESTree.Identifier
-          // console.log(id.name) //, dec.id.typeAnnotation?.typeAnnotation)
-          if (dec.id.typeAnnotation?.typeAnnotation) {
-            if (
-              /^${memorizedSelectorTypes}$/.exec(
-                ((dec.id.typeAnnotation
-                  ?.typeAnnotation as TSESTree.TSTypeReference)
-                  .typeName as TSESTree.Identifier).name as string,
-              ) === null
-            ) {
-              if (!hasKeyword(id.name)) {
-                context.report({ node: id, messageId })
-              }
-            }
-          } else {
-            // console.log(dec.init)
-            if (dec.init?.type === AST_NODE_TYPES.CallExpression) {
-              if (
-                /^${selectorsNames}$/.exec(
-                  (dec.init.callee as TSESTree.Identifier).name,
-                ) === null
-              ) {
-                if (!hasKeyword(id.name)) {
-                  context.report({ node: id, messageId })
-                }
-              }
-            }
-          }
-        }
+      'VariableDeclarator[id.name=/^(?!select).+/]:matches(:has(TSTypeAnnotation[typeAnnotation.typeName.name=/^MemoizedSelector(Props$|$)/]), :has(CallExpression[callee.name=/^(createSelector|createFeatureSelector)$/]))'({
+        id,
+      }: TSESTree.VariableDeclarator) {
+        context.report({ node: id, messageId })
       },
     }
   },
