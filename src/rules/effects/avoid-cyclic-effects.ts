@@ -103,7 +103,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         return memberActionTypes
       }
       const symbol = typeChecker.getPropertyOfType(type, 'type')
-      if (!symbol) {
+      if (!symbol?.valueDeclaration) {
         return []
       }
       const actionType = typeChecker.getTypeOfSymbolAtLocation(
