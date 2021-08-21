@@ -9,7 +9,7 @@ It's recommended prefixing selector function names with the word `select` combin
 Examples of **incorrect** code for this rule:
 
 ```ts
-// ⚠ Usage a selector without any prefix
+// ⚠ Usage of a selector without any prefix
 export const feature = createSelector((state: AppState) => state.feature)
 
 // ⚠ Usage of a selector with a `get` prefix
