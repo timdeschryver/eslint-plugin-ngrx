@@ -13,6 +13,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
     `
     export const selectFeature = createSelector((state: AppState) => state.feature)`,
     `
+    export const selectFeature = createFeatureSelector<FeatureState>(featureKey);`,
+    `
     export const selectFeature = createFeatureSelector<AppState, FeatureState>(featureKey);`,
   ],
   invalid: [
