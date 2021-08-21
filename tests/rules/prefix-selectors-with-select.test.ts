@@ -32,13 +32,18 @@ ruleTester().run(path.parse(__filename).name, rule, {
     ),
     fromFixture(
       stripIndent`
+        export const select = createSelector((state: AppState) => state.feature)
+                     ~~~~~~                            [${messageId}]`,
+    ),
+    fromFixture(
+      stripIndent`
       export const feature = createFeatureSelector<AppState, FeatureState>(featureKey);
-                   ~~~~~~~                            [${messageId}]`,
+                   ~~~~~~~                             [${messageId}]`,
     ),
     fromFixture(
       stripIndent`
         export const selectfeature = createSelector((state: AppState) => state.feature)
-                     ~~~~~~~~~~~~~                    [${messageId}]`,
+                     ~~~~~~~~~~~~~                     [${messageId}]`,
     ),
     fromFixture(
       stripIndent`

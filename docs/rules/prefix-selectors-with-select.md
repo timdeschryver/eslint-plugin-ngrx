@@ -12,6 +12,9 @@ Examples of **incorrect** code for this rule:
 // ⚠ Usage of a selector without any prefix
 export const feature = createSelector((state: AppState) => state.feature)
 
+// ⚠ Usage of a selector without any description
+export const select = createSelector((state: AppState) => state.feature)
+
 // ⚠ Usage of a selector with a `get` prefix
 export const getFeature: MemoizedSelector<any, any> = (state: AppState) =>
   state.feature
