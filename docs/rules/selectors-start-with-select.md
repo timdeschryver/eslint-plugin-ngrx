@@ -1,6 +1,6 @@
 # Selectors Start With Select
 
-> The variable name of a selector should start with "select", for example "selectThing"
+> The selector should start with "select", for example "selectThing"
 
 It's recommended prefixing selector function names with the word `select` combined with a description of the value being selected.
 
