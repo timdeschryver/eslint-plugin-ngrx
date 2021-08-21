@@ -16,6 +16,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
     export const selectFeature = createFeatureSelector<FeatureState>(featureKey);`,
     `
     export const selectFeature = createFeatureSelector<AppState, FeatureState>(featureKey);`,
+    `
+    export const selectFeature = createSelector((state, props) => state.counter[props.id])`,
   ],
   invalid: [
     fromFixture(
@@ -37,6 +39,11 @@ ruleTester().run(path.parse(__filename).name, rule, {
       stripIndent`
         export const selectfeature = createSelector((state: AppState) => state.feature)
                      ~~~~~~~~~~~~~                    [${messageId}]`,
+    ),
+    fromFixture(
+      stripIndent`
+      const getCount = createSelector((state, props) => state * props.multiply)
+            ~~~~~~~~                                  [${messageId}]`,
     ),
   ],
 })
