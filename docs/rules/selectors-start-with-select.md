@@ -1,4 +1,4 @@
-# Selectors State with Select
+# Selectors Start With Select
 
 > The variable name of a selector should start with "select", for example "selectThing"
 
