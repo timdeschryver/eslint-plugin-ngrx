@@ -15,6 +15,9 @@ export const feature = createSelector((state: AppState) => state.feature)
 // ⚠ Usage of a selector with a `get` prefix
 export const getFeature: MemoizedSelector<any, any> = (state: AppState) =>
   state.feature
+
+// ⚠ Usage of a selector with improper casing
+const selectfeature = createFeatureSelector<AppState, FeatureState>(featureKey)
 ```
 
 Examples of **correct** code for this rule:
@@ -23,6 +26,7 @@ Examples of **correct** code for this rule:
 export const selectFeature = createSelector((state: AppState) => state.feature)
 export const selectFeature: MemoizedSelector<any, any> = (state: AppState) =>
   state.feature
+const selectFeature = createFeatureSelector<AppState, FeatureState>(featureKey)
 ```
 
 ## Further reading
