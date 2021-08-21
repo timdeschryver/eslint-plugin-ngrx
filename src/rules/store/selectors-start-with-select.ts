@@ -26,7 +26,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create(context) {
     return {
-      'VariableDeclarator[id.name=/^(?!select).+/]:matches(:has(TSTypeAnnotation[typeAnnotation.typeName.name=/^MemoizedSelector(Props$|$)/]), :has(CallExpression[callee.name=/^(createSelector|createFeatureSelector)$/]))'({
+      'VariableDeclarator[id.name!=/^select[A-Z][a-zA-Z]+$/]:matches(:has(TSTypeAnnotation[typeAnnotation.typeName.name=/^MemoizedSelector(WithProps$|$)/]), :has(CallExpression[callee.name=/^(createSelector|createFeatureSelector)$/]))'({
         id,
       }: TSESTree.VariableDeclarator) {
         context.report({ node: id, messageId })
