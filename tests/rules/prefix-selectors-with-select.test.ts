@@ -3,7 +3,7 @@ import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
   messageId,
-} from '../../src/rules/store/selectors-start-with-select'
+} from '../../src/rules/store/prefix-selectors-with-select'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {

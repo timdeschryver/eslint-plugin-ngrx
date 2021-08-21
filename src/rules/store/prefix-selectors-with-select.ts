@@ -3,7 +3,7 @@ import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
 import { docsUrl } from '../../utils'
 
-export const messageId = 'selectorsStartWithSelect'
+export const messageId = 'prefixSelectorsWithSelect'
 export type MessageIds = typeof messageId
 
 type Options = []

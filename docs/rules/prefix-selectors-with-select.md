@@ -1,4 +1,4 @@
-# Selectors Start With Select
+# Prefix Selectors With Select
 
 > The selector should start with "select", for example "selectThing"
 
