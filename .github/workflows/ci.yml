@@ -25,7 +25,7 @@ jobs:
       - name: build
         run: npm run build
       - name: test
-        run: npm run test -- --ci --coverage
+        run: npm run test
       - name: Release
         if: github.repository == 'timdeschryver/eslint-plugin-ngrx' && github.ref == 'refs/heads/main'
         run: npx semantic-release

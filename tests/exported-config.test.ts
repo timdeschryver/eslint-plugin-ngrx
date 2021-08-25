@@ -1,14 +1,16 @@
+import { test } from 'uvu'
+import * as assert from 'uvu/assert'
 import plugin from '../src'
 
 test('exports all config', () => {
-  expect(Object.keys(plugin.configs)).toMatchInlineSnapshot(`
-    Array [
-      "all",
-      "component-store",
-      "effects",
-      "recommended",
-      "store",
-      "strict",
-    ]
-  `)
+  assert.equal(Object.keys(plugin.configs), [
+    'all',
+    'component-store',
+    'effects',
+    'recommended',
+    'store',
+    'strict',
+  ])
 })
+
+test.run()
