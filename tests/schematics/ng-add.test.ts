@@ -1,3 +1,5 @@
+import { test } from 'uvu'
+import * as assert from 'uvu/assert'
 import { Tree } from '@angular-devkit/schematics'
 import {
   SchematicTestRunner,
@@ -9,7 +11,7 @@ const schematicRunner = new SchematicTestRunner(
   'src/schematics/collection.json',
 )
 
-it('should register the plugin', async () => {
+test('should register the plugin', async () => {
   const appTree = new UnitTestTree(Tree.empty())
 
   const initialConfig = {}
@@ -19,13 +21,13 @@ it('should register the plugin', async () => {
 
   const eslintContent = appTree.readContent(`.eslintrc.json`)
   const eslintJson = JSON.parse(eslintContent)
-  expect(eslintJson).toEqual({
+  assert.equal(eslintJson, {
     extends: ['plugin:ngrx/recommended'],
     plugins: ['ngrx'],
   })
 })
 
-it('should register the plugin in overrides when it supports TS', async () => {
+test('should register the plugin in overrides when it supports TS', async () => {
   const appTree = new UnitTestTree(Tree.empty())
 
   // this is a trimmed down version of the default angular-eslint schematic
@@ -62,7 +64,7 @@ it('should register the plugin in overrides when it supports TS', async () => {
 
   const eslintContent = appTree.readContent(`.eslintrc.json`)
   const eslintJson = JSON.parse(eslintContent)
-  expect(eslintJson).toEqual({
+  assert.equal(eslintJson, {
     overrides: [
       {
         files: ['*.ts'],
@@ -92,3 +94,5 @@ it('should register the plugin in overrides when it supports TS', async () => {
     ],
   })
 })
+
+test.run()
