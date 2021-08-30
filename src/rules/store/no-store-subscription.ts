@@ -2,7 +2,7 @@ import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 import { findNgRxStoreName } from '../../utils/helper-functions/index'
 
-import { docsUrl, storeExpression } from '../../utils'
+import { docsUrl } from '../../utils'
 
 export const messageId = 'noStoreSubscription'
 export type MessageIds = typeof messageId
@@ -31,9 +31,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     if (!storeName) return {}
 
     return {
-      [`CallExpression:has(${storeExpression(
-        storeName,
-      )}) > MemberExpression > Identifier[name='subscribe']`](
+      [`CallExpression:matches([callee.object.callee.object.name='${storeName}'], [callee.object.callee.object.object.type='ThisExpression'][callee.object.callee.object.property.name='${storeName}']) > MemberExpression > Identifier[name='subscribe']`](
         node: TSESTree.Identifier,
       ) {
         context.report({
