@@ -2,7 +2,7 @@ import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 import { findNgRxStoreName } from '../../utils/helper-functions/index'
 
-import { docsUrl, storeExpression } from '../../utils'
+import { docsUrl } from '../../utils'
 
 export const messageId = 'noStoreSubscription'
 export type MessageIds = typeof messageId
