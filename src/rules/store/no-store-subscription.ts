@@ -31,9 +31,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     if (!storeName) return {}
 
     return {
-      [`CallExpression:has(${storeExpression(
-        storeName,
-      )}) > MemberExpression > Identifier[name='subscribe']`](
+      [`CallExpression:matches([callee.object.callee.object.name=${storeName}], [callee.object.callee.object.object.type='ThisExpression'][callee.object.callee.object.property.name=${storeName}]) > MemberExpression > Identifier[name='subscribe']`](
         node: TSESTree.Identifier,
       ) {
         context.report({
