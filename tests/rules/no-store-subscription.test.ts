@@ -24,6 +24,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private store: Store) {}
       }
     `,
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/175
     `
       import { Store } from '@ngrx/store'
       @Component()
