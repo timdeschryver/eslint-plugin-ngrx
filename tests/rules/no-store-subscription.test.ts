@@ -93,11 +93,15 @@ ruleTester().run(path.parse(__filename).name, rule, {
         import { Store } from '@ngrx/store'
         @Component()
         export class FixtureComponent {
+          items: readonly Item[]
+
           constructor(private store: Store) {}
 
           ngOnInit() {
-            this.store.pipe(select(selectItems)).subscribe()
+            this.store.pipe(select(selectItems)).subscribe((items) => {
                                                  ~~~~~~~~~ [${messageId}]
+              this.items = items
+            })
           }
         }
       `,
@@ -107,8 +111,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
         import { Store } from '@ngrx/store'
         @Component()
         export class FixtureComponent {
+          readonly items: readonly Item[]
+
           constructor(store: Store) {
-            store.pipe(select(selectItems)).subscribe()
+            store.pipe(select(selectItems)).subscribe((items) => this.items = items)
                                             ~~~~~~~~~ [${messageId}]
           }
         }
@@ -119,7 +125,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         import { Store } from '@ngrx/store'
         @Component()
         export class FixtureComponent {
-          readonly control = new FormControl();
+          readonly control = new FormControl()
 
           constructor(store: Store) {
             this.control.valueChanges.subscribe(() => {
