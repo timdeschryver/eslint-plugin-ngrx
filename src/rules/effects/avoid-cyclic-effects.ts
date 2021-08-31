@@ -1,6 +1,8 @@
-import ts from 'typescript'
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
+import { getTypeServices } from 'eslint-etc'
 import path from 'path'
-import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
+import ts from 'typescript'
 
 import {
   createEffectExpression,
@@ -10,7 +12,6 @@ import {
   isIdentifier,
   isTypeReference,
 } from '../../utils'
-import { getTypeServices } from 'eslint-etc'
 
 export const messageId = 'avoidCyclicEffects'
 export type MessageIds = typeof messageId

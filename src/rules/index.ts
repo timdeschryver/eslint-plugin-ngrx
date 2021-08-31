@@ -1,7 +1,7 @@
 import path from 'path'
 
 import { traverseFolder } from '../utils'
-import { RuleModule } from '../utils/types'
+import type { RuleModule } from '../utils/types'
 
 // Copied from https://github.com/jest-community/eslint-plugin-jest/blob/main/src/index.ts
 

@@ -1,7 +1,8 @@
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
-import { typedStore, docsUrl } from '../../utils'
+import { docsUrl, typedStore } from '../../utils'
 
 export const messageId = 'noTypedStore'
 export const noTypedStoreSuggest = 'noTypedStoreSuggest'

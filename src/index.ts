@@ -1,5 +1,5 @@
-import { rules } from './rules'
 import { configs } from './configs'
+import { rules } from './rules'
 
 export = {
   rules,

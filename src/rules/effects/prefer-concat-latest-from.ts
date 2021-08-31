@@ -1,11 +1,12 @@
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
 
 import {
-  docsUrl,
   createEffectExpression,
-  MODULE_PATHS,
+  docsUrl,
   getConditionalImportFix,
+  MODULE_PATHS,
 } from '../../utils'
 
 export const messageId = 'preferConcatLatestFrom'

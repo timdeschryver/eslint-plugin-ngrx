@@ -1,5 +1,5 @@
-import { resolve } from 'path'
 import { TSESLint } from '@typescript-eslint/experimental-utils'
+import { resolve } from 'path'
 
 export function ruleTester() {
   return new TSESLint.RuleTester({

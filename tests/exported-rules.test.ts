@@ -1,7 +1,7 @@
+import * as path from 'path'
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import * as lib from '../src/rules'
-import * as path from 'path'
 import { traverseFolder } from '../src/utils'
 
 const rulesDirectory = path.join(__dirname, '../src/rules')
