@@ -21,6 +21,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Best Practices',
       description: 'Prefer using a single generic to define the feature state.',
       recommended: 'warn',
+      suggestion: true,
     },
     schema: [],
     messages: {

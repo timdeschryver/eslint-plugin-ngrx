@@ -23,6 +23,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       description:
         'Use `concatLatestFrom` instead of `withLatestFrom` to prevent the selector from firing until the correct action is dispatched.',
       recommended: 'warn',
+      suggestion: true,
     },
     fixable: 'code',
     schema: [],
