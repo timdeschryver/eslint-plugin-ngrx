@@ -42,7 +42,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     )}[callee.object.callee.property.name='select']`
 
     return {
-      [`:matches(${selectSelector}, ${pipeWithSelectAndMapSelector}) CallExpression[callee.name='map']`](
+      [`:matches(${selectSelector}, ${pipeWithSelectAndMapSelector}) > CallExpression[callee.name='map']`](
         node: TSESTree.CallExpression,
       ) {
         context.report({
