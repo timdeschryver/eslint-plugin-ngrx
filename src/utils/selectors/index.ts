@@ -28,6 +28,9 @@ export const actionDispatch = (storeName: string) =>
 export const storeExpression = (storeName: string) =>
   `CallExpression:matches([callee.object.name=${storeName}], [callee.object.object.type='ThisExpression'][callee.object.property.name=${storeName}])`
 
+export const storeExpressionCallable = (storeName: string) =>
+  `CallExpression:matches([callee.object.callee.object.name='${storeName}'], [callee.object.callee.object.object.type='ThisExpression'][callee.object.callee.object.property.name='${storeName}'])`
+
 export const storePipe = (storeName: string) =>
   `${storeExpression(storeName)}[callee.property.name='pipe']`
 

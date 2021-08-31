@@ -1,7 +1,12 @@
-import path from 'path'
 import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
+import path from 'path'
 
-import { docsUrl, findNgRxStoreName, storeSelect, storePipe } from '../../utils'
+import {
+  docsUrl,
+  findNgRxStoreName,
+  storeExpressionCallable,
+  storePipe,
+} from '../../utils'
 
 export const messageId = 'avoidMapppingSelectors'
 export type MessageIds = typeof messageId
@@ -29,16 +34,15 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     const storeName = findNgRxStoreName(context)
     if (!storeName) return {}
 
-    const mapInSelect = `CallExpression:has(MemberExpression:has(${storeSelect(
+    const pipeWithSelectAndMapSelector = `${storePipe(
       storeName,
-    )}))[callee.property.name='pipe']`
-    const mapInPipe = `${storePipe(
+    )}:has(CallExpression[callee.name='select'] ~ CallExpression[callee.name='map'])`
+    const selectSelector = `${storeExpressionCallable(
       storeName,
-    )}:has(CallExpression[callee.name="select"])`
-    const pipeExpressions = [mapInSelect, mapInPipe].join(', ')
+    )}[callee.object.callee.property.name='select']`
 
     return {
-      [`:matches(${pipeExpressions}) > CallExpression[callee.name='map']`](
+      [`:matches(${selectSelector}, ${pipeWithSelectAndMapSelector}) > CallExpression[callee.name='map']`](
         node: TSESTree.CallExpression,
       ) {
         context.report({
