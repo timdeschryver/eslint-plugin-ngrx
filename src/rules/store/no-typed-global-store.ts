@@ -17,6 +17,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Best Practices',
       description: 'The global store should not be typed.',
       recommended: 'warn',
+      suggestion: true,
     },
     fixable: 'code',
     schema: [],

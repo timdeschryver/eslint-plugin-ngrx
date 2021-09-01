@@ -32,6 +32,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Best Practices',
       description: 'The createEffect creator function is preferred',
       recommended: 'warn',
+      suggestion: true,
     },
     fixable: 'code',
     schema: [],
