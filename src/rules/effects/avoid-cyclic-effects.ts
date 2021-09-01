@@ -3,7 +3,6 @@ import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import { getTypeServices } from 'eslint-etc'
 import path from 'path'
 import ts from 'typescript'
-
 import {
   createEffectExpression,
   docsUrl,

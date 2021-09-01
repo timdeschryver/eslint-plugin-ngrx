@@ -1,5 +1,4 @@
 import path from 'path'
-
 import { traverseFolder } from '../utils'
 import type { RuleModule } from '../utils/types'
 

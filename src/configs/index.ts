@@ -1,5 +1,4 @@
 import type { TSESLint } from '@typescript-eslint/experimental-utils'
-
 import { traverseFolder } from '../utils'
 
 // Copied from https://github.com/jest-community/eslint-plugin-jest/blob/main/src/index.ts

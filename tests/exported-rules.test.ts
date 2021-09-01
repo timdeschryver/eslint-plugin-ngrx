@@ -1,6 +1,6 @@
-import * as path from 'path'
+import path from 'path'
 import { test } from 'uvu'
-import * as assert from 'uvu/assert'
+import assert from 'uvu/assert'
 import * as lib from '../src/rules'
 import { traverseFolder } from '../src/utils'
 

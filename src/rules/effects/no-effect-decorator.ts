@@ -1,7 +1,6 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-
 import {
   classPropertyWithEffectDecorator,
   docsUrl,

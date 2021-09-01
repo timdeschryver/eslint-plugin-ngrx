@@ -1,7 +1,6 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-
 import { docsUrl, typedStore } from '../../utils'
 
 export const messageId = 'noTypedStore'
