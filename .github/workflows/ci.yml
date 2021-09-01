@@ -16,17 +16,28 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: use Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
+
+      - name: ℹ Use Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: install
+
+      - name: 🎁 Install
         run: npm ci
-      - name: build
+
+      - name: 🔍 Lint
+        run: |
+          npm run lint:all
+          npm run prettier:all
+          git diff --name-only --exit-code
+
+      - name: 🔨 Build
         run: npm run build
-      - name: test
+
+      - name: 🧪 Test
         run: npm run test
-      - name: Release
+
+      - name: 🚀 Release
         if: github.repository == 'timdeschryver/eslint-plugin-ngrx' && github.ref == 'refs/heads/main'
         run: npx semantic-release
         env:
