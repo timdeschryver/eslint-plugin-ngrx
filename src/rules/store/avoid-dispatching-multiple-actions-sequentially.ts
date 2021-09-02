@@ -1,12 +1,7 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import {
-  actionDispatch,
-  docsUrl,
-  findNgRxStoreName,
-  isExpressionStatement,
-} from '../../utils'
+import { actionDispatch, docsUrl, findNgRxStoreName } from '../../utils'
 
 export const messageId = 'avoidDispatchingMultipleActionsSequentially'
 export type MessageIds = typeof messageId
@@ -30,38 +25,28 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const dispatchExpressionsWithSameParent = new Map<
-      TSESTree.Node,
-      TSESTree.CallExpression[]
-    >()
     const storeName = findNgRxStoreName(context)
     if (!storeName) return {}
 
+    const collectedDispatches = new Set<TSESTree.CallExpression>()
+
     return {
-      [actionDispatch(storeName)](node: TSESTree.CallExpression) {
-        if (
-          node.parent &&
-          isExpressionStatement(node.parent) &&
-          node.parent.parent
-        ) {
-          const nodes =
-            dispatchExpressionsWithSameParent.get(node.parent.parent) || []
-          dispatchExpressionsWithSameParent.set(node.parent.parent, [
-            ...nodes,
-            node,
-          ])
-        }
+      [`BlockStatement > ${actionDispatch(storeName)}`](
+        node: TSESTree.CallExpression,
+      ) {
+        collectedDispatches.add(node)
       },
-      'Program:exit'() {
-        dispatchExpressionsWithSameParent.forEach((dispatches) => {
-          if (dispatches.length > 1)
-            dispatches.forEach((node) =>
-              context.report({
-                node,
-                messageId,
-              }),
-            )
-        })
+      'BlockStatement:exit'() {
+        if (collectedDispatches.size > 1) {
+          for (const node of collectedDispatches) {
+            context.report({
+              node,
+              messageId,
+            })
+          }
+        }
+
+        collectedDispatches.clear()
       },
     }
   },
