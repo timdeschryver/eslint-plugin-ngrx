@@ -3,9 +3,9 @@ import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
   METHOD,
+  methodSelectMessageId,
   OPERATOR,
   operatorSelectMessageId,
-  methodSelectMessageId,
 } from '../../src/rules/store/select-style'
 import { ruleTester } from '../utils'
 

@@ -1,4 +1,4 @@
-import { writeFileSync, readFileSync } from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
 import { EOL } from 'os'
 import { format, resolveConfig } from 'prettier'
 import { rules } from '../src/rules'

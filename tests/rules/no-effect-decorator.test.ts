@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import type { MessageIds } from '../../src/rules/effects/no-effect-decorator'
 import rule, {
-  MessageIds,
   noEffectDecorator,
   noEffectDecoratorSuggest,
 } from '../../src/rules/effects/no-effect-decorator'

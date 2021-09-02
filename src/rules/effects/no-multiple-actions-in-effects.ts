@@ -1,10 +1,10 @@
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
-
 import {
+  docsUrl,
   effectsImplicitReturn,
   effectsReturn,
-  docsUrl,
   typecheck,
 } from '../../utils'
 

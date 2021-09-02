@@ -1,5 +1,6 @@
-import { AST_NODE_TYPES, TSESTree } from '@typescript-eslint/experimental-utils'
-import ts from 'typescript'
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { AST_NODE_TYPES } from '@typescript-eslint/experimental-utils'
+import type ts from 'typescript'
 
 const isNodeOfType =
   <NodeType extends AST_NODE_TYPES>(nodeType: NodeType) =>

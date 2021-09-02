@@ -1,9 +1,9 @@
 import { stripIndent, stripIndents } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import type { MessageIds } from '../../src/rules/effects/prefer-concat-latest-from'
 import rule, {
   messageId,
-  MessageIds,
   messageIdSuggest,
 } from '../../src/rules/effects/prefer-concat-latest-from'
 import { ruleTester } from '../utils'
