@@ -1,11 +1,7 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import {
-  actionDispatch,
-  docsUrl,
-  findNgRxStoreName,
-} from '../../utils'
+import { actionDispatch, docsUrl, findNgRxStoreName } from '../../utils'
 
 export const messageId = 'avoidDispatchingMultipleActionsSequentially'
 export type MessageIds = typeof messageId
