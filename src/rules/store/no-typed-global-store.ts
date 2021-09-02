@@ -1,7 +1,7 @@
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
-
-import { typedStore, docsUrl } from '../../utils'
+import { docsUrl, typedStore } from '../../utils'
 
 export const messageId = 'noTypedStore'
 export const noTypedStoreSuggest = 'noTypedStoreSuggest'
@@ -17,6 +17,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Best Practices',
       description: 'The global store should not be typed.',
       recommended: 'warn',
+      suggestion: true,
     },
     fixable: 'code',
     schema: [],

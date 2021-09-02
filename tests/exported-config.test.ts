@@ -1,5 +1,5 @@
 import { test } from 'uvu'
-import * as assert from 'uvu/assert'
+import assert from 'uvu/assert'
 import plugin from '../src'
 
 test('exports all config', () => {

@@ -10,32 +10,36 @@ ruleTester().run(path.parse(__filename).name, rule, {
       import { Store } from '@ngrx/store'
       @Component()
       export class FixtureComponent {
-        foo$ = this.store.select(selectItems);
-        constructor(private store: Store){}
+        foo$ = this.store.select(selectItems)
+
+        constructor(private store: Store) {}
       }
     `,
     `
       import { Store } from '@ngrx/store'
       @Component()
       export class FixtureComponent {
-        foo$ = this.store.select(selectItems).pipe(filter(x => !!x));
-        constructor(private store: Store){}
+        foo$ = this.store.select(selectItems).pipe(filter(x => !!x))
+
+        constructor(private store: Store) {}
       }
     `,
     `
       import { Store, select } from '@ngrx/store'
       @Component()
       export class FixtureComponent {
-        foo$ = this.store.pipe(select(selectItems));
-        constructor(private store: Store){}
+        foo$ = this.store.pipe(select(selectItems))
+
+        constructor(private store: Store) {}
       }
     `,
     `
       import { Store, select } from '@ngrx/store'
       @Component()
       export class FixtureComponent {
-        foo$ = this.store.pipe(select(selectItems)).pipe(filter(x => !!x));
-        constructor(private store: Store){}
+        foo$ = this.store.pipe(select(selectItems)).pipe(filter(x => !!x))
+
+        constructor(private store: Store) {}
       }
     `,
     `
@@ -47,10 +51,39 @@ ruleTester().run(path.parse(__filename).name, rule, {
               ofType(AuthActions.loginUserSuccess),
               concatLatestFrom(action => this.store.select(startUrl)),
               map(([action, url]) => AuthActions.setStartUrl({data: ''})),
-            );
+            )
           }
-        );
-        constructor(private store: Store){}
+        )
+
+        constructor(private store: Store) {}
+      }
+    `,
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/174
+    `
+      import { Store, select } from '@ngrx/store'
+      @Injectable()
+      export class FixtureEffect {
+        loginUserSuccess$ = combineLatest([
+          this.store.select(selectAuthorizations), this.hasAuthorization$
+        ]).pipe(map((val) => !isEmpty(intersection(val))))
+
+        constructor(private store: Store) {}
+      }
+    `,
+    `
+      import { Store } from '@ngrx/store'
+      @Component()
+      export class FixtureComponent {
+        readonly customers$ = this.store$.select(({ customers }) => customers).pipe()
+        readonly users$ = this.store$
+          .select('users')
+          .pipe(switchMap(() => of(items.map(parseItem))))
+
+        constructor(private readonly store$: Store) {}
+
+        ngOnInit() {
+          this.store$.pipe()
+        }
       }
     `,
   ],
@@ -60,9 +93,12 @@ ruleTester().run(path.parse(__filename).name, rule, {
         import { Store } from '@ngrx/store'
         @Component()
         export class FixtureComponent {
-          vm$ = this.store.select(selectItems).pipe(map(x => ({name: x.name})))
-                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-          constructor(private store: Store){}
+          vm$ = this.store
+            .select(selectItems)
+            .pipe(map((item) => item.select()))
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+
+          constructor(private store: Store) {}
         }
       `,
     ),
@@ -71,9 +107,13 @@ ruleTester().run(path.parse(__filename).name, rule, {
         import { Store } from '@ngrx/store'
         @Component()
         export class FixtureComponent {
-          vm$ = this.customStore.select(selectItems).pipe(filter(x => !!x), map(x => ({name: x.name})))
-                                                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-          constructor(private customStore: Store){}
+          vm$ = this.customStore.select(selectItems).pipe(
+            filter((x) => !!x),
+            map(getName),
+            ~~~~~~~~~~~~ [${messageId}]
+          )
+
+          constructor(private customStore: Store) {}
         }
       `,
     ),
@@ -82,9 +122,13 @@ ruleTester().run(path.parse(__filename).name, rule, {
         import { Store } from '@ngrx/store'
         @Component()
         export class FixtureComponent {
-          vm$ = this.store.pipe(select(selectItems), map(x => ({name: x.name})))
-                                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-          constructor(private store: Store){}
+          readonly vm$ = this.store.pipe(
+            select(selectItems),
+            map((item) => ({ name: item.name, ...item.pipe() })),
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+          )
+
+          constructor(private readonly store: Store) {}
         }
       `,
     ),
@@ -93,9 +137,16 @@ ruleTester().run(path.parse(__filename).name, rule, {
         import { Store } from '@ngrx/store'
         @Component()
         export class FixtureComponent {
-          vm$ = this.customStore.pipe(select(selectItems), filter(x => !!x), map(x => ({name: x.name})))
-                                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-          constructor(private customStore: Store){}
+          readonly vm$: Observable<Name>
+
+          constructor(store$: Store) {
+            this.vm$ = store$.pipe(
+              select(selectItems),
+              filter(Boolean),
+              map(({ name }) => ({ name })),
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+            )
+          }
         }
       `,
     ),

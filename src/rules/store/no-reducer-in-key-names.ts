@@ -1,8 +1,13 @@
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
-import { isIdentifier, isLiteral } from '../../utils/helper-functions/index'
-
-import { actionReducerMap, docsUrl, storeActionReducerMap } from '../../utils'
+import {
+  actionReducerMap,
+  docsUrl,
+  isIdentifier,
+  isLiteral,
+  storeActionReducerMap,
+} from '../../utils'
 
 export const messageId = 'noReducerInKeyNames'
 export type MessageIds = typeof messageId

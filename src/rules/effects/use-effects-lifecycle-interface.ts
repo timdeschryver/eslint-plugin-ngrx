@@ -1,7 +1,6 @@
-import path from 'path'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
+import path from 'path'
 import {
   docsUrl,
   findClassDeclarationNode,
@@ -59,10 +58,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
 
         if (interfaces.includes(interfaceName)) return
 
-        const {
-          implementsNodeReplace,
-          implementsTextReplace,
-        } = getImplementsSchemaFixer(classDeclaration, interfaceName)
+        const { implementsNodeReplace, implementsTextReplace } =
+          getImplementsSchemaFixer(classDeclaration, interfaceName)
         context.report({
           fix: (fixer) => {
             return getConditionalImportFix(

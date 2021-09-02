@@ -1,10 +1,10 @@
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
 import { Tree } from '@angular-devkit/schematics'
 import {
   SchematicTestRunner,
   UnitTestTree,
 } from '@angular-devkit/schematics/testing'
+import { test } from 'uvu'
+import assert from 'uvu/assert'
 
 const schematicRunner = new SchematicTestRunner(
   'eslint-plugin-ngrx',

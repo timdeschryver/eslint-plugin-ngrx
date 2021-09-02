@@ -1,11 +1,11 @@
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
-
 import {
-  docsUrl,
   createEffectExpression,
-  MODULE_PATHS,
+  docsUrl,
   getConditionalImportFix,
+  MODULE_PATHS,
 } from '../../utils'
 
 export const messageId = 'preferConcatLatestFrom'
@@ -23,6 +23,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       description:
         'Use `concatLatestFrom` instead of `withLatestFrom` to prevent the selector from firing until the correct action is dispatched.',
       recommended: 'warn',
+      suggestion: true,
     },
     fixable: 'code',
     schema: [],

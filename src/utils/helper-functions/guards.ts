@@ -1,9 +1,11 @@
-import { AST_NODE_TYPES, TSESTree } from '@typescript-eslint/experimental-utils'
-import ts from 'typescript'
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { AST_NODE_TYPES } from '@typescript-eslint/experimental-utils'
+import type ts from 'typescript'
 
-const isNodeOfType = <NodeType extends AST_NODE_TYPES>(nodeType: NodeType) => (
-  node: TSESTree.Node,
-): node is TSESTree.Node & { type: NodeType } => node.type === nodeType
+const isNodeOfType =
+  <NodeType extends AST_NODE_TYPES>(nodeType: NodeType) =>
+  (node: TSESTree.Node): node is TSESTree.Node & { type: NodeType } =>
+    node.type === nodeType
 
 export const isArrowFunctionExpression = isNodeOfType(
   AST_NODE_TYPES.ArrowFunctionExpression,
@@ -30,6 +32,5 @@ export const isObjectExpression = isNodeOfType(AST_NODE_TYPES.ObjectExpression)
 export const isProperty = isNodeOfType(AST_NODE_TYPES.Property)
 
 export function isTypeReference(type: ts.Type): type is ts.TypeReference {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return Boolean((type as any).target)
+  return type.hasOwnProperty('target')
 }

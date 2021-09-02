@@ -1,7 +1,7 @@
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
-
-import { onFunctionWithoutType, docsUrl } from '../../utils'
+import { docsUrl, onFunctionWithoutType } from '../../utils'
 
 export const messageId = 'onFunctionExplicitReturnType'
 export type MessageIds = typeof messageId

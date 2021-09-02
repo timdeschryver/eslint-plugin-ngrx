@@ -23,7 +23,6 @@ const customersFeatureState = createFeatureSelector<
 Examples of **correct** code for this rule:
 
 ```ts
-const customersFeatureState = createFeatureSelector<CustomersFeatureState>(
-  'customers',
-)
+const customersFeatureState =
+  createFeatureSelector<CustomersFeatureState>('customers')
 ```

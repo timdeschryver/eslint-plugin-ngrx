@@ -1,6 +1,6 @@
-import path from 'path'
-import { fromFixture } from 'eslint-etc'
 import { stripIndent } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
+import path from 'path'
 import rule, {
   messageId,
 } from '../../src/rules/store/avoid-duplicate-actions-in-reducer'

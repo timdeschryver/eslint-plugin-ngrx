@@ -1,7 +1,6 @@
-import path from 'path'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
+import path from 'path'
 import { actionCreatorPropsComputed, docsUrl } from '../../utils'
 
 export const preferInlineActionProps = 'preferInlineActionProps'
@@ -20,6 +19,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Best Practices',
       description: 'Prefer using inline types instead of interfaces/classes.',
       recommended: 'warn',
+      suggestion: true,
     },
     schema: [],
     messages: {

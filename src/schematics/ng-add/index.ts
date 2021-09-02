@@ -1,4 +1,4 @@
-import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics'
+import type { Rule, SchematicContext, Tree } from '@angular-devkit/schematics'
 
 export default function (): Rule {
   return (host: Tree, context: SchematicContext) => {

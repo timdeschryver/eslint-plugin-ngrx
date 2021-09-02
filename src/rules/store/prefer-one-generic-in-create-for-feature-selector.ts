@@ -1,7 +1,7 @@
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils'
-
-import { docsUrl, isTSTypeReference, isIdentifier } from '../../utils'
+import { docsUrl, isIdentifier, isTSTypeReference } from '../../utils'
 
 export const preferOneGenericInCreateForFeatureSelector =
   'preferOneGenericInCreateForFeatureSelector'
@@ -21,6 +21,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Best Practices',
       description: 'Prefer using a single generic to define the feature state.',
       recommended: 'warn',
+      suggestion: true,
     },
     schema: [],
     messages: {

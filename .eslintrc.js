@@ -13,6 +13,7 @@ module.exports = {
     extraFileExtensions: ['.json'],
   },
   rules: {
+    '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
   },

@@ -11,10 +11,10 @@ export const actionCreatorPropsComputed = `${actionCreatorProps} > TSTypeParamet
 export const constructorExit = `MethodDefinition[kind='constructor']:exit`
 
 export const dispatchInEffects = (storeName: string) =>
-  `ClassProperty > CallExpression:has(Identifier[name="createEffect"]) CallExpression > MemberExpression:has(Identifier[name="dispatch"]):has(MemberExpression > Identifier[name=${storeName}])`
+  `ClassProperty > CallExpression:has(Identifier[name='createEffect']) CallExpression > MemberExpression:has(Identifier[name='dispatch']):has(MemberExpression > Identifier[name='${storeName}'])`
 
-export const injectedStore = `MethodDefinition[kind='constructor'] Identifier[typeAnnotation.typeAnnotation.typeName.name="Store"]`
-export const typedStore = `MethodDefinition[kind='constructor'] Identifier>TSTypeAnnotation>TSTypeReference[typeName.name="Store"][typeParameters.params]`
+export const injectedStore = `MethodDefinition[kind='constructor'] Identifier[typeAnnotation.typeAnnotation.typeName.name='Store']`
+export const typedStore = `MethodDefinition[kind='constructor'] Identifier>TSTypeAnnotation>TSTypeReference[typeName.name='Store'][typeParameters.params]`
 
 export const ngModuleDecorator = `ClassDeclaration > Decorator > CallExpression[callee.name='NgModule']`
 
@@ -23,10 +23,13 @@ export const ngModuleProviders = `${ngModuleDecorator} ObjectExpression Property
 export const ngModuleImports = `${ngModuleDecorator} ObjectExpression Property[key.name='imports'] > ArrayExpression CallExpression[callee.object.name='EffectsModule'][callee.property.name=/forRoot|forFeature/] ArrayExpression > Identifier`
 
 export const actionDispatch = (storeName: string) =>
-  `ExpressionStatement > CallExpression:matches([callee.object.name=${storeName}][callee.property.name="dispatch"], [callee.object.object.type='ThisExpression'][callee.object.property.name=${storeName}][callee.property.name="dispatch"])`
+  `ExpressionStatement > CallExpression:matches([callee.object.name='${storeName}'][callee.property.name='dispatch'], [callee.object.object.type='ThisExpression'][callee.object.property.name='${storeName}'][callee.property.name='dispatch'])`
 
 export const storeExpression = (storeName: string) =>
-  `CallExpression:matches([callee.object.name=${storeName}], [callee.object.object.type='ThisExpression'][callee.object.property.name=${storeName}])`
+  `CallExpression:matches([callee.object.name='${storeName}'], [callee.object.object.type='ThisExpression'][callee.object.property.name='${storeName}'])`
+
+export const storeExpressionCallable = (storeName: string) =>
+  `CallExpression:matches([callee.object.callee.object.name='${storeName}'], [callee.object.callee.object.object.type='ThisExpression'][callee.object.callee.object.property.name='${storeName}'])`
 
 export const storePipe = (storeName: string) =>
   `${storeExpression(storeName)}[callee.property.name='pipe']`

@@ -1,8 +1,8 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import type { MessageIds } from '../../src/rules/store/prefer-one-generic-in-create-for-feature-selector'
 import rule, {
-  MessageIds,
   preferOneGenericInCreateForFeatureSelector,
   preferOneGenericInCreateForFeatureSelectorSuggest,
 } from '../../src/rules/store/prefer-one-generic-in-create-for-feature-selector'
