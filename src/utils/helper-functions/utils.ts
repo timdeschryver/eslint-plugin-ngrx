@@ -5,6 +5,7 @@ import {
   isIdentifier,
   isImportDeclaration,
   isImportSpecifier,
+  isMemberExpression,
   isProgram,
   isTSTypeAnnotation,
   isTSTypeReference,
@@ -114,6 +115,44 @@ export function getImportAddFix({
     default:
       return fixer.insertTextAfter(lastImportSpecifier, `, ${importedName}`)
   }
+}
+
+export function isIdentifierOrMemberExpression(
+  node: TSESTree.Node,
+): node is TSESTree.Identifier | TSESTree.MemberExpression {
+  return isIdentifier(node) || isMemberExpression(node)
+}
+
+export function getInterfaceName(
+  interfaceMember: TSESTree.Identifier | TSESTree.MemberExpression,
+): string | undefined {
+  if (isIdentifier(interfaceMember)) {
+    return interfaceMember.name
+  }
+
+  return isIdentifier(interfaceMember.property)
+    ? interfaceMember.property.name
+    : undefined
+}
+
+export function getInterfaces({
+  implements: classImplements,
+}: TSESTree.ClassDeclaration): readonly (
+  | TSESTree.Identifier
+  | TSESTree.MemberExpression
+)[] {
+  return (classImplements ?? [])
+    .map(({ expression }) => expression)
+    .filter(isIdentifierOrMemberExpression)
+}
+
+export function getInterface(
+  node: TSESTree.ClassDeclaration,
+  interfaceName: string,
+): TSESTree.Identifier | TSESTree.MemberExpression | undefined {
+  return getInterfaces(node).find(
+    (interfaceMember) => getInterfaceName(interfaceMember) === interfaceName,
+  )
 }
 
 export function getImplementsSchemaFixer(

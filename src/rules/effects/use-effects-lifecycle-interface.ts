@@ -5,9 +5,7 @@ import {
   docsUrl,
   getImplementsSchemaFixer,
   getImportAddFix,
-  getNearestUpperNodeFrom,
-  isClassDeclaration,
-  isIdentifier,
+  getInterface,
   MODULE_PATHS,
 } from '../../utils'
 
@@ -15,13 +13,6 @@ export const messageId = 'useEffectsLifecycleInterface'
 export type MessageIds = typeof messageId
 
 type Options = []
-
-const lifecycleMapper = {
-  ngrxOnInitEffects: 'OnInitEffects',
-  ngrxOnRunEffects: 'OnRunEffects',
-  ngrxOnIdentifyEffects: 'OnIdentifyEffects',
-} as const
-const lifecyclesPattern = Object.keys(lifecycleMapper).join('|')
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: path.parse(__filename).name,
@@ -42,30 +33,34 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
+    const lifecycleMapper = {
+      ngrxOnIdentifyEffects: 'OnIdentifyEffects',
+      ngrxOnInitEffects: 'OnInitEffects',
+      ngrxOnRunEffects: 'OnRunEffects',
+    } as const
+    const lifecyclesPattern = Object.keys(lifecycleMapper).join('|')
+
     return {
       [`ClassDeclaration > ClassBody > MethodDefinition > Identifier[name=/${lifecyclesPattern}/]`](
-        node: TSESTree.Identifier,
+        node: TSESTree.Identifier & {
+          name: keyof typeof lifecycleMapper
+          parent: TSESTree.MethodDefinition & {
+            parent: TSESTree.ClassBody & { parent: TSESTree.ClassDeclaration }
+          }
+        },
       ) {
-        const classDeclaration = getNearestUpperNodeFrom(
-          node,
-          isClassDeclaration,
-        )
-
-        if (!classDeclaration) return
-
-        const interfaces = (classDeclaration.implements ?? [])
-          .map(({ expression }) => expression)
-          .filter(isIdentifier)
-          .map(({ name }) => name)
-        const methodName = node.name as keyof typeof lifecycleMapper
+        const classDeclaration = node.parent.parent.parent
+        const methodName = node.name
         const interfaceName = lifecycleMapper[methodName]
 
-        if (interfaces.includes(interfaceName)) return
+        if (getInterface(classDeclaration, interfaceName)) {
+          return
+        }
 
-        const { implementsNodeReplace, implementsTextReplace } =
-          getImplementsSchemaFixer(classDeclaration, interfaceName)
         context.report({
           fix: (fixer) => {
+            const { implementsNodeReplace, implementsTextReplace } =
+              getImplementsSchemaFixer(classDeclaration, interfaceName)
             return [
               fixer.insertTextAfter(
                 implementsNodeReplace,
@@ -83,7 +78,10 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           },
           node,
           messageId,
-          data: { interfaceName, methodName },
+          data: {
+            interfaceName,
+            methodName,
+          },
         })
       },
     }

@@ -39,8 +39,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         node: TSESTree.Identifier,
       ) {
         context.report({
-          messageId,
           node,
+          messageId,
           suggest: [
             {
               messageId: messageIdSuggest,

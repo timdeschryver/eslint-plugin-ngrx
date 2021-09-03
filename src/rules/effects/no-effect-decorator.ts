@@ -6,8 +6,6 @@ import {
   docsUrl,
   getDecoratorArgument,
   getImportAddFix,
-  getNearestUpperNodeFrom,
-  isClassDeclaration,
   isIdentifier,
   MODULE_PATHS,
 } from '../../utils'
@@ -20,7 +18,10 @@ export type MessageIds =
 
 type Options = []
 type EffectDecorator = TSESTree.Decorator & {
-  parent: TSESTree.ClassProperty & { value: TSESTree.CallExpression }
+  parent: TSESTree.ClassProperty & {
+    parent: TSESTree.ClassBody & { parent: TSESTree.ClassDeclaration }
+    value: TSESTree.CallExpression
+  }
 }
 
 const createEffect = 'createEffect'
@@ -95,10 +96,7 @@ function getFixes(
   sourceCode: Readonly<TSESLint.SourceCode>,
   fixer: TSESLint.RuleFixer,
 ): TSESLint.RuleFix[] {
-  const classDeclaration = getNearestUpperNodeFrom(node, isClassDeclaration)
-
-  if (!classDeclaration) return []
-
+  const classDeclaration = node.parent.parent.parent
   const {
     parent: { value: propertyValueExpression },
   } = node
