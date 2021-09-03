@@ -4,7 +4,7 @@ import path from 'path'
 import {
   createEffectExpression,
   docsUrl,
-  getConditionalImportFix,
+  getImportAddFix,
   MODULE_PATHS,
 } from '../../utils'
 
@@ -45,15 +45,14 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
             {
               messageId: messageIdSuggest,
               fix: (fixer) => {
-                return [
-                  fixer.replaceText(node, 'concatLatestFrom'),
-                  ...getConditionalImportFix(
+                return [fixer.replaceText(node, 'concatLatestFrom')].concat(
+                  getImportAddFix({
                     fixer,
+                    importedName: 'concatLatestFrom',
+                    moduleName: MODULE_PATHS.effects,
                     node,
-                    'concatLatestFrom',
-                    MODULE_PATHS.effects,
-                  ),
-                ]
+                  }),
+                )
               },
             },
           ],

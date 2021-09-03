@@ -3,9 +3,10 @@ import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
   docsUrl,
-  findClassDeclarationNode,
-  getConditionalImportFix,
   getImplementsSchemaFixer,
+  getImportAddFix,
+  getNearestUpperNodeFrom,
+  isClassDeclaration,
   isIdentifier,
   MODULE_PATHS,
 } from '../../utils'
@@ -45,7 +46,10 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       [`ClassDeclaration > ClassBody > MethodDefinition > Identifier[name=/${lifecyclesPattern}/]`](
         node: TSESTree.Identifier,
       ) {
-        const classDeclaration = findClassDeclarationNode(node)
+        const classDeclaration = getNearestUpperNodeFrom(
+          node,
+          isClassDeclaration,
+        )
 
         if (!classDeclaration) return
 
@@ -62,16 +66,19 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           getImplementsSchemaFixer(classDeclaration, interfaceName)
         context.report({
           fix: (fixer) => {
-            return getConditionalImportFix(
-              fixer,
-              node,
-              interfaceName,
-              MODULE_PATHS.effects,
-            ).concat(
+            return [
               fixer.insertTextAfter(
                 implementsNodeReplace,
                 implementsTextReplace,
               ),
+            ].concat(
+              getImportAddFix({
+                compatibleWithTypeOnlyImport: true,
+                fixer,
+                importedName: interfaceName,
+                moduleName: MODULE_PATHS.effects,
+                node: classDeclaration,
+              }),
             )
           },
           node,

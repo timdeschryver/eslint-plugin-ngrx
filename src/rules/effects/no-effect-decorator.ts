@@ -4,9 +4,10 @@ import path from 'path'
 import {
   classPropertyWithEffectDecorator,
   docsUrl,
-  findClassDeclarationNode,
-  getConditionalImportFix,
   getDecoratorArgument,
+  getImportAddFix,
+  getNearestUpperNodeFrom,
+  isClassDeclaration,
   isIdentifier,
   MODULE_PATHS,
 } from '../../utils'
@@ -94,7 +95,7 @@ function getFixes(
   sourceCode: Readonly<TSESLint.SourceCode>,
   fixer: TSESLint.RuleFixer,
 ): TSESLint.RuleFix[] {
-  const classDeclaration = findClassDeclarationNode(node)
+  const classDeclaration = getNearestUpperNodeFrom(node, isClassDeclaration)
 
   if (!classDeclaration) return []
 
@@ -107,14 +108,16 @@ function getFixes(
     ? sourceCode.getText(decoratorArgument)
     : undefined
 
-  return getConditionalImportFix(
-    fixer,
-    classDeclaration,
-    createEffect,
-    MODULE_PATHS.effects,
-  ).concat(
+  return [
     fixer.remove(node),
     getCreateEffectFix(fixer, propertyValueExpression),
     getCreateEffectConfigFix(fixer, propertyValueExpression, configText),
+  ].concat(
+    getImportAddFix({
+      fixer,
+      importedName: createEffect,
+      moduleName: MODULE_PATHS.effects,
+      node: classDeclaration,
+    }),
   )
 }
