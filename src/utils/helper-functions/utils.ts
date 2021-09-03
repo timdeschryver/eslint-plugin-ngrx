@@ -11,7 +11,9 @@ import {
 } from './guards'
 
 export const MODULE_PATHS = {
+  componentStore: '@ngrx/component-store',
   effects: '@ngrx/effects',
+  store: '@ngrx/store',
 }
 
 export function findClassDeclarationNode(
@@ -92,20 +94,24 @@ export function getDecoratorArgument({ expression }: TSESTree.Decorator) {
     : undefined
 }
 
-export function findNgRxStoreName(
+function findCorrespondingNameBy(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
+  moduleName: string,
+  importedName: string,
 ): string | undefined {
   const { ast } = context.getSourceCode()
-  const storeImportSpecifier = findImportDeclarationNode(ast, '@ngrx/store')
+  const importDeclarations = getImportDeclarations(ast, moduleName) ?? []
+  const { importSpecifier } =
+    getImportDeclarationSpecifier(importDeclarations, importedName) ?? {}
 
-  if (!storeImportSpecifier) return undefined
+  if (!importSpecifier) {
+    return undefined
+  }
 
-  const variables = context.getDeclaredVariables(storeImportSpecifier)
-  const storeVariable = variables.find((v) => v.name === 'Store')
+  const variables = context.getDeclaredVariables(importSpecifier)
+  const typedVariable = variables.find(({ name }) => name === importedName)
 
-  if (!storeVariable) return undefined
-
-  return storeVariable.references
+  return typedVariable?.references
     .map(({ identifier: { parent } }) => {
       if (
         parent &&
@@ -117,69 +123,30 @@ export function findNgRxStoreName(
       ) {
         return parent.parent.parent.name
       }
+
       return undefined
     })
     .find(Boolean)
+}
+
+export function findNgRxStoreName(
+  context: TSESLint.RuleContext<string, readonly unknown[]>,
+): string | undefined {
+  return findCorrespondingNameBy(context, MODULE_PATHS.store, 'Store')
 }
 
 export function findNgRxComponentStoreName(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
 ): string | undefined {
-  const { ast } = context.getSourceCode()
-  const storeImportSpecifier = findImportDeclarationNode(
-    ast,
-    '@ngrx/component-store',
+  return findCorrespondingNameBy(
+    context,
+    MODULE_PATHS.componentStore,
+    'ComponentStore',
   )
-
-  if (!storeImportSpecifier) return undefined
-
-  const variables = context.getDeclaredVariables(storeImportSpecifier)
-  const storeVariable = variables.find((v) => v.name === 'ComponentStore')
-
-  if (!storeVariable) return undefined
-
-  return storeVariable.references
-    .map(({ identifier: { parent } }) => {
-      if (
-        parent &&
-        isTSTypeReference(parent) &&
-        parent.parent &&
-        isTSTypeAnnotation(parent.parent) &&
-        parent.parent.parent &&
-        isIdentifier(parent.parent.parent)
-      ) {
-        return parent.parent.parent.name
-      }
-      return undefined
-    })
-    .find(Boolean)
 }
 
 export function findNgRxEffectActionsName(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
 ): string | undefined {
-  const { ast } = context.getSourceCode()
-  const effectsImportSpecifier = findImportDeclarationNode(ast, '@ngrx/effects')
-  if (!effectsImportSpecifier) return undefined
-
-  const variables = context.getDeclaredVariables(effectsImportSpecifier)
-  const actionsVariable = variables.find((v) => v.name === 'Actions')
-
-  if (!actionsVariable) return undefined
-
-  return actionsVariable.references
-    .map(({ identifier: { parent } }) => {
-      if (
-        parent &&
-        isTSTypeReference(parent) &&
-        parent.parent &&
-        isTSTypeAnnotation(parent.parent) &&
-        parent.parent.parent &&
-        isIdentifier(parent.parent.parent)
-      ) {
-        return parent.parent.parent.name
-      }
-      return undefined
-    })
-    .find(Boolean)
+  return findCorrespondingNameBy(context, MODULE_PATHS.effects, 'Actions')
 }
