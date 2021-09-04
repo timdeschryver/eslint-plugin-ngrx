@@ -20,13 +20,13 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Possible Errors',
       description:
-        'An Effect should not be listed as a provider if it is added to the EffectsModule',
+        'An `Effect` should not be listed as a provider if it is added to the `EffectsModule`.',
       recommended: 'error',
     },
     schema: [],
     messages: {
       [messageId]:
-        'The Effect should not be listed as a provider if it is added to the EffectsModule',
+        'The `Effect` should not be listed as a provider if it is added to the `EffectsModule`.',
     },
   },
   defaultOptions: [],

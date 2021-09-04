@@ -14,13 +14,13 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     type: 'problem',
     docs: {
       category: 'Possible Errors',
-      description: 'On function should have an explicit return type',
+      description: 'On function should have an explicit return type.',
       recommended: 'warn',
     },
     schema: [],
     messages: {
       [messageId]:
-        'On functions should have an explicit return type when using arrow functions, on(action, (state):State => {}',
+        'On functions should have an explicit return type when using arrow functions: `on(action, (state): State => {}`.',
     },
   },
   defaultOptions: [],

@@ -20,13 +20,13 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Best Practices',
       description:
-        'Prefer combining selectors at the selector level with `createSelector`',
+        'Prefer combining selectors at the selector level with `createSelector`.',
       recommended: 'warn',
     },
     schema: [],
     messages: {
       [messageId]:
-        'Combine selectors at the selector level with createSelector',
+        'Combine selectors at the selector level with `createSelector`.',
     },
   },
   defaultOptions: [],

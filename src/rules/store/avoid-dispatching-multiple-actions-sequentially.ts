@@ -14,13 +14,13 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     type: 'problem',
     docs: {
       category: 'Best Practices',
-      description: 'It is recommended to only dispatch one action at a time.',
+      description: 'It is recommended to only dispatch one `Action` at a time.',
       recommended: 'warn',
     },
     schema: [],
     messages: {
       [messageId]:
-        'Avoid dispatching many actions in a row to accomplish a larger conceptual "transaction"',
+        'Avoid dispatching many actions in a row to accomplish a larger conceptual "transaction".',
     },
   },
   defaultOptions: [],

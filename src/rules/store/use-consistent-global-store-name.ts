@@ -24,7 +24,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       },
     ],
     messages: {
-      [messageId]: `Global store should have the name '{{ storeName }}'`,
+      [messageId]: 'Global store should have the name `{{ storeName }}`.',
     },
   },
   defaultOptions: ['store'],

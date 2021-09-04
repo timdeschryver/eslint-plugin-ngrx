@@ -15,13 +15,13 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Possible Errors',
       description:
-        'An Effect should only use the effect creator (`createEffect`) or the effect decorator (`@Effect`), but not both simultaneously',
+        'An `Effect` should only use the effect creator (`createEffect`) or the effect decorator (`@Effect`), but not both simultaneously.',
       recommended: 'error',
     },
     schema: [],
     messages: {
       [messageId]:
-        'Remove the `@Effect` decorator or the `createEffect` creator function',
+        'Remove the `@Effect` decorator or the `createEffect` creator function.',
     },
   },
   defaultOptions: [],

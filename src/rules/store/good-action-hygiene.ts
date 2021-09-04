@@ -19,7 +19,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
     schema: [],
     messages: {
-      [messageId]: `Action type '{{ actionType }}' does not follow the good action hygiene practice, use "[Source] Event" to define action types`,
+      [messageId]:
+        'Action type `{{ actionType }}` does not follow the good action hygiene practice, use "[Source] Event" to define action types.',
     },
   },
   defaultOptions: [],

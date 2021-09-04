@@ -8,7 +8,7 @@ import {
   storeSelect,
 } from '../../utils'
 
-export const methodSelectMessageId = 'storeSelect'
+export const methodSelectMessageId = 'methodSelect'
 export const operatorSelectMessageId = 'operatorSelect'
 
 export type MessageIds =
@@ -26,7 +26,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     type: 'problem',
     docs: {
       category: 'Best Practices',
-      description: `Selectors can be used either with 'select' as a pipeable operator or as a method`,
+      description:
+        'Selectors can be used either with `select` as a pipeable operator or as a method.',
       recommended: 'warn',
     },
     schema: [
@@ -38,9 +39,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     ],
     messages: {
       [methodSelectMessageId]:
-        'Selectors should be used with select method, `this.store.select(selector)`',
+        'Selectors should be used with select method: `this.store.select(selector)`.',
       [operatorSelectMessageId]:
-        'Selectors should be used with the pipeable operator, `this.store.pipe(select(selector))`',
+        'Selectors should be used with the pipeable operator: `this.store.pipe(select(selector))`.',
     },
   },
   defaultOptions: [METHOD],

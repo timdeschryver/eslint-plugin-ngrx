@@ -21,15 +21,15 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Possible Errors',
       description:
-        'Use `concatLatestFrom` instead of `withLatestFrom` to prevent the selector from firing until the correct action is dispatched.',
+        'Use `concatLatestFrom` instead of `withLatestFrom` to prevent the selector from firing until the correct `Action` is dispatched.',
       recommended: 'warn',
       suggestion: true,
     },
     fixable: 'code',
     schema: [],
     messages: {
-      [messageId]: 'Use `concatLatestFrom` instead of `withLatestFrom`',
-      [messageIdSuggest]: 'Replace `withLatestFrom` with `concatLatestFrom`',
+      [messageId]: 'Use `concatLatestFrom` instead of `withLatestFrom`.',
+      [messageIdSuggest]: 'Replace `withLatestFrom` with `concatLatestFrom`.',
     },
   },
   defaultOptions: [],

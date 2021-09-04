@@ -14,13 +14,13 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     type: 'problem',
     docs: {
       category: 'Possible Errors',
-      description: 'Updater should have an explicit return type',
+      description: '`Updater` should have an explicit return type.',
       recommended: 'warn',
     },
     schema: [],
     messages: {
       [messageId]:
-        'Updater should have an explicit return type when using arrow functions, `this.store.updater((state, value): State => {}`',
+        '`Updater` should have an explicit return type when using arrow functions: `this.store.updater((state, value): State => {}`.',
     },
   },
   defaultOptions: [],

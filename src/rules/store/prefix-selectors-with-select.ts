@@ -15,12 +15,12 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Best Practices',
       description:
-        'The selector should start with "select", for example "selectThing"',
+        'The selector should start with "select", for example "selectThing".',
       recommended: 'warn',
     },
     schema: [],
     messages: {
-      [messageId]: 'The selector should start with "select"',
+      [messageId]: 'The selector should start with "select".',
     },
   },
   defaultOptions: [],

@@ -20,7 +20,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       category: 'Best Practices',
-      description: 'Avoid the word "reducer" in the reducer key names',
+      description: 'Avoid the word "reducer" in the `Reducer` key names.',
       recommended: 'warn',
     },
     schema: [],
