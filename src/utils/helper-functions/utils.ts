@@ -1,73 +1,166 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
+import { AST_NODE_TYPES } from '@typescript-eslint/experimental-utils'
 import {
   isCallExpression,
-  isClassDeclaration,
   isIdentifier,
   isImportDeclaration,
   isImportSpecifier,
+  isMemberExpression,
   isProgram,
   isTSTypeAnnotation,
   isTSTypeReference,
 } from './guards'
 
 export const MODULE_PATHS = {
+  componentStore: '@ngrx/component-store',
   effects: '@ngrx/effects',
+  store: '@ngrx/store',
 }
 
-export function findClassDeclarationNode(
-  node: TSESTree.Node,
-): TSESTree.ClassDeclaration | null {
-  if (isClassDeclaration(node)) {
-    return node
+export function getNearestUpperNodeFrom<T extends TSESTree.Node>(
+  { parent }: TSESTree.Node,
+  predicate: (parent: TSESTree.Node) => parent is T,
+): T | undefined {
+  while (parent && !isProgram(parent)) {
+    if (predicate(parent)) {
+      return parent
+    }
+
+    parent = parent.parent
   }
-  if (!node.parent) return null
-  return findClassDeclarationNode(node.parent)
+
+  return undefined
 }
 
-export function findImportDeclarationNode(
-  node: TSESTree.Node,
-  module: string,
-): TSESTree.ImportDeclaration | undefined {
-  if (isProgram(node)) {
-    return (node.body || []).find(
-      (node) => isImportDeclaration(node) && node.source.value === module,
-    ) as TSESTree.ImportDeclaration | undefined
+export function getImportDeclarationSpecifier(
+  importDeclarations: readonly TSESTree.ImportDeclaration[],
+  importedName: string,
+) {
+  for (const importDeclaration of importDeclarations) {
+    const importSpecifier = importDeclaration.specifiers.find(
+      (importClause): importClause is TSESTree.ImportSpecifier => {
+        return (
+          isImportSpecifier(importClause) &&
+          importClause.imported.name === importedName
+        )
+      },
+    )
+
+    if (importSpecifier) {
+      return { importDeclaration, importSpecifier } as const
+    }
   }
-  if (!node.parent) return undefined
-  return findImportDeclarationNode(node.parent, module)
+
+  return undefined
 }
 
-export function getConditionalImportFix(
-  fixer: TSESLint.RuleFixer,
+export function getImportDeclarations(
   node: TSESTree.Node,
-  importSpecifier: string,
-  module: string,
-): TSESLint.RuleFix[] {
-  const importDeclaration = findImportDeclarationNode(node, module)
-  if (importDeclaration && hasImport(importDeclaration, importSpecifier)) {
+  moduleName: string,
+): readonly TSESTree.ImportDeclaration[] | undefined {
+  let parentNode: TSESTree.Node | undefined = node
+
+  while (parentNode && !isProgram(parentNode)) {
+    parentNode = parentNode.parent
+  }
+
+  return parentNode?.body.filter(
+    (node): node is TSESTree.ImportDeclaration =>
+      isImportDeclaration(node) && node.source.value === moduleName,
+  )
+}
+
+export function getImportAddFix({
+  compatibleWithTypeOnlyImport = false,
+  fixer,
+  importedName,
+  moduleName,
+  node,
+}: {
+  compatibleWithTypeOnlyImport?: boolean
+  fixer: TSESLint.RuleFixer
+  importedName: string
+  moduleName: string
+  node: TSESTree.Node
+}): TSESLint.RuleFix | TSESLint.RuleFix[] {
+  const fullImport = `import { ${importedName} } from '${moduleName}';\n`
+  const importDeclarations = getImportDeclarations(node, moduleName)
+
+  if (!importDeclarations?.length) {
+    return fixer.insertTextAfterRange([0, 0], fullImport)
+  }
+
+  const importDeclarationSpecifier = getImportDeclarationSpecifier(
+    importDeclarations,
+    importedName,
+  )
+
+  if (importDeclarationSpecifier) {
     return []
   }
 
-  if (!importDeclaration?.specifiers.length) {
-    return [
-      fixer.insertTextAfterRange(
-        [0, 0],
-        `import { ${importSpecifier} } from '${module}';\n`,
-      ),
-    ]
+  const [{ importKind, specifiers }] = importDeclarations
+
+  if (!compatibleWithTypeOnlyImport && importKind === 'type') {
+    return fixer.insertTextAfterRange([0, 0], fullImport)
   }
 
-  const lastImportSpecifier = getLast(importDeclaration.specifiers)
+  const lastImportSpecifier = getLast(specifiers)
 
-  return [fixer.insertTextAfter(lastImportSpecifier, `, ${importSpecifier}`)]
+  switch (lastImportSpecifier.type) {
+    case AST_NODE_TYPES.ImportDefaultSpecifier:
+      return fixer.insertTextAfter(lastImportSpecifier, `, { ${importedName} }`)
+    case AST_NODE_TYPES.ImportNamespaceSpecifier:
+      return fixer.insertTextAfterRange([0, 0], fullImport)
+    default:
+      return fixer.insertTextAfter(lastImportSpecifier, `, ${importedName}`)
+  }
+}
+
+export function isIdentifierOrMemberExpression(
+  node: TSESTree.Node,
+): node is TSESTree.Identifier | TSESTree.MemberExpression {
+  return isIdentifier(node) || isMemberExpression(node)
+}
+
+export function getInterfaceName(
+  interfaceMember: TSESTree.Identifier | TSESTree.MemberExpression,
+): string | undefined {
+  if (isIdentifier(interfaceMember)) {
+    return interfaceMember.name
+  }
+
+  return isIdentifier(interfaceMember.property)
+    ? interfaceMember.property.name
+    : undefined
+}
+
+export function getInterfaces({
+  implements: classImplements,
+}: TSESTree.ClassDeclaration): readonly (
+  | TSESTree.Identifier
+  | TSESTree.MemberExpression
+)[] {
+  return (classImplements ?? [])
+    .map(({ expression }) => expression)
+    .filter(isIdentifierOrMemberExpression)
+}
+
+export function getInterface(
+  node: TSESTree.ClassDeclaration,
+  interfaceName: string,
+): TSESTree.Identifier | TSESTree.MemberExpression | undefined {
+  return getInterfaces(node).find(
+    (interfaceMember) => getInterfaceName(interfaceMember) === interfaceName,
+  )
 }
 
 export function getImplementsSchemaFixer(
-  { id, implements: implementz }: TSESTree.ClassDeclaration,
+  { id, implements: classImplements }: TSESTree.ClassDeclaration,
   interfaceName: string,
 ) {
-  const [implementsNodeReplace, implementsTextReplace] = implementz
-    ? [getLast(implementz), `, ${interfaceName}`]
+  const [implementsNodeReplace, implementsTextReplace] = classImplements
+    ? [getLast(classImplements), `, ${interfaceName}`]
     : [id as TSESTree.Identifier, ` implements ${interfaceName}`]
 
   return { implementsNodeReplace, implementsTextReplace } as const
@@ -77,35 +170,30 @@ export function getLast<T extends readonly unknown[]>(items: T): T[number] {
   return items.slice(-1)[0]
 }
 
-export function hasImport(
-  { specifiers }: TSESTree.ImportDeclaration,
-  importSpecifier: string,
-): boolean {
-  return specifiers
-    .filter(isImportSpecifier)
-    .some(({ imported: { name } }) => name === importSpecifier)
-}
-
 export function getDecoratorArgument({ expression }: TSESTree.Decorator) {
   return isCallExpression(expression) && expression.arguments.length > 0
     ? expression.arguments[0]
     : undefined
 }
 
-export function findNgRxStoreName(
+function findCorrespondingNameBy(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
+  moduleName: string,
+  importedName: string,
 ): string | undefined {
   const { ast } = context.getSourceCode()
-  const storeImportSpecifier = findImportDeclarationNode(ast, '@ngrx/store')
+  const importDeclarations = getImportDeclarations(ast, moduleName) ?? []
+  const { importSpecifier } =
+    getImportDeclarationSpecifier(importDeclarations, importedName) ?? {}
 
-  if (!storeImportSpecifier) return undefined
+  if (!importSpecifier) {
+    return undefined
+  }
 
-  const variables = context.getDeclaredVariables(storeImportSpecifier)
-  const storeVariable = variables.find((v) => v.name === 'Store')
+  const variables = context.getDeclaredVariables(importSpecifier)
+  const typedVariable = variables.find(({ name }) => name === importedName)
 
-  if (!storeVariable) return undefined
-
-  return storeVariable.references
+  return typedVariable?.references
     .map(({ identifier: { parent } }) => {
       if (
         parent &&
@@ -117,69 +205,30 @@ export function findNgRxStoreName(
       ) {
         return parent.parent.parent.name
       }
+
       return undefined
     })
     .find(Boolean)
+}
+
+export function findNgRxStoreName(
+  context: TSESLint.RuleContext<string, readonly unknown[]>,
+): string | undefined {
+  return findCorrespondingNameBy(context, MODULE_PATHS.store, 'Store')
 }
 
 export function findNgRxComponentStoreName(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
 ): string | undefined {
-  const { ast } = context.getSourceCode()
-  const storeImportSpecifier = findImportDeclarationNode(
-    ast,
-    '@ngrx/component-store',
+  return findCorrespondingNameBy(
+    context,
+    MODULE_PATHS.componentStore,
+    'ComponentStore',
   )
-
-  if (!storeImportSpecifier) return undefined
-
-  const variables = context.getDeclaredVariables(storeImportSpecifier)
-  const storeVariable = variables.find((v) => v.name === 'ComponentStore')
-
-  if (!storeVariable) return undefined
-
-  return storeVariable.references
-    .map(({ identifier: { parent } }) => {
-      if (
-        parent &&
-        isTSTypeReference(parent) &&
-        parent.parent &&
-        isTSTypeAnnotation(parent.parent) &&
-        parent.parent.parent &&
-        isIdentifier(parent.parent.parent)
-      ) {
-        return parent.parent.parent.name
-      }
-      return undefined
-    })
-    .find(Boolean)
 }
 
 export function findNgRxEffectActionsName(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
 ): string | undefined {
-  const { ast } = context.getSourceCode()
-  const effectsImportSpecifier = findImportDeclarationNode(ast, '@ngrx/effects')
-  if (!effectsImportSpecifier) return undefined
-
-  const variables = context.getDeclaredVariables(effectsImportSpecifier)
-  const actionsVariable = variables.find((v) => v.name === 'Actions')
-
-  if (!actionsVariable) return undefined
-
-  return actionsVariable.references
-    .map(({ identifier: { parent } }) => {
-      if (
-        parent &&
-        isTSTypeReference(parent) &&
-        parent.parent &&
-        isTSTypeAnnotation(parent.parent) &&
-        parent.parent.parent &&
-        isIdentifier(parent.parent.parent)
-      ) {
-        return parent.parent.parent.name
-      }
-      return undefined
-    })
-    .find(Boolean)
+  return findCorrespondingNameBy(context, MODULE_PATHS.effects, 'Actions')
 }

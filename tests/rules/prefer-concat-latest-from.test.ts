@@ -1,5 +1,4 @@
-import { stripIndent, stripIndents } from 'common-tags'
-import { fromFixture } from 'eslint-etc'
+import { stripIndent } from 'common-tags'
 import path from 'path'
 import type { MessageIds } from '../../src/rules/effects/prefer-concat-latest-from'
 import rule, {
@@ -10,7 +9,7 @@ import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
-    stripIndents`
+    `
       export class Effect {
         effect$ = createEffect(
           () =>
@@ -23,7 +22,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
             ),
         );
       }`,
-    stripIndents`
+    `
       class Effect {
         detail$ = createEffect(() => {
           return this.actions.pipe(
@@ -35,30 +34,11 @@ ruleTester().run(path.parse(__filename).name, rule, {
             })
           )
         })
-      }
-    `,
+      }`,
   ],
   invalid: [
-    fromFixture(
-      stripIndent`
-        export class Effect {
-          effect$ = createEffect(
-            () =>
-              this.actions$.pipe(
-                ofType(CollectionApiActions.addBookSuccess),
-                withLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
-                ~~~~~~~~~~~~~~ [${messageId}]
-                switchMap(([action, bookCollection]) => {
-                  return {}
-                })
-              ),
-          );
-        }
-      `,
-    ),
     {
-      code: stripIndents`
-        import { createEffect } from '@ngrx/effects';
+      code: stripIndent`
         export class Effect {
           effect$ = createEffect(
             () =>
@@ -67,7 +47,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
                 withLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
                 switchMap(([action, bookCollection]) => {
                   return {}
-                })
+                }),
               ),
           );
         }`,
@@ -77,8 +57,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           suggestions: [
             {
               messageId: messageIdSuggest as MessageIds,
-              output: stripIndents`
-              import { createEffect, concatLatestFrom } from '@ngrx/effects';
+              output: stripIndent`
+              import { concatLatestFrom } from '@ngrx/effects';
               export class Effect {
                 effect$ = createEffect(
                   () =>
@@ -87,7 +67,48 @@ ruleTester().run(path.parse(__filename).name, rule, {
                       concatLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
                       switchMap(([action, bookCollection]) => {
                         return {}
-                      })
+                      }),
+                    ),
+                );
+              }`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        import type { OnRunEffects } from '@ngrx/effects'
+        export class Effect {
+          effect$ = createEffect(
+            () =>
+              this.actions$.pipe(
+                ofType(CollectionApiActions.addBookSuccess),
+                withLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
+                switchMap(([action, bookCollection]) => {
+                  return {}
+                }),
+              ),
+          );
+        }`,
+      errors: [
+        {
+          messageId: messageId,
+          suggestions: [
+            {
+              messageId: messageIdSuggest as MessageIds,
+              output: stripIndent`
+              import { concatLatestFrom } from '@ngrx/effects';
+              import type { OnRunEffects } from '@ngrx/effects'
+              export class Effect {
+                effect$ = createEffect(
+                  () =>
+                    this.actions$.pipe(
+                      ofType(CollectionApiActions.addBookSuccess),
+                      concatLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
+                      switchMap(([action, bookCollection]) => {
+                        return {}
+                      }),
                     ),
                 );
               }`,

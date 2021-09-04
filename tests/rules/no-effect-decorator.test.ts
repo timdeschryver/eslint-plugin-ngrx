@@ -10,7 +10,7 @@ import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
-    stripIndents`
+    `
       @Injectable()
       export class FixtureEffects {
 
@@ -81,7 +81,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     ),
     fromFixture(
       stripIndents`
-      import { createEffect, Effect } from '@ngrx/effects';
+      import { createEffect, Effect } from '@ngrx/effects'
       @Injectable()
       export class FixtureEffects {
         @Effect({ dispatch: false })
@@ -95,7 +95,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       }`,
       {
         output: stripIndents`
-        import { createEffect, Effect } from '@ngrx/effects';
+        import { createEffect, Effect } from '@ngrx/effects'
         @Injectable()
         export class FixtureEffects {
 
@@ -110,8 +110,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
     ),
     fromFixture(
       stripIndents`
-      import { Injectable } from '@angular/core';
-      import { Effect } from '@ngrx/effects';
+      import { Injectable } from '@angular/core'
+      import { Effect } from '@ngrx/effects'
       @Injectable()
       export class FixtureEffects {
         @Effect(config)
@@ -125,8 +125,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
       }`,
       {
         output: stripIndents`
-        import { Injectable } from '@angular/core';
-        import { Effect, createEffect } from '@ngrx/effects';
+        import { Injectable } from '@angular/core'
+        import { Effect, createEffect } from '@ngrx/effects'
         @Injectable()
         export class FixtureEffects {
 
@@ -141,8 +141,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
     ),
     {
       code: stripIndents`
-      import { Injectable } from '@angular/core';
-      import { Effect } from '@ngrx/effects';
+      import { Injectable } from '@angular/core'
+      import type { OnRunEffects } from '@ngrx/effects'
       @Injectable()
       export class FixtureEffects {
         @Effect(config)
@@ -160,8 +160,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private actions: Actions) {}
       }`,
       output: stripIndents`
-      import { Injectable } from '@angular/core';
-      import { Effect, createEffect } from '@ngrx/effects';
+      import { createEffect } from '@ngrx/effects';
+      import { Injectable } from '@angular/core'
+      import type { OnRunEffects } from '@ngrx/effects'
       @Injectable()
       export class FixtureEffects {
 
@@ -189,8 +190,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
             {
               messageId: noEffectDecoratorSuggest as MessageIds,
               output: stripIndents`
-              import { Injectable } from '@angular/core';
-              import { Effect } from '@ngrx/effects';
+              import { Injectable } from '@angular/core'
+              import type { OnRunEffects } from '@ngrx/effects'
               @Injectable()
               export class FixtureEffects {
                 @Effect(config)

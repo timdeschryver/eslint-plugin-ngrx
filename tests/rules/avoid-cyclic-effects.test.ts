@@ -5,12 +5,14 @@ import rule, { messageId } from '../../src/rules/effects/avoid-cyclic-effects'
 import { ruleTester } from '../utils'
 
 const setup = `
-  import { Actions, createEffect, ofType } from '@ngrx/effects';
-  import { createAction } from '@ngrx/store';
+  import type { OnRunEffects } from '@ngrx/effects'
+  import { EffectConfig } from '@ngrx/effects'
+  import { Actions, createEffect, ofType } from '@ngrx/effects'
+  import { createAction } from '@ngrx/store'
   import { map, tap } from 'rxjs/operators'
 
-  const foo = createAction('FOO');
-  const bar = createAction('BAR');
+  const foo = createAction('FOO')
+  const bar = createAction('BAR')
 
   const fromFoo = {
     foo,

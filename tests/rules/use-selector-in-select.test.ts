@@ -48,6 +48,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
   invalid: [
     fromFixture(
       stripIndent`
+        import type { Selector } from '@ngrx/store'
+        import { MemoizeFn } from '@ngrx/store'
         import { Store } from '@ngrx/store'
         export class Component {
           view$ = this.store.pipe(select('customers'))
