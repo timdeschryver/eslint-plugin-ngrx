@@ -3,9 +3,9 @@ import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
   docsUrl,
+  effectsInNgModuleImports,
+  effectsInNgModuleProviders,
   ngModuleDecorator,
-  ngModuleImports,
-  ngModuleProviders,
 } from '../../utils'
 
 export const messageId = 'noEffectsInProviders'
@@ -35,21 +35,21 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     const importedEffectsNames: string[] = []
 
     return {
-      [ngModuleProviders](node: TSESTree.Identifier) {
+      [effectsInNgModuleProviders](node: TSESTree.Identifier) {
         effectsInProviders.push(node)
       },
-      [ngModuleImports](node: TSESTree.Identifier) {
+      [effectsInNgModuleImports](node: TSESTree.Identifier) {
         importedEffectsNames.push(node.name)
       },
       [`${ngModuleDecorator}:exit`]() {
-        effectsInProviders.forEach((effect: TSESTree.Identifier) => {
-          if (importedEffectsNames.includes(effect.name)) {
+        for (const effectInProvider of effectsInProviders) {
+          if (importedEffectsNames.includes(effectInProvider.name)) {
             context.report({
-              node: effect,
+              node: effectInProvider,
               messageId,
             })
           }
-        })
+        }
       },
     }
   },

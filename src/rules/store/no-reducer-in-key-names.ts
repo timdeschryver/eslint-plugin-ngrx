@@ -4,8 +4,7 @@ import path from 'path'
 import {
   actionReducerMap,
   docsUrl,
-  isIdentifier,
-  isLiteral,
+  metadataProperty,
   storeActionReducerMap,
 } from '../../utils'
 
@@ -31,26 +30,14 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const excludedKeyword = 'reducer'
-
-    function hasKeyword(name: string): boolean {
-      return name.toLowerCase().includes(excludedKeyword)
-    }
-
     return {
-      [`${storeActionReducerMap}, ${actionReducerMap}`](
-        node: TSESTree.Property,
-      ) {
-        const key = node.key
-        if (
-          (isLiteral(key) && hasKeyword(key.raw)) ||
-          (isIdentifier(key) && hasKeyword(key.name))
-        ) {
-          context.report({
-            node: key,
-            messageId,
-          })
-        }
+      [`:matches(${storeActionReducerMap}, ${actionReducerMap}) > :matches(Property[key.type='Identifier'][key.name=/reducer$/i], ${metadataProperty(
+        /reducer$/i,
+      )})`]({ key }: TSESTree.Property) {
+        context.report({
+          node: key,
+          messageId,
+        })
       },
     }
   },
