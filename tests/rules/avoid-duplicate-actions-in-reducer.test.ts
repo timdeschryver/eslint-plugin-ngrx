@@ -15,6 +15,20 @@ ruleTester().run(path.parse(__filename).name, rule, {
       on(def, state => state),
       on(ghi, state => state),
     )`,
+    `
+    export const reducer = createReducer(
+      {},
+      on(abc, state => state),
+      on(def, state => state),
+      on(ghi, state => state),
+    )
+
+    export const reducerTwo = createReducer(
+      {},
+      on(abc, state => state),
+      on(def, state => state),
+      on(ghi, state => state),
+    )`,
     // does not crash when no arguments present
     `
     export const reducer = createReducer(

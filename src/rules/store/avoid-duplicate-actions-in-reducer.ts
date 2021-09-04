@@ -1,7 +1,7 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { docsUrl, isIdentifier } from '../../utils'
+import { createReducer, docsUrl } from '../../utils'
 
 export const messageId = 'avoidDuplicateActionsInReducer'
 export type MessageIds = typeof messageId
@@ -20,50 +20,38 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     schema: [],
     messages: {
       [messageId]:
-        "The reducer handles a duplication action '{{ actionName }}'.",
+        'The reducer handles a duplication action `{{ actionName }}`.',
     },
   },
   defaultOptions: [],
   create: (context) => {
-    const actions = new Map<string, TSESTree.Identifier[]>()
-
-    function isDuplicate(action: TSESTree.Identifier) {
-      const current = actions.get(action.name)
-      const value = [action, ...(current || [])]
-      actions.set(action.name, value)
-
-      if (value.length === 2) {
-        value.forEach((node) => {
-          context.report({
-            node,
-            messageId,
-            data: {
-              actionName: action.name,
-            },
-          })
-        })
-      } else if (value.length > 2) {
-        const [node] = value
-        context.report({
-          node,
-          messageId,
-          data: {
-            actionName: action.name,
-          },
-        })
-      }
-    }
+    const collectedActions = new Map<string, TSESTree.Identifier[]>()
 
     return {
-      [`CallExpression[callee.name='createReducer'] > CallExpression[callee.name='on']`](
-        node: TSESTree.CallExpression,
-      ) {
-        if (node.arguments && node.arguments.length > 1) {
-          const [action] = node.arguments
-          if (isIdentifier(action)) {
-            isDuplicate(action)
+      [`${createReducer} > CallExpression[callee.name='on'][arguments.0.type='Identifier']`]({
+        arguments: { 0: action },
+      }: TSESTree.CallExpression & { arguments: TSESTree.Identifier[] }) {
+        const actions = collectedActions.get(action.name) ?? []
+        collectedActions.set(action.name, [...actions, action])
+      },
+      [`${createReducer}:exit`]() {
+        for (const [action, identifiers] of collectedActions) {
+          if (identifiers.length <= 1) {
+            break
+          }
+
+          for (const node of identifiers) {
+            context.report({
+              node,
+              messageId,
+              data: {
+                actionName: action,
+              },
+            })
           }
         }
+
+        collectedActions.clear()
       },
     }
   },
