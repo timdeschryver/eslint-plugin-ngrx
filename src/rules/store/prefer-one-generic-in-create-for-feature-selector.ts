@@ -34,7 +34,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [`CallExpression[callee.name="createFeatureSelector"] TSTypeParameterInstantiation[params.length>1]`](
+      [`CallExpression[callee.name='createFeatureSelector'] TSTypeParameterInstantiation[params.length>1]`](
         node: TSESTree.TSTypeParameterInstantiation,
       ) {
         context.report({

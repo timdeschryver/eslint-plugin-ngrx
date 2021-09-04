@@ -36,10 +36,10 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
 
     const pipeWithSelectAndMapSelector = `${storePipe(
       storeName,
-    )}:has(CallExpression[callee.name='select'] ~ CallExpression[callee.name='map'])`
+    )}:has(CallExpression[callee.name='select'] ~ CallExpression[callee.name='map'])` as const
     const selectSelector = `${storeExpressionCallable(
       storeName,
-    )}[callee.object.callee.property.name='select']`
+    )}[callee.object.callee.property.name='select']` as const
 
     return {
       [`:matches(${selectSelector}, ${pipeWithSelectAndMapSelector}) > CallExpression[callee.name='map']`](

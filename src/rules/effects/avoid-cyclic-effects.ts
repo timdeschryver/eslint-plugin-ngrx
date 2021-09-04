@@ -120,7 +120,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     }
 
     return {
-      [`${createEffectExpression}:not([arguments.1]:has(Property[key.name="dispatch"][value.value=false])) CallExpression[callee.property.name='pipe'][callee.object.property.name="${actionsName}"]`]:
+      [`${createEffectExpression}:not([arguments.1]:has(Property[key.name='dispatch'][value.value=false])) CallExpression[callee.property.name='pipe'][callee.object.property.name='${actionsName}']`]:
         checkNode,
     }
   },
