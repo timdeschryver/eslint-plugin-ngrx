@@ -35,7 +35,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         collectedActions.set(action.name, [...actions, action])
       },
       [`${createReducer}:exit`]() {
-        for (const [action, identifiers] of collectedActions) {
+        for (const [actionName, identifiers] of collectedActions) {
           if (identifiers.length <= 1) {
             break
           }
@@ -45,7 +45,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
               node,
               messageId,
               data: {
-                actionName: action,
+                actionName,
               },
             })
           }
