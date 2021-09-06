@@ -38,7 +38,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       storeName,
     )}[callee.property.name='pipe']:has(CallExpression[callee.name='select']), ${storeSelect(
       storeName,
-    )})`
+    )})` as const
 
     return {
       [`CallExpression[callee.name='combineLatest'][arguments.length>1] ${pipeableOrStoreSelect} ~ ${pipeableOrStoreSelect}`](
