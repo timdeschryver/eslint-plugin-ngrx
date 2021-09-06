@@ -86,8 +86,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       for (const actionType of operatorActionTypes) {
         if (pipeActionTypes.includes(actionType)) {
           context.report({
-            messageId,
             node: pipeCallExpression.callee,
+            messageId,
           })
           return
         }

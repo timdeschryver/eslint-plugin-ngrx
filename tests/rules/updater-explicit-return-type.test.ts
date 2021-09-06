@@ -7,7 +7,9 @@ import rule, {
 import { ruleTester } from '../utils'
 
 const setup = stripIndent`
-  import { ComponentStore } from "@ngrx/component-store";
+  import type { SelectConfig } from '@ngrx/component-store'
+  import { Projector } from '@ngrx/component-store'
+  import { ComponentStore } from '@ngrx/component-store'
 
   interface Movie {
     readonly genre: string;

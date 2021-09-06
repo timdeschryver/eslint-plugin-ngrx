@@ -1,7 +1,7 @@
 export const effectCreator = `ClassProperty[value.callee.name='createEffect']`
 
 export const effectDecorator = `Decorator[expression.callee.name='Effect']`
-export const classPropertyWithEffectDecorator = `ClassProperty > ${effectDecorator}`
+export const classPropertyWithEffectDecorator = `ClassDeclaration > ClassBody > ClassProperty > ${effectDecorator}`
 
 export const actionCreator = `CallExpression[callee.name='createAction']`
 export const actionCreatorWithLiteral = `${actionCreator}[arguments.0.type='Literal']`
@@ -40,7 +40,10 @@ export const pipeableSelect = (storeName: string) =>
 export const storeSelect = (storeName: string) =>
   `${storeExpression(storeName)}[callee.property.name='select']`
 
-export const onFunctionWithoutType = `CallExpression[callee.name='createReducer'] CallExpression[callee.name='on'] > ArrowFunctionExpression:not([returnType.typeAnnotation],:has(CallExpression))`
+export const createReducer = `CallExpression[callee.name='createReducer']`
+
+export const onFunctionWithoutType =
+  `${createReducer} CallExpression[callee.name='on'] > ArrowFunctionExpression:not([returnType.typeAnnotation],:has(CallExpression))` as const
 
 export const storeActionReducerMap = `${ngModuleDecorator} ObjectExpression Property[key.name='imports'] > ArrayExpression CallExpression[callee.object.name='StoreModule'][callee.property.name=/forRoot|forFeature/] > ObjectExpression:first-child > Property`
 
