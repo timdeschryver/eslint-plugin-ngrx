@@ -2,7 +2,7 @@ import { writeFileSync } from 'fs'
 import { join } from 'path'
 import { format, resolveConfig } from 'prettier'
 import { rules } from '../src/rules'
-import { RuleModule } from '../src/utils/types'
+import type { RuleModule } from '../src/utils/types'
 
 const prettierConfig = resolveConfig.sync(__dirname)
 
