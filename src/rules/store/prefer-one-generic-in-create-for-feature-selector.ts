@@ -26,9 +26,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     schema: [],
     messages: {
       [preferOneGenericInCreateForFeatureSelector]:
-        'Prefer using a single generic to define the feature state',
+        'Prefer using a single generic to define the feature state.',
       [preferOneGenericInCreateForFeatureSelectorSuggest]:
-        'Remove global state generic',
+        'Remove global state generic.',
     },
   },
   defaultOptions: [],

@@ -24,8 +24,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     schema: [],
     messages: {
       [preferInlineActionProps]:
-        'Prefer using inline types instead of interfaces/classes',
-      [preferInlineActionPropsSuggest]: 'Change to inline types',
+        'Prefer using inline types instead of interfaces/classes.',
+      [preferInlineActionPropsSuggest]: 'Change to inline types.',
     },
   },
   defaultOptions: [],

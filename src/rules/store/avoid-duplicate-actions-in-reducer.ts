@@ -14,13 +14,13 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     type: 'problem',
     docs: {
       category: 'Best Practices',
-      description: 'A reducer should handle an action once.',
+      description: 'A `Reducer` should handle an `Action` once.',
       recommended: 'warn',
     },
     schema: [],
     messages: {
       [messageId]:
-        'The reducer handles a duplication action `{{ actionName }}`.',
+        'The `Reducer` handles a duplicate `Action` `{{ actionName }}`.',
     },
   },
   defaultOptions: [],

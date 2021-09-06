@@ -21,14 +21,14 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Best Practices',
       description:
-        'Ensures classes implement lifecycle interfaces corresponding to the declared lifecycle methods',
+        'Ensures classes implement lifecycle interfaces corresponding to the declared lifecycle methods.',
       recommended: 'warn',
     },
     fixable: 'code',
     schema: [],
     messages: {
       [messageId]:
-        "Lifecycle interface '{{ interfaceName }}' should be implemented for method '{{ methodName }}'.",
+        'Lifecycle interface `{{ interfaceName }}` should be implemented for method `{{ methodName }}`.',
     },
   },
   defaultOptions: [],

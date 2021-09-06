@@ -19,13 +19,13 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Best Practices',
       description:
-        "Don't create a store subscription, prefer to use the async pipe",
+        "Don't create a store subscription, prefer to use the async pipe.",
       recommended: 'warn',
     },
     schema: [],
     messages: {
       [messageId]:
-        "Don't create a store subscription, prefer to use the async pipe",
+        "Don't create a store subscription, prefer to use the async pipe.",
     },
   },
   defaultOptions: [],

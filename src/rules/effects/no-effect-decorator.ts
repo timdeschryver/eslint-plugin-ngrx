@@ -32,14 +32,14 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     type: 'problem',
     docs: {
       category: 'Best Practices',
-      description: 'The createEffect creator function is preferred',
+      description: 'The `createEffect` creator function is preferred.',
       recommended: 'warn',
       suggestion: true,
     },
     fixable: 'code',
     schema: [],
     messages: {
-      [noEffectDecorator]: 'The createEffect creator function is preferred.',
+      [noEffectDecorator]: 'The `createEffect` creator function is preferred.',
       [noEffectDecoratorSuggest]: 'Remove the `@Effect` decorator.',
     },
   },

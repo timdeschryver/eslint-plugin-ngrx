@@ -26,7 +26,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     schema: [],
     messages: {
       [messageId]:
-        'Map the value of a selector in the projection method of `createSelector`',
+        'Map the value of a selector in the projection method of `createSelector`.',
     },
   },
   defaultOptions: [],

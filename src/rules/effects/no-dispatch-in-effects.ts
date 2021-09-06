@@ -14,12 +14,12 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       category: 'Possible Errors',
-      description: 'An Effect should not call store.dispatch',
+      description: 'An `Effect` should not call `store.dispatch`.',
       recommended: 'warn',
     },
     schema: [],
     messages: {
-      [messageId]: 'Calling `store.dispatch` in an Effect is forbidden',
+      [messageId]: 'Calling `store.dispatch` in an `Effect` is forbidden.',
     },
   },
   defaultOptions: [],

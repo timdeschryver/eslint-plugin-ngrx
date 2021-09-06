@@ -14,12 +14,12 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       category: 'Best Practices',
-      description: 'There should only be one global store injected',
+      description: 'There should only be one global store injected.',
       recommended: 'warn',
     },
     schema: [],
     messages: {
-      [messageId]: 'Global store should be injected only once',
+      [messageId]: 'Global store should be injected only once.',
     },
   },
   defaultOptions: [],
