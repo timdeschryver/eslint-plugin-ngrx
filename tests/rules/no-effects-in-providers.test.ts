@@ -29,21 +29,31 @@ ruleTester().run(path.parse(__filename).name, rule, {
           EffectsModule.forFeature([FeatEffectOne, FeatEffectTwo]),
           EffectsModule.forFeature([FeatEffectThree]),
         ],
-        providers: [FeatEffectTwo, UnRegisteredEffect, FeatEffectThree, RootEffectTwo],
-                    ~~~~~~~~~~~~~                                                       [${messageId}]
-                                                       ~~~~~~~~~~~~~~~                  [${messageId}]
-                                                                        ~~~~~~~~~~~~~   [${messageId}]
+        'providers': [
+          FeatEffectTwo,
+          ~~~~~~~~~~~~~   [${messageId}]
+          UnRegisteredEffect,
+          FeatEffectThree,
+          ~~~~~~~~~~~~~~~ [${messageId}]
+          RootEffectTwo
+          ~~~~~~~~~~~~~   [${messageId}]
+        ],
       })
       export class AppModule {}`,
     ),
     fromFixture(
       stripIndent`
       @NgModule({
-        providers: [FeatEffectTwo, UnRegisteredEffect, FeatEffectThree, RootEffectTwo],
-                    ~~~~~~~~~~~~~                                                       [${messageId}]
-                                                       ~~~~~~~~~~~~~~~                  [${messageId}]
-                                                                        ~~~~~~~~~~~~~   [${messageId}]
-        imports: [
+        [\`providers\`]: [
+          FeatEffectTwo,
+          ~~~~~~~~~~~~~   [${messageId}]
+          UnRegisteredEffect,
+          FeatEffectThree,
+          ~~~~~~~~~~~~~~~ [${messageId}]
+          RootEffectTwo
+          ~~~~~~~~~~~~~   [${messageId}]
+        ],
+        ['imports']: [
           StoreModule.forFeature('persons', {"foo": "bar"}),
           EffectsModule.forRoot([RootEffectOne, RootEffectTwo]),
           EffectsModule.forFeature([FeatEffectOne, FeatEffectTwo]),

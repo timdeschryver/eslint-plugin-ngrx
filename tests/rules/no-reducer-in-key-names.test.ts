@@ -73,8 +73,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
               ~~~~~~~~~~                        [${messageId}]
               'fooReducer': foo,
               ~~~~~~~~~~~~                      [${messageId}]
-              FoeReducer: FoeReducer,
-              ~~~~~~~~~~                        [${messageId}]
+              ['FoeReducer']: FoeReducer,
+               ~~~~~~~~~~~~                     [${messageId}]
             }),
           ],
         })
@@ -89,8 +89,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ~~~~~~~~~~                          [${messageId}]
           'fooReducer': foo,
           ~~~~~~~~~~~~                        [${messageId}]
-          FoeReducer: fromFoe.reducer,
-          ~~~~~~~~~~                          [${messageId}]
+          [\`FoeReducer\`]: fromFoe.reducer,
+           ~~~~~~~~~~~~                       [${messageId}]
         };`,
     ),
   ],
