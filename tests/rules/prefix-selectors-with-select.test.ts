@@ -9,21 +9,25 @@ import { ruleTester } from '../utils'
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
-    export const selectFeature:MemoizedSelector<any, any> = (state: AppState) => state.feature`,
+    export const selectFeature: MemoizedSelector<any, any> = (state: AppState) => state.feature`,
+    `
+    export const selectFeature: MemoizedSelectorWithProps<any, any> = ({ feature }) => feature`,
     `
     export const selectFeature = createSelector((state: AppState) => state.feature)`,
     `
-    export const selectFeature = createFeatureSelector<FeatureState>(featureKey);`,
+    export const selectFeature = createFeatureSelector<FeatureState>(featureKey)`,
     `
-    export const selectFeature = createFeatureSelector<AppState, FeatureState>(featureKey);`,
+    export const selectFeature = createFeatureSelector<AppState, FeatureState>(featureKey)`,
     `
-    export const selectFeature = createSelector((state, props) => state.counter[props.id])`,
+    export const selectThing = (id: string) => createSelector(selectThings, things => things[id])`,
+    `
+    export const selectFeature = createSelectorFactory(factoryFn)`,
   ],
   invalid: [
     fromFixture(
       stripIndent`
-        export const getFeature: MemoizedSelector<any, any> = (state: AppState) => state.feature
-                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[${messageId}]`,
+        export const getCount: MemoizedSelector<any, any> = (state: AppState) => state.feature
+                     ~~~~~~~~                        [${messageId}]`,
     ),
     fromFixture(
       stripIndent`
@@ -32,12 +36,19 @@ ruleTester().run(path.parse(__filename).name, rule, {
     ),
     fromFixture(
       stripIndent`
-        export const select = createSelector((state: AppState) => state.feature)
+        export const select = (id: string) => createSelector(selectThings, things => things[id])
                      ~~~~~~                            [${messageId}]`,
     ),
     fromFixture(
       stripIndent`
-      export const feature = createFeatureSelector<AppState, FeatureState>(featureKey);
+        export const testSelect = (id: string) => {
+                     ~~~~~~~~~~                        [${messageId}]
+          return createSelector(selectThings, things => things[id])
+        }`,
+    ),
+    fromFixture(
+      stripIndent`
+      export const feature = createFeatureSelector<AppState, FeatureState>(featureKey)
                    ~~~~~~~                             [${messageId}]`,
     ),
     fromFixture(
@@ -47,8 +58,14 @@ ruleTester().run(path.parse(__filename).name, rule, {
     ),
     fromFixture(
       stripIndent`
-      const getCount = createSelector((state, props) => state * props.multiply)
-            ~~~~~~~~                                  [${messageId}]`,
+        export const createSelect = createSelectorFactory((projectionFun) =>
+                     ~~~~~~~~~~~~                     [${messageId}]
+          defaultMemoize(
+            projectionFun,
+            orderDoesNotMatterComparer,
+            orderDoesNotMatterComparer,
+          ),
+        )`,
     ),
   ],
 })
