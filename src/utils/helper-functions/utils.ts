@@ -184,10 +184,34 @@ export function getLast<T extends readonly unknown[]>(items: T): T[number] {
   return items.slice(-1)[0]
 }
 
-export function getDecoratorArgument({ expression }: TSESTree.Decorator) {
-  return isCallExpression(expression) && expression.arguments.length > 0
-    ? expression.arguments[0]
+export function getDecoratorArguments({ expression }: TSESTree.Decorator) {
+  return isCallExpression(expression) ? expression.arguments : []
+}
+
+export function getDecoratorName({
+  expression,
+}: TSESTree.Decorator): string | undefined {
+  if (isIdentifier(expression)) {
+    return expression.name
+  }
+
+  return isCallExpression(expression) && isIdentifier(expression.callee)
+    ? expression.callee.name
     : undefined
+}
+
+export function getDecorator(
+  {
+    decorators,
+  }:
+    | TSESTree.ClassProperty
+    | TSESTree.ClassDeclaration
+    | TSESTree.MethodDefinition,
+  decoratorName: string,
+): TSESTree.Decorator | undefined {
+  return decorators?.find(
+    (decorator) => getDecoratorName(decorator) === decoratorName,
+  )
 }
 
 function findCorrespondingNameBy(
