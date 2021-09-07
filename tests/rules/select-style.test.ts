@@ -2,10 +2,9 @@ import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
-  METHOD,
   methodSelectMessageId,
-  OPERATOR,
   operatorSelectMessageId,
+  SelectStyle,
 } from '../../src/rules/store/select-style'
 import { ruleTester } from '../utils'
 
@@ -36,7 +35,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private store: Store) {}
       }
       `,
-      options: [OPERATOR],
+      options: [SelectStyle.Operator],
     },
     {
       code: `
@@ -47,7 +46,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private store: Store) {}
       }
       `,
-      options: [METHOD],
+      options: [SelectStyle.Method],
     },
   ],
   invalid: [
@@ -63,7 +62,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       `,
       {
         output: stripIndent`
-          import { select, Store } from '@ngrx/store'
+          import {  Store } from '@ngrx/store'
           @Component()
           export class FixtureComponent {
             foo$ = this.store.select(selector)
@@ -83,7 +82,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }
       `,
       {
-        options: [METHOD],
+        options: [SelectStyle.Method],
         output: stripIndent`
           import { Store } from '@ngrx/store'
           @Component()
@@ -107,7 +106,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }
       `,
       {
-        options: [OPERATOR],
+        options: [SelectStyle.Operator] as const,
         output: stripIndent`
           import { select, Store } from '@ngrx/store'
           @Component()
@@ -122,22 +121,52 @@ ruleTester().run(path.parse(__filename).name, rule, {
     ),
     fromFixture(
       stripIndent`
-        import { Store } from '@ngrx/store'
+        import {
+          Store,
+          select,
+        } from '@ngrx/store'
         @Component()
         export class FixtureComponent {
           foo$ = this.store.pipe(select(selector), map(toItem)).pipe()
                                  ~~~~~~ [${methodSelectMessageId}]
+          bar$ = this.store.
+            select(selector).pipe()
+          baz$ = this.store.pipe(
+            select(({customers}) => customers), map(toItem),
+            ~~~~~~ [${methodSelectMessageId}]
+          ).pipe()
           constructor(private store: Store) {}
+        }
+
+        @Component()
+        export class FixtureComponent2 {
+          foo$ = this.store.pipe(select(selector), map(toItem)).pipe()
+                                 ~~~~~~ [${methodSelectMessageId}]
+          constructor(private readonly store: Store) {}
         }
       `,
       {
-        options: [METHOD],
+        options: [SelectStyle.Method],
         output: stripIndent`
-          import { Store } from '@ngrx/store'
+          import {
+            Store,
+            select,
+          } from '@ngrx/store'
           @Component()
           export class FixtureComponent {
             foo$ = this.store.select(selector).pipe( map(toItem)).pipe()
+            bar$ = this.store.
+              select(selector).pipe()
+            baz$ = this.store.select(({customers}) => customers).pipe(
+               map(toItem),
+            ).pipe()
             constructor(private store: Store) {}
+          }
+
+          @Component()
+          export class FixtureComponent2 {
+            foo$ = this.store.select(selector).pipe( map(toItem)).pipe()
+            constructor(private readonly store: Store) {}
           }
         `,
       },
@@ -154,7 +183,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }
       `,
       {
-        options: [OPERATOR],
+        options: [SelectStyle.Operator],
         output: stripIndent`
           import type {Creator} from '@ngrx/store'
           import { Store, select } from '@ngrx/store'

@@ -5,6 +5,8 @@ import {
   docsUrl,
   findNgRxStoreName,
   getImportAddFix,
+  getImportDeclarations,
+  getImportRemoveFix,
   getNearestUpperNodeFrom,
   isClassDeclaration,
   MODULE_PATHS,
@@ -19,10 +21,12 @@ export type MessageIds =
   | typeof methodSelectMessageId
   | typeof operatorSelectMessageId
 
-export const OPERATOR = 'operator'
-export const METHOD = 'method'
+export const enum SelectStyle {
+  Operator = 'operator',
+  Method = 'method',
+}
 
-type Options = [typeof OPERATOR | typeof METHOD]
+type Options = [`${SelectStyle}`]
 type MemberExpressionWithProperty = Omit<
   TSESTree.MemberExpression,
   'property'
@@ -52,7 +56,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     schema: [
       {
         type: 'string',
-        enum: [OPERATOR, METHOD],
+        enum: [SelectStyle.Method, SelectStyle.Operator],
         additionalProperties: false,
       },
     ],
@@ -63,12 +67,12 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         'Selectors should be used with the pipeable operator: `this.store.pipe(select(selector))`.',
     },
   },
-  defaultOptions: [METHOD],
+  defaultOptions: [SelectStyle.Method],
   create: (context, [mode]) => {
     const storeName = findNgRxStoreName(context)
     if (!storeName) return {}
 
-    if (mode === METHOD) {
+    if (mode === SelectStyle.Method) {
       const sourceCode = context.getSourceCode()
 
       return {
@@ -76,7 +80,26 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           context.report({
             node: node.callee,
             messageId: methodSelectMessageId,
-            fix: (fixer) => getOperatorToMethodFixes(node, sourceCode, fixer),
+            fix: (fixer) => {
+              const importDeclarations =
+                getImportDeclarations(node, MODULE_PATHS.store) ?? []
+              const text = sourceCode.getText()
+              const totalPipeSelectOccurrences =
+                getTotalPipeSelectOccurrences(text)
+              const importRemoveFix =
+                totalPipeSelectOccurrences === 1
+                  ? getImportRemoveFix(
+                      sourceCode,
+                      importDeclarations,
+                      'select',
+                      fixer,
+                    )
+                  : []
+
+              return getOperatorToMethodFixes(node, sourceCode, fixer).concat(
+                importRemoveFix,
+              )
+            },
           })
         },
       }
@@ -153,4 +176,8 @@ function getOperatorToMethodFixes(
     fixer.removeRange(selectOperatorRange),
     fixer.insertTextAfterRange(storeRange, `.${text}`),
   ]
+}
+
+function getTotalPipeSelectOccurrences(text: string) {
+  return text.replace(/\s/g, '').match(/pipe\(select\(/g)?.length ?? 0
 }
