@@ -26,10 +26,20 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create(context) {
     return {
-      'VariableDeclarator[id.name!=/^select[A-Z][a-zA-Z]+$/]:matches(:has(TSTypeAnnotation[typeAnnotation.typeName.name=/^MemoizedSelector(WithProps$|$)/]), :has(CallExpression[callee.name=/^create(Feature)?Selector$/]))'({
+      'VariableDeclarator[id.name!=/^select[A-Z][a-zA-Z]+$/]:matches([id.typeAnnotation.typeAnnotation.typeName.name=/^MemoizedSelector(WithProps)?$/], :has(CallExpression[callee.name=/^(create(Feature)?Selector|createSelectorFactory)$/]))'({
         id,
       }: TSESTree.VariableDeclarator) {
-        context.report({ node: id, messageId })
+        context.report({
+          loc: {
+            ...id.loc,
+            end: {
+              ...id.loc.end,
+              column: id.typeAnnotation?.range[0] ?? id.range[1],
+            },
+          },
+          node: id,
+          messageId,
+        })
       },
     }
   },

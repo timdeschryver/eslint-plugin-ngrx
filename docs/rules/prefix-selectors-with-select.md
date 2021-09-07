@@ -13,7 +13,8 @@ Examples of **incorrect** code for this rule:
 export const feature = createSelector((state: AppState) => state.feature)
 
 // ⚠ Usage of a selector without any description
-export const select = createSelector((state: AppState) => state.feature)
+export const select = (id: string) =>
+  createSelector((state: AppState) => state.feature)
 
 // ⚠ Usage of a selector with a `get` prefix
 export const getFeature: MemoizedSelector<any, any> = (state: AppState) =>
@@ -21,6 +22,15 @@ export const getFeature: MemoizedSelector<any, any> = (state: AppState) =>
 
 // ⚠ Usage of a selector with improper casing
 const selectfeature = createFeatureSelector<AppState, FeatureState>(featureKey)
+
+// ⚠ Usage of a `createSelectorFactory` without `select` prefix
+const createSelector = createSelectorFactory((projectionFun) =>
+  defaultMemoize(
+    projectionFun,
+    orderDoesNotMatterComparer,
+    orderDoesNotMatterComparer,
+  ),
+)
 ```
 
 Examples of **correct** code for this rule:
@@ -30,6 +40,8 @@ export const selectFeature = createSelector((state: AppState) => state.feature)
 export const selectFeature: MemoizedSelector<any, any> = (state: AppState) =>
   state.feature
 const selectFeature = createFeatureSelector<FeatureState>(featureKey)
+export const selectThing = (id: string) =>
+  createSelector(selectThings, (things) => things[id])
 ```
 
 ## Further reading
