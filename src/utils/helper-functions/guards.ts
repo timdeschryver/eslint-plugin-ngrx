@@ -22,6 +22,12 @@ export const isIdentifier = isNodeOfType(AST_NODE_TYPES.Identifier)
 export const isImportDeclaration = isNodeOfType(
   AST_NODE_TYPES.ImportDeclaration,
 )
+export const isImportDefaultSpecifier = isNodeOfType(
+  AST_NODE_TYPES.ImportDefaultSpecifier,
+)
+export const isImportNamespaceSpecifier = isNodeOfType(
+  AST_NODE_TYPES.ImportNamespaceSpecifier,
+)
 export const isImportSpecifier = isNodeOfType(AST_NODE_TYPES.ImportSpecifier)
 export const isLiteral = isNodeOfType(AST_NODE_TYPES.Literal)
 export const isMemberExpression = isNodeOfType(AST_NODE_TYPES.MemberExpression)
@@ -30,6 +36,12 @@ export const isTSTypeAnnotation = isNodeOfType(AST_NODE_TYPES.TSTypeAnnotation)
 export const isTSTypeReference = isNodeOfType(AST_NODE_TYPES.TSTypeReference)
 export const isObjectExpression = isNodeOfType(AST_NODE_TYPES.ObjectExpression)
 export const isProperty = isNodeOfType(AST_NODE_TYPES.Property)
+
+export function isIdentifierOrMemberExpression(
+  node: TSESTree.Node,
+): node is TSESTree.Identifier | TSESTree.MemberExpression {
+  return isIdentifier(node) || isMemberExpression(node)
+}
 
 export function isTypeReference(type: ts.Type): type is ts.TypeReference {
   return type.hasOwnProperty('target')
