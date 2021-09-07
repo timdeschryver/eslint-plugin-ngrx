@@ -1,4 +1,4 @@
-import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
@@ -7,6 +7,9 @@ import {
   effectDecorator,
   getDecorator,
   getDecoratorArguments,
+  getImportDeclarations,
+  getImportRemoveFix,
+  MODULE_PATHS,
 } from '../../utils'
 
 export const noEffectDecoratorAndCreator = 'noEffectDecoratorAndCreator'
@@ -39,6 +42,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
+    const sourceCode = context.getSourceCode()
+
     return {
       [`${effectCreator}:has(${effectDecorator})`](
         node: TSESTree.ClassProperty,
@@ -63,13 +68,14 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
                 // would be quite costly.
                 suggest: [
                   {
-                    fix: (fixer) => fixer.remove(decorator),
+                    fix: (fixer) =>
+                      getFixes(node, sourceCode, fixer, decorator),
                     messageId: noEffectDecoratorAndCreatorSuggest,
                   },
                 ],
               }
             : {
-                fix: (fixer) => fixer.remove(decorator),
+                fix: (fixer) => getFixes(node, sourceCode, fixer, decorator),
               }),
           node: node.key,
           messageId: noEffectDecoratorAndCreator,
@@ -78,3 +84,25 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     }
   },
 })
+
+function getFixes(
+  node: TSESTree.ClassProperty,
+  sourceCode: Readonly<TSESLint.SourceCode>,
+  fixer: TSESLint.RuleFixer,
+  decorator: TSESTree.Decorator,
+): TSESLint.RuleFix[] {
+  const importDeclarations =
+    getImportDeclarations(node, MODULE_PATHS.effects) ?? []
+  const text = sourceCode.getText()
+  const totalEffectDecoratorOccurrences = getEffectDecoratorOccurrences(text)
+  const importRemoveFix =
+    totalEffectDecoratorOccurrences === 1
+      ? getImportRemoveFix(sourceCode, importDeclarations, 'Effect', fixer)
+      : []
+
+  return [fixer.remove(decorator)].concat(importRemoveFix)
+}
+
+function getEffectDecoratorOccurrences(text: string) {
+  return text.replace(/\s/g, '').match(/@Effect/g)?.length ?? 0
+}
