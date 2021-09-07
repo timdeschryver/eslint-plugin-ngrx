@@ -24,21 +24,23 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const injectedStores: TSESTree.Identifier[] = []
+    const collectedStores = new Set<TSESTree.Identifier>()
 
     return {
       [injectedStore](node: TSESTree.Identifier) {
-        injectedStores.push(node)
+        collectedStores.add(node)
       },
       [constructorExit]() {
-        if (injectedStores.length > 1) {
-          injectedStores.forEach((node) => {
+        if (collectedStores.size > 1) {
+          for (const node of collectedStores) {
             context.report({
               node,
               messageId,
             })
-          })
+          }
         }
+
+        collectedStores.clear()
       },
     }
   },

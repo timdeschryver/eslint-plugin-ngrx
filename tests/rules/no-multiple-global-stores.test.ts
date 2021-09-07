@@ -11,26 +11,34 @@ ruleTester().run(path.parse(__filename).name, rule, {
     `export class NoCtorOK {}`,
     `
     export class EmptyOk {
-      constructor(){}
+      constructor() {}
     }`,
     `
     export class OneWithVisibilityOk {
-      constructor(private store: Store){}
+      constructor(private store: Store) {}
     }`,
     `
     export class OneWithoutVisibilityOk {
-      constructor(store: Store){}
+      constructor(store: Store) {}
     }`,
     `
     export class OnePlusExtraOk {
-      constructor(private store: Store, data: Service){}
+      constructor(private store: Store, data: Service) {}
+    }`,
+    `
+    export class FirstOk {
+      constructor(private store: Store, data: Service) {}
+    }
+
+    export class SecondOk {
+      constructor(private store: Store, data: Service) {}
     }`,
   ],
   invalid: [
     fromFixture(
       stripIndent`
         export class NotOkNoVisibility {
-          constructor(store: Store, store2: Store){}
+          constructor(store: Store, store2: Store) {}
                       ~~~~~~~~~~~~                  [${messageId}]
                                     ~~~~~~~~~~~~~   [${messageId}]
         }`,
@@ -38,7 +46,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     fromFixture(
       stripIndent`
         export class NotOkOneVisibility {
-          constructor(store: Store, private store2: Store){}
+          constructor(store: Store, private store2: Store) {}
                       ~~~~~~~~~~~~                        [${messageId}]
                                             ~~~~~~~~~~~~~ [${messageId}]
         }`,
@@ -46,7 +54,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     fromFixture(
       stripIndent`
         export class NotOkBothVisibility {
-          constructor(private readonly store: Store, private store2: Store){}
+          constructor(private readonly store: Store, private store2: Store) {}
                                        ~~~~~~~~~~~~                          [${messageId}]
                                                              ~~~~~~~~~~~~~   [${messageId}]
         }`,
@@ -54,7 +62,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     fromFixture(
       stripIndent`
         export class NotOkMultipleErrors {
-          constructor(private readonly store: Store, private store2: Store, private store3: Store){}
+          constructor(private readonly store: Store, private store2: Store, private store3: Store) {}
                                        ~~~~~~~~~~~~                                                [${messageId}]
                                                              ~~~~~~~~~~~~~                         [${messageId}]
                                                                                     ~~~~~~~~~~~~~  [${messageId}]
