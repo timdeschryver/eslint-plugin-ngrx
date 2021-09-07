@@ -137,6 +137,51 @@ export function getImportAddFix({
   return fixer.insertTextAfter(importClause, replacementText)
 }
 
+export function getImportRemoveFix(
+  sourceCode: Readonly<TSESLint.SourceCode>,
+  importDeclarations: readonly TSESTree.ImportDeclaration[],
+  importedName: string,
+  fixer: TSESLint.RuleFixer,
+): TSESLint.RuleFix | TSESLint.RuleFix[] {
+  const { importDeclaration, importSpecifier } =
+    getImportDeclarationSpecifier(importDeclarations, importedName) ?? {}
+
+  if (!importDeclaration || !importSpecifier) {
+    return []
+  }
+
+  const isFirstImportSpecifier =
+    importDeclaration.specifiers[0] === importSpecifier
+  const isLastImportSpecifier =
+    getLast(importDeclaration.specifiers) === importSpecifier
+  const isSingleImportSpecifier =
+    isFirstImportSpecifier && isLastImportSpecifier
+
+  if (isSingleImportSpecifier) {
+    return fixer.remove(importDeclaration)
+  }
+
+  const tokenAfterImportSpecifier = sourceCode.getTokenAfter(importSpecifier)
+
+  if (isFirstImportSpecifier && tokenAfterImportSpecifier) {
+    return fixer.removeRange([
+      importSpecifier.range[0],
+      tokenAfterImportSpecifier.range[1],
+    ])
+  }
+
+  const tokenBeforeImportSpecifier = sourceCode.getTokenBefore(importSpecifier)
+
+  if (!tokenBeforeImportSpecifier) {
+    return []
+  }
+
+  return fixer.removeRange([
+    tokenBeforeImportSpecifier.range[0],
+    importSpecifier.range[1],
+  ])
+}
+
 export function getInterfaceName(
   interfaceMember: TSESTree.Identifier | TSESTree.MemberExpression,
 ): string | undefined {
