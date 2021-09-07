@@ -1,7 +1,7 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { createEffectBody, docsUrl, isCallExpression } from '../../utils'
+import { createEffectFunction, docsUrl } from '../../utils'
 
 export const messageId = 'preferEffectCallbackInBlockStatement'
 
@@ -28,17 +28,17 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [createEffectBody](node: TSESTree.ArrowFunctionExpression) {
-        if (node.body && isCallExpression(node.body)) {
-          context.report({
-            node: node.body,
-            messageId,
-            fix: (fixer) => [
-              fixer.insertTextBefore(node.body, `{ return `),
-              fixer.insertTextAfter(node.body, ` }`),
-            ],
-          })
-        }
+      [`${createEffectFunction} > CallExpression`](
+        node: TSESTree.CallExpression,
+      ) {
+        context.report({
+          node,
+          messageId,
+          fix: (fixer) => [
+            fixer.insertTextBefore(node, `{ return `),
+            fixer.insertTextAfter(node, ` }`),
+          ],
+        })
       },
     }
   },

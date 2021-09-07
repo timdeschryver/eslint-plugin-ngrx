@@ -43,17 +43,17 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       ) {
         for (const arg of node.arguments) {
           if (
-            isLiteral(arg) ||
-            isArrowFunctionExpression(arg) ||
-            isFunctionExpression(arg)
+            !isLiteral(arg) &&
+            !isArrowFunctionExpression(arg) &&
+            !isFunctionExpression(arg)
           ) {
-            context.report({
-              node: arg,
-              messageId,
-            })
-          } else {
             break
           }
+
+          context.report({
+            node: arg,
+            messageId,
+          })
         }
       },
     }

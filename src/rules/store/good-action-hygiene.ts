@@ -25,22 +25,27 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    return {
-      [actionCreatorWithLiteral](node: TSESTree.CallExpression) {
-        const literal = node.arguments[0] as TSESTree.Literal
-        const { value: actionType } = literal
-        const sourceEventPattern = /[\[].*[\]]\s.*/
+    const sourceEventPattern = /[\[].*[\]]\s.*/
 
-        if (
-          typeof actionType === 'string' &&
-          !sourceEventPattern.test(actionType)
-        ) {
-          context.report({
-            node: literal,
-            messageId,
-            data: { actionType },
-          })
+    return {
+      [actionCreatorWithLiteral]({
+        arguments: { 0: node },
+      }: Omit<TSESTree.CallExpression, 'arguments'> & {
+        arguments: TSESTree.StringLiteral[]
+      }) {
+        const { value: actionType } = node
+
+        if (sourceEventPattern.test(actionType)) {
+          return
         }
+
+        context.report({
+          node,
+          messageId,
+          data: {
+            actionType,
+          },
+        })
       },
     }
   },
