@@ -27,25 +27,42 @@ ruleTester().run(path.parse(__filename).name, rule, {
   invalid: [
     fromFixture(
       stripIndents`
+        import { Effects } from '@ngrx/effects'
         @Injectable()
         export class FixtureEffects {
           @Effect()
           both = createEffect(() => this.actions)
           ~~~~ [${noEffectDecoratorAndCreator}]
           constructor(private actions: Actions) {}
+        }
+
+        @Injectable()
+        export class FixtureEffects2 {
+          @Effect() source$ = defer(() => {
+            return mySocketService.connect()
+          })
         }`,
       {
         output: stripIndents`
+          import { Effects } from '@ngrx/effects'
           @Injectable()
           export class FixtureEffects {
 
             both = createEffect(() => this.actions)
             constructor(private actions: Actions) {}
+          }
+
+          @Injectable()
+          export class FixtureEffects2 {
+            @Effect() source$ = defer(() => {
+              return mySocketService.connect()
+            })
           }`,
       },
     ),
     {
       code: stripIndents`
+        import {Effect} from '@ngrx/effects'
         @Injectable()
         export class FixtureEffects {
           @Effect({ dispatch: false })
@@ -56,12 +73,14 @@ ruleTester().run(path.parse(__filename).name, rule, {
         {
           column: 1,
           endColumn: 5,
-          line: 4,
+          line: 5,
           messageId: noEffectDecoratorAndCreator,
           suggestions: [
             {
               messageId: noEffectDecoratorAndCreatorSuggest as MessageIds,
-              output: stripIndents`
+              output:
+                '\n' +
+                stripIndents`
                 @Injectable()
                 export class FixtureEffects {
 
