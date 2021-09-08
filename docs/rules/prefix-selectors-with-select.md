@@ -39,7 +39,9 @@ Examples of **correct** code for this rule:
 export const selectFeature = createSelector((state: AppState) => state.feature)
 export const selectFeature: MemoizedSelector<any, any> = (state: AppState) =>
   state.feature
+
 const selectFeature = createFeatureSelector<FeatureState>(featureKey)
+
 export const selectThing = (id: string) =>
   createSelector(selectThings, (things) => things[id])
 ```
