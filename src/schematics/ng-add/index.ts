@@ -55,6 +55,14 @@ function configurePlugin(json: {
   plugins?: string[]
   extends?: string[]
 }): void {
-  json.plugins = [...(json.plugins || []), 'ngrx']
-  json.extends = [...(json.extends || []), 'plugin:ngrx/recommended']
+  json.plugins = json.plugins || []
+  json.extends = json.extends || []
+
+  if (!json.plugins.includes('ngrx')) {
+    json.plugins.push('ngrx')
+  }
+
+  if (!json.extends.includes('plugin:ngrx/recommended')) {
+    json.extends.push('plugin:ngrx/recommended')
+  }
 }

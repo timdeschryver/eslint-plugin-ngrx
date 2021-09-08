@@ -11,7 +11,7 @@ const schematicRunner = new SchematicTestRunner(
   'src/schematics/collection.json',
 )
 
-test('should register the plugin', async () => {
+test('registers the plugin', async () => {
   const appTree = new UnitTestTree(Tree.empty())
 
   const initialConfig = {}
@@ -27,7 +27,7 @@ test('should register the plugin', async () => {
   })
 })
 
-test('should register the plugin in overrides when it supports TS', async () => {
+test('registers the plugin in overrides when it supports TS', async () => {
   const appTree = new UnitTestTree(Tree.empty())
 
   // this is a trimmed down version of the default angular-eslint schematic
@@ -93,6 +93,22 @@ test('should register the plugin in overrides when it supports TS', async () => 
       },
     ],
   })
+})
+
+test('does not add the plugin if it is already added manually', async () => {
+  const appTree = new UnitTestTree(Tree.empty())
+
+  const initialConfig = {
+    plugins: ['ngrx'],
+    extends: ['plugin:ngrx/recommended'],
+  }
+  appTree.create('.eslintrc.json', JSON.stringify(initialConfig, null, 2))
+
+  await schematicRunner.runSchematicAsync('ng-add', {}, appTree).toPromise()
+
+  const eslintContent = appTree.readContent(`.eslintrc.json`)
+  const eslintJson = JSON.parse(eslintContent)
+  assert.equal(eslintJson, initialConfig)
 })
 
 test.run()
