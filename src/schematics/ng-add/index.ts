@@ -55,6 +55,8 @@ function configurePlugin(json: {
   plugins?: string[]
   extends?: string[]
 }): void {
-  json.plugins = [...new Set([...(json.plugins ?? []), 'ngrx')]
-  json.extends = [...new Set([...(json.extends ?? []), 'plugin:ngrx/recommended')]
+  json.plugins = [...new Set([...(json.plugins ?? []), 'ngrx'])]
+  json.extends = [
+    ...new Set([...(json.extends ?? []), 'plugin:ngrx/recommended']),
+  ]
 }
