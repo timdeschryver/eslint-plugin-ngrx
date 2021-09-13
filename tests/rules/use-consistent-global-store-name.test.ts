@@ -1,6 +1,5 @@
 import { stripIndents } from 'common-tags'
 import path from 'path'
-import type { MessageIds } from '../../src/rules/store/use-consistent-global-store-name'
 import rule, {
   useConsistentGlobalStoreName,
   useConsistentGlobalStoreNameSuggest,
@@ -49,7 +48,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           },
           suggestions: [
             {
-              messageId: useConsistentGlobalStoreNameSuggest as MessageIds,
+              messageId: useConsistentGlobalStoreNameSuggest,
               output: stripIndents`
               import { Store } from '@ngrx/store'
               @Component()
@@ -81,7 +80,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           },
           suggestions: [
             {
-              messageId: useConsistentGlobalStoreNameSuggest as MessageIds,
+              messageId: useConsistentGlobalStoreNameSuggest,
               output: stripIndents`
               import { Store } from '@ngrx/store'
               @Component()

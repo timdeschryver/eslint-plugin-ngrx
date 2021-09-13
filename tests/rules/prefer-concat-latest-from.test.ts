@@ -1,6 +1,5 @@
 import { stripIndent } from 'common-tags'
 import path from 'path'
-import type { MessageIds } from '../../src/rules/effects/prefer-concat-latest-from'
 import rule, {
   messageId,
   messageIdSuggest,
@@ -56,7 +55,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           messageId: messageId,
           suggestions: [
             {
-              messageId: messageIdSuggest as MessageIds,
+              messageId: messageIdSuggest,
               output: stripIndent`
               import { concatLatestFrom } from '@ngrx/effects';
               export class Effect {
@@ -96,7 +95,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           messageId: messageId,
           suggestions: [
             {
-              messageId: messageIdSuggest as MessageIds,
+              messageId: messageIdSuggest,
               output: stripIndent`
               import { concatLatestFrom } from '@ngrx/effects';
               import type { OnRunEffects } from '@ngrx/effects'
