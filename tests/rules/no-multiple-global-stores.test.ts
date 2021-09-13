@@ -1,8 +1,8 @@
-import { stripIndent } from 'common-tags'
-import { fromFixture } from 'eslint-etc'
+import { stripIndents } from 'common-tags'
 import path from 'path'
 import rule, {
-  messageId,
+  noMultipleGlobalStores,
+  noMultipleGlobalStoresSuggest,
 } from '../../src/rules/store/no-multiple-global-stores'
 import { ruleTester } from '../utils'
 
@@ -25,48 +25,160 @@ ruleTester().run(path.parse(__filename).name, rule, {
     export class OnePlusExtraOk {
       constructor(private store: Store, data: Service) {}
     }`,
-    `
-    export class FirstOk {
-      constructor(private store: Store, data: Service) {}
-    }
-
-    export class SecondOk {
-      constructor(private store: Store, data: Service) {}
-    }`,
   ],
   invalid: [
-    fromFixture(
-      stripIndent`
-        export class NotOkNoVisibility {
+    {
+      code: stripIndents`
+        export class NotOk1 {
           constructor(store: Store, store2: Store) {}
-                      ~~~~~~~~~~~~                  [${messageId}]
-                                    ~~~~~~~~~~~~~   [${messageId}]
         }`,
-    ),
-    fromFixture(
-      stripIndent`
-        export class NotOkOneVisibility {
-          constructor(store: Store, private store2: Store) {}
-                      ~~~~~~~~~~~~                        [${messageId}]
-                                            ~~~~~~~~~~~~~ [${messageId}]
+      errors: [
+        {
+          column: 13,
+          endColumn: 25,
+          line: 2,
+          messageId: noMultipleGlobalStores,
+          suggestions: [
+            {
+              messageId: noMultipleGlobalStoresSuggest,
+              output: stripIndents`
+              export class NotOk1 {
+                constructor( store2: Store) {}
+              }`,
+            },
+          ],
+        },
+        {
+          column: 27,
+          endColumn: 40,
+          line: 2,
+          messageId: noMultipleGlobalStores,
+          suggestions: [
+            {
+              messageId: noMultipleGlobalStoresSuggest,
+              output: stripIndents`
+              export class NotOk1 {
+                constructor(store: Store) {}
+              }`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndents`
+        export class NotOk2 {
+          constructor(store: Store, private readonly actions$: Actions, private store2: Store, b: B) {}
         }`,
-    ),
-    fromFixture(
-      stripIndent`
-        export class NotOkBothVisibility {
-          constructor(private readonly store: Store, private store2: Store) {}
-                                       ~~~~~~~~~~~~                          [${messageId}]
-                                                             ~~~~~~~~~~~~~   [${messageId}]
+      errors: [
+        {
+          column: 13,
+          endColumn: 25,
+          line: 2,
+          messageId: noMultipleGlobalStores,
+          suggestions: [
+            {
+              messageId: noMultipleGlobalStoresSuggest,
+              output: stripIndents`
+              export class NotOk2 {
+                constructor( private readonly actions$: Actions, private store2: Store, b: B) {}
+              }`,
+            },
+          ],
+        },
+        {
+          column: 71,
+          endColumn: 84,
+          line: 2,
+          messageId: noMultipleGlobalStores,
+          suggestions: [
+            {
+              messageId: noMultipleGlobalStoresSuggest,
+              output: stripIndents`
+              export class NotOk2 {
+                constructor(store: Store, private readonly actions$: Actions,  b: B) {}
+              }`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndents`
+        export class NotOk3 {
+          constructor(
+            a: A,
+            store: Store,
+            private readonly actions$: Actions,
+            private store2: Store,
+            private readonly store3: Store,
+          ) {}
         }`,
-    ),
-    fromFixture(
-      stripIndent`
-        export class NotOkMultipleErrors {
-          constructor(private readonly store: Store, private store2: Store, private store3: Store) {}
-                                       ~~~~~~~~~~~~                                                [${messageId}]
-                                                             ~~~~~~~~~~~~~                         [${messageId}]
-                                                                                    ~~~~~~~~~~~~~  [${messageId}]
-        }`,
-    ),
+      errors: [
+        {
+          column: 1,
+          endColumn: 13,
+          line: 4,
+          messageId: noMultipleGlobalStores,
+          suggestions: [
+            {
+              messageId: noMultipleGlobalStoresSuggest,
+              output: stripIndents`
+              export class NotOk3 {
+                constructor(
+                  a: A,
+
+                  private readonly actions$: Actions,
+                  private store2: Store,
+                  private readonly store3: Store,
+                ) {}
+              }`,
+            },
+          ],
+        },
+        {
+          column: 9,
+          endColumn: 22,
+          line: 6,
+          messageId: noMultipleGlobalStores,
+          suggestions: [
+            {
+              messageId: noMultipleGlobalStoresSuggest,
+              output: stripIndents`
+              export class NotOk3 {
+                constructor(
+                  a: A,
+                  store: Store,
+                  private readonly actions$: Actions,
+
+                  private readonly store3: Store,
+                ) {}
+              }`,
+            },
+          ],
+        },
+        {
+          column: 18,
+          endColumn: 31,
+          line: 7,
+          messageId: noMultipleGlobalStores,
+          suggestions: [
+            {
+              messageId: noMultipleGlobalStoresSuggest,
+              output: stripIndents`
+              export class NotOk3 {
+                constructor(
+                  a: A,
+                  store: Store,
+                  private readonly actions$: Actions,
+                  private store2: Store,
+
+                ) {}
+              }`,
+            },
+          ],
+        },
+      ],
+    },
   ],
 })

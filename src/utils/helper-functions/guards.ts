@@ -32,6 +32,9 @@ export const isImportSpecifier = isNodeOfType(AST_NODE_TYPES.ImportSpecifier)
 export const isLiteral = isNodeOfType(AST_NODE_TYPES.Literal)
 export const isMemberExpression = isNodeOfType(AST_NODE_TYPES.MemberExpression)
 export const isProgram = isNodeOfType(AST_NODE_TYPES.Program)
+export const isTSParameterProperty = isNodeOfType(
+  AST_NODE_TYPES.TSParameterProperty,
+)
 export const isTSTypeAnnotation = isNodeOfType(AST_NODE_TYPES.TSTypeAnnotation)
 export const isTSTypeReference = isNodeOfType(AST_NODE_TYPES.TSTypeReference)
 export const isObjectExpression = isNodeOfType(AST_NODE_TYPES.ObjectExpression)

@@ -20,6 +20,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Best Practices',
       description: 'Use a consistent name for the global store.',
       recommended: 'warn',
+      suggestion: true,
     },
     schema: [
       {

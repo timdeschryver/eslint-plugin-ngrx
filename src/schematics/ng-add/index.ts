@@ -38,14 +38,19 @@ Please see ${docs} to configure the NgRx ESLint Plugin.
   `)
       return host
     } catch (err) {
+      const detailsContent =
+        err instanceof Error
+          ? `
+Details:
+${err.message}
+`
+          : ''
       context.logger.warn(`
 Something went wrong while adding the NgRx ESLint Plugin.
 The NgRx ESLint Plugin is installed but not configured.
 
 Please see ${docs} to configure the NgRx ESLint Plugin.
-
-Details:
-${err.message}
+${detailsContent}
 `)
     }
   }
