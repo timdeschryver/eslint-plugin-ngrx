@@ -1,8 +1,9 @@
-import { stripIndent } from 'common-tags'
-import { fromFixture } from 'eslint-etc'
+import { stripIndents } from 'common-tags'
 import path from 'path'
+import type { MessageIds } from '../../src/rules/store/use-consistent-global-store-name'
 import rule, {
-  messageId,
+  useConsistentGlobalStoreName,
+  useConsistentGlobalStoreNameSuggest,
 } from '../../src/rules/store/use-consistent-global-store-name'
 import { ruleTester } from '../utils'
 
@@ -13,7 +14,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       import { Store } from '@ngrx/store'
       @Component()
       export class FixtureComponent {
-        constructor(private store: Store){}
+        constructor(private store: Store) {}
       }
       `,
     },
@@ -22,35 +23,75 @@ ruleTester().run(path.parse(__filename).name, rule, {
       import { Store } from '@ngrx/store'
       @Component()
       export class FixtureComponent {
-        constructor(private customName: Store){}
+        constructor(private customName: Store) {}
       }
       `,
       options: ['customName'],
     },
   ],
   invalid: [
-    fromFixture(
-      stripIndent`
-        import { Store } from '@ngrx/store'
-        @Component()
-        export class FixtureComponent {
-          constructor(private somethingElse: Store){}
-                              ~~~~~~~~~~~~~   [${messageId} { "storeName": "store" }]
-        }
+    {
+      code: stripIndents`
+      import { Store } from '@ngrx/store'
+      @Component()
+      export class FixtureComponent {
+        constructor(private readonly somethingElse$: Store) {}
+      }
       `,
-    ),
-    fromFixture(
-      stripIndent`
-        import { Store } from '@ngrx/store'
-        @Component()
-        export class FixtureComponent {
-          constructor(private store: Store){}
-                              ~~~~~   [${messageId} { "storeName": "customName" }]
-        }
+      errors: [
+        {
+          column: 30,
+          endColumn: 44,
+          line: 4,
+          messageId: useConsistentGlobalStoreName,
+          data: {
+            storeName: 'store',
+          },
+          suggestions: [
+            {
+              messageId: useConsistentGlobalStoreNameSuggest as MessageIds,
+              output: stripIndents`
+              import { Store } from '@ngrx/store'
+              @Component()
+              export class FixtureComponent {
+                constructor(private readonly store: Store) {}
+              }`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndents`
+      import { Store } from '@ngrx/store'
+      @Component()
+      export class FixtureComponent {
+        constructor(private store: Store) {}
+      }
       `,
-      {
-        options: ['customName'],
-      },
-    ),
+      options: ['customName'],
+      errors: [
+        {
+          column: 21,
+          endColumn: 26,
+          line: 4,
+          messageId: useConsistentGlobalStoreName,
+          data: {
+            storeName: 'customName',
+          },
+          suggestions: [
+            {
+              messageId: useConsistentGlobalStoreNameSuggest as MessageIds,
+              output: stripIndents`
+              import { Store } from '@ngrx/store'
+              @Component()
+              export class FixtureComponent {
+                constructor(private customName: Store) {}
+              }`,
+            },
+          ],
+        },
+      ],
+    },
   ],
 })
