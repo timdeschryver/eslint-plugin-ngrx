@@ -58,7 +58,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
               messageId: noMultipleGlobalStoresSuggest,
               output: stripIndents`
               export class NotOk1 {
-                constructor(store: Store) {}
+                constructor(store: Store, ) {}
               }`,
             },
           ],
@@ -68,7 +68,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     {
       code: stripIndents`
         export class NotOk2 {
-          constructor(store: Store, private readonly actions$: Actions, private store2: Store, b: B) {}
+          constructor(store: Store /* first store */, private readonly actions$: Actions, private store2: Store, b: B) {}
         }`,
       errors: [
         {
@@ -81,14 +81,14 @@ ruleTester().run(path.parse(__filename).name, rule, {
               messageId: noMultipleGlobalStoresSuggest,
               output: stripIndents`
               export class NotOk2 {
-                constructor( private readonly actions$: Actions, private store2: Store, b: B) {}
+                constructor( /* first store */ private readonly actions$: Actions, private store2: Store, b: B) {}
               }`,
             },
           ],
         },
         {
-          column: 71,
-          endColumn: 84,
+          column: 89,
+          endColumn: 102,
           line: 2,
           messageId: noMultipleGlobalStores,
           suggestions: [
@@ -96,7 +96,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
               messageId: noMultipleGlobalStoresSuggest,
               output: stripIndents`
               export class NotOk2 {
-                constructor(store: Store, private readonly actions$: Actions,  b: B) {}
+                constructor(store: Store /* first store */, private readonly actions$: Actions,  b: B) {}
               }`,
             },
           ],
@@ -108,7 +108,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         export class NotOk3 {
           constructor(
             a: A,
-            store: Store,
+            store: Store,// a comment
             private readonly actions$: Actions,
             private store2: Store,
             private readonly store3: Store,
@@ -127,7 +127,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
               export class NotOk3 {
                 constructor(
                   a: A,
-
+                  // a comment
                   private readonly actions$: Actions,
                   private store2: Store,
                   private readonly store3: Store,
@@ -148,7 +148,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
               export class NotOk3 {
                 constructor(
                   a: A,
-                  store: Store,
+                  store: Store,// a comment
                   private readonly actions$: Actions,
 
                   private readonly store3: Store,
@@ -169,7 +169,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
               export class NotOk3 {
                 constructor(
                   a: A,
-                  store: Store,
+                  store: Store,// a comment
                   private readonly actions$: Actions,
                   private store2: Store,
 
