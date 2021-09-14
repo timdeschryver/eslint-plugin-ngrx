@@ -16,6 +16,14 @@ export const constructorExit = `MethodDefinition[kind='constructor']:exit`
 export const dispatchInEffects = (storeName: string) =>
   `ClassProperty > CallExpression:has(Identifier[name='createEffect']) CallExpression > MemberExpression:has(Identifier[name='dispatch']):has(MemberExpression > Identifier[name='${storeName}'])` as const
 
+export function metadataProperty(key: RegExp): string
+export function metadataProperty<TKey extends string>(
+  key: TKey,
+): `Property:matches([key.name=${TKey}][computed=false], [key.value=${TKey}], [key.quasis.0.value.raw=${TKey}])`
+export function metadataProperty(key: RegExp | string): string {
+  return `Property:matches([key.name=${key}][computed=false], [key.value=${key}], [key.quasis.0.value.raw=${key}])`
+}
+
 export const injectedStore = `MethodDefinition[kind='constructor'] Identifier[typeAnnotation.typeAnnotation.typeName.name='Store']`
 export const typedStore = `MethodDefinition[kind='constructor'] Identifier>TSTypeAnnotation>TSTypeReference[typeName.name='Store'][typeParameters.params]`
 
@@ -36,14 +44,6 @@ export const effectsInNgModuleImports =
 
 export const effectsInNgModuleProviders =
   `${ngModuleProviders} Identifier` as const
-
-export function metadataProperty(key: RegExp): string
-export function metadataProperty<TKey extends string>(
-  key: TKey,
-): `Property:matches([key.name=${TKey}][computed=false], [key.value=${TKey}], [key.quasis.0.value.raw=${TKey}])`
-export function metadataProperty(key: RegExp | string): string {
-  return `Property:matches([key.name=${key}][computed=false], [key.value=${key}], [key.quasis.0.value.raw=${key}])`
-}
 
 export const actionDispatch = (storeName: string) =>
   `ExpressionStatement > CallExpression:matches([callee.object.name='${storeName}'][callee.property.name='dispatch'], [callee.object.object.type='ThisExpression'][callee.object.property.name='${storeName}'][callee.property.name='dispatch'])` as const
