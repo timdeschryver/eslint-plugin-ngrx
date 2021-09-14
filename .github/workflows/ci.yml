@@ -29,6 +29,7 @@ jobs:
         run: |
           npm run lint:all
           npm run prettier:all
+          npm run g:all
           git diff --name-only --exit-code
 
       - name: 🔨 Build
