@@ -1,7 +1,9 @@
 import { stripIndent } from 'common-tags'
-import { fromFixture } from 'eslint-etc'
 import path from 'path'
-import rule, { messageId } from '../../src/rules/store/no-reducer-in-key-names'
+import rule, {
+  noReducerInKeyNames,
+  noReducerInKeyNamesSuggest,
+} from '../../src/rules/store/no-reducer-in-key-names'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {
@@ -44,54 +46,177 @@ ruleTester().run(path.parse(__filename).name, rule, {
     };`,
   ],
   invalid: [
-    fromFixture(
-      stripIndent`
+    {
+      code: stripIndent`
         @NgModule({
           imports: [
             StoreModule.forRoot({
               feeReducer,
-              ~~~~~~~~~~                        [${messageId}]
-              fieReducer: fie,
-              ~~~~~~~~~~                        [${messageId}]
-              'fooReducer': foo,
-              ~~~~~~~~~~~~                      [${messageId}]
-              FoeReducer: FoeReducer,
-              ~~~~~~~~~~                        [${messageId}]
             }),
           ],
         })
         export class AppModule {}`,
-    ),
-    fromFixture(
-      stripIndent`
+      errors: [
+        {
+          column: 7,
+          endColumn: 17,
+          line: 4,
+          messageId: noReducerInKeyNames,
+          suggestions: [
+            {
+              messageId: noReducerInKeyNamesSuggest,
+              output: stripIndent`
+                @NgModule({
+                  imports: [
+                    StoreModule.forRoot({
+                      fee,
+                    }),
+                  ],
+                })
+                export class AppModule {}`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndent`
         @NgModule({
           imports: [
             StoreModule.forFeature({
-              feeReducer,
-              ~~~~~~~~~~                        [${messageId}]
-              fieReducer: fie,
-              ~~~~~~~~~~                        [${messageId}]
               'fooReducer': foo,
-              ~~~~~~~~~~~~                      [${messageId}]
-              ['FoeReducer']: FoeReducer,
-               ~~~~~~~~~~~~                     [${messageId}]
+              FoeReducer: FoeReducer,
             }),
           ],
         })
         export class AppModule {}`,
-    ),
-    fromFixture(
-      stripIndent`
+      errors: [
+        {
+          column: 7,
+          endColumn: 19,
+          line: 4,
+          messageId: noReducerInKeyNames,
+          suggestions: [
+            {
+              messageId: noReducerInKeyNamesSuggest,
+              output: stripIndent`
+                @NgModule({
+                  imports: [
+                    StoreModule.forFeature({
+                      'foo': foo,
+                      FoeReducer: FoeReducer,
+                    }),
+                  ],
+                })
+                export class AppModule {}`,
+            },
+          ],
+        },
+        {
+          column: 7,
+          endColumn: 17,
+          line: 5,
+          messageId: noReducerInKeyNames,
+          suggestions: [
+            {
+              messageId: noReducerInKeyNamesSuggest,
+              output: stripIndent`
+                @NgModule({
+                  imports: [
+                    StoreModule.forFeature({
+                      'fooReducer': foo,
+                      Foe: FoeReducer,
+                    }),
+                  ],
+                })
+                export class AppModule {}`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndent`
         export const reducers: ActionReducerMap<AppState> = {
           feeReducer,
-          ~~~~~~~~~~                          [${messageId}]
-          fieReducer: fie,
-          ~~~~~~~~~~                          [${messageId}]
-          'fooReducer': foo,
-          ~~~~~~~~~~~~                        [${messageId}]
-          [\`FoeReducer\`]: fromFoe.reducer,
-           ~~~~~~~~~~~~                       [${messageId}]
+          'fieReducer': fie,
+          ['fooReducerName']: foo,
+          [\`ReducerFoe\`]: FoeReducer,
         };`,
-    ),
+      errors: [
+        {
+          column: 3,
+          endColumn: 13,
+          line: 2,
+          messageId: noReducerInKeyNames,
+          suggestions: [
+            {
+              messageId: noReducerInKeyNamesSuggest,
+              output: stripIndent`
+                export const reducers: ActionReducerMap<AppState> = {
+                  fee,
+                  'fieReducer': fie,
+                  ['fooReducerName']: foo,
+                  [\`ReducerFoe\`]: FoeReducer,
+                };`,
+            },
+          ],
+        },
+        {
+          column: 3,
+          endColumn: 15,
+          line: 3,
+          messageId: noReducerInKeyNames,
+          suggestions: [
+            {
+              messageId: noReducerInKeyNamesSuggest,
+              output: stripIndent`
+                export const reducers: ActionReducerMap<AppState> = {
+                  feeReducer,
+                  'fie': fie,
+                  ['fooReducerName']: foo,
+                  [\`ReducerFoe\`]: FoeReducer,
+                };`,
+            },
+          ],
+        },
+        {
+          column: 4,
+          endColumn: 20,
+          line: 4,
+          messageId: noReducerInKeyNames,
+          suggestions: [
+            {
+              messageId: noReducerInKeyNamesSuggest,
+              output: stripIndent`
+                export const reducers: ActionReducerMap<AppState> = {
+                  feeReducer,
+                  'fieReducer': fie,
+                  ['fooName']: foo,
+                  [\`ReducerFoe\`]: FoeReducer,
+                };`,
+            },
+          ],
+        },
+        {
+          column: 4,
+          endColumn: 16,
+          line: 5,
+          messageId: noReducerInKeyNames,
+          suggestions: [
+            {
+              messageId: noReducerInKeyNamesSuggest,
+              output: stripIndent`
+                export const reducers: ActionReducerMap<AppState> = {
+                  feeReducer,
+                  'fieReducer': fie,
+                  ['fooReducerName']: foo,
+                  [\`Foe\`]: FoeReducer,
+                };`,
+            },
+          ],
+        },
+      ],
+    },
   ],
 })

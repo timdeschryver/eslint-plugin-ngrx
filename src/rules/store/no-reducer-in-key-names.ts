@@ -4,14 +4,20 @@ import path from 'path'
 import {
   actionReducerMap,
   docsUrl,
+  getRawText,
   metadataProperty,
   storeActionReducerMap,
 } from '../../utils'
 
-export const messageId = 'noReducerInKeyNames'
-export type MessageIds = typeof messageId
+export const noReducerInKeyNames = 'noReducerInKeyNames'
+export const noReducerInKeyNamesSuggest = 'noReducerInKeyNamesSuggest'
+export type MessageIds =
+  | typeof noReducerInKeyNames
+  | typeof noReducerInKeyNamesSuggest
 
 type Options = []
+
+const reducerKeyword = 'reducer'
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: path.parse(__filename).name,
@@ -19,13 +25,14 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       category: 'Best Practices',
-      description: 'Avoid the word "reducer" in the `Reducer` key names.',
+      description: `Avoid the word "${reducerKeyword}" in the key names.`,
       recommended: 'warn',
+      suggestion: true,
     },
     schema: [],
     messages: {
-      [messageId]:
-        'Avoid the word "reducer" in the key names to better represent the state.',
+      [noReducerInKeyNames]: `Avoid the word "${reducerKeyword}" in the key names to better represent the state.`,
+      [noReducerInKeyNamesSuggest]: `Remove the word "${reducerKeyword}".`,
     },
   },
   defaultOptions: [],
@@ -36,7 +43,19 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       )}`]({ key }: TSESTree.Property) {
         context.report({
           node: key,
-          messageId,
+          messageId: noReducerInKeyNames,
+          suggest: [
+            {
+              fix: (fixer) => {
+                const keyName = getRawText(key)
+                return fixer.replaceText(
+                  key,
+                  keyName.replace(RegExp(reducerKeyword, 'i'), ''),
+                )
+              },
+              messageId: noReducerInKeyNamesSuggest,
+            },
+          ],
         })
       },
     }
