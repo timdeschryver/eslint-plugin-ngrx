@@ -1,6 +1,7 @@
 import type { Rule, SchematicContext, Tree } from '@angular-devkit/schematics'
+import type { Schema } from './schema'
 
-export default function (): Rule {
+export default function (schema: Schema): Rule {
   return (host: Tree, context: SchematicContext) => {
     const eslintConfigPath = '.eslintrc.json'
     const docs =
@@ -32,7 +33,7 @@ Please see ${docs} to configure the NgRx ESLint Plugin.
       host.overwrite(eslintConfigPath, JSON.stringify(json, null, 2))
 
       context.logger.info(`
-  The NgRx ESLint Plugin is installed and configured with the recommended config.
+  The NgRx ESLint Plugin is installed and configured with the ${schema.config} config.
 
   If you want to change the configuration, please see ${docs}.
   `)
@@ -54,14 +55,13 @@ ${detailsContent}
 `)
     }
   }
-}
-
-function configurePlugin(json: {
-  plugins?: string[]
-  extends?: string[]
-}): void {
-  json.plugins = [...new Set([...(json.plugins ?? []), 'ngrx'])]
-  json.extends = [
-    ...new Set([...(json.extends ?? []), 'plugin:ngrx/recommended']),
-  ]
+  function configurePlugin(json: {
+    plugins?: string[]
+    extends?: string[]
+  }): void {
+    json.plugins = [...new Set([...(json.plugins ?? []), 'ngrx'])]
+    json.extends = [
+      ...new Set([...(json.extends ?? []), `plugin:ngrx/${schema.config}`]),
+    ]
+  }
 }
