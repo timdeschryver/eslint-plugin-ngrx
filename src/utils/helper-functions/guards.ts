@@ -10,8 +10,10 @@ const isNodeOfType =
 export const isArrowFunctionExpression = isNodeOfType(
   AST_NODE_TYPES.ArrowFunctionExpression,
 )
+export const isMethodDefinition = isNodeOfType(AST_NODE_TYPES.MethodDefinition)
 export const isCallExpression = isNodeOfType(AST_NODE_TYPES.CallExpression)
 export const isClassDeclaration = isNodeOfType(AST_NODE_TYPES.ClassDeclaration)
+export const isClassProperty = isNodeOfType(AST_NODE_TYPES.ClassProperty)
 export const isExpressionStatement = isNodeOfType(
   AST_NODE_TYPES.ExpressionStatement,
 )
@@ -30,6 +32,8 @@ export const isImportNamespaceSpecifier = isNodeOfType(
 )
 export const isImportSpecifier = isNodeOfType(AST_NODE_TYPES.ImportSpecifier)
 export const isLiteral = isNodeOfType(AST_NODE_TYPES.Literal)
+export const isTemplateElement = isNodeOfType(AST_NODE_TYPES.TemplateElement)
+export const isTemplateLiteral = isNodeOfType(AST_NODE_TYPES.TemplateLiteral)
 export const isMemberExpression = isNodeOfType(AST_NODE_TYPES.MemberExpression)
 export const isProgram = isNodeOfType(AST_NODE_TYPES.Program)
 export const isTSParameterProperty = isNodeOfType(

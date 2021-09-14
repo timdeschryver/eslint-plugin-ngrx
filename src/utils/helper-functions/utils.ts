@@ -1,13 +1,19 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
 import {
   isCallExpression,
+  isClassProperty,
   isIdentifier,
   isIdentifierOrMemberExpression,
   isImportDeclaration,
   isImportDefaultSpecifier,
   isImportNamespaceSpecifier,
   isImportSpecifier,
+  isLiteral,
+  isMethodDefinition,
   isProgram,
+  isProperty,
+  isTemplateElement,
+  isTemplateLiteral,
   isTSTypeAnnotation,
   isTSTypeReference,
 } from './guards'
@@ -257,6 +263,30 @@ export function getDecorator(
   return decorators?.find(
     (decorator) => getDecoratorName(decorator) === decoratorName,
   )
+}
+
+export function getRawText(node: TSESTree.Node): string {
+  if (isIdentifier(node)) {
+    return node.name
+  }
+
+  if (isClassProperty(node) || isMethodDefinition(node) || isProperty(node)) {
+    return getRawText(node.key)
+  }
+
+  if (isLiteral(node)) {
+    return node.raw
+  }
+
+  if (isTemplateElement(node)) {
+    return `\`${node.value.raw}\``
+  }
+
+  if (isTemplateLiteral(node)) {
+    return `\`${node.quasis[0].value.raw}\``
+  }
+
+  throw Error(`Unexpected \`node.type\` provided: ${node.type}`)
 }
 
 function findCorrespondingNameBy(
