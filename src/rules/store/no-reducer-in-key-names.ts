@@ -31,9 +31,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [`:matches(${storeActionReducerMap}, ${actionReducerMap}) > :matches(Property[key.type='Identifier'][key.name=/reducer$/i], ${metadataProperty(
-        /reducer$/i,
-      )})`]({ key }: TSESTree.Property) {
+      [`:matches(${storeActionReducerMap}, ${actionReducerMap}) > ${metadataProperty(
+        /reducer/i,
+      )}`]({ key }: TSESTree.Property) {
         context.report({
           node: key,
           messageId,
