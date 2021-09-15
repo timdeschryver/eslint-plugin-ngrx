@@ -1,10 +1,11 @@
-import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
-import { ASTUtils, ESLintUtils } from '@typescript-eslint/experimental-utils'
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
   docsUrl,
   effectsInNgModuleImports,
   effectsInNgModuleProviders,
+  getNodeToCommaRemoveFix,
   ngModuleDecorator,
 } from '../../utils'
 
@@ -52,7 +53,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           context.report({
             node: effectInProvider,
             messageId,
-            fix: (fixer) => getFixes(sourceCode, fixer, effectInProvider),
+            fix: (fixer) =>
+              getNodeToCommaRemoveFix(sourceCode, fixer, effectInProvider),
           })
         }
 
@@ -62,16 +64,3 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     }
   },
 })
-
-function getFixes(
-  sourceCode: Readonly<TSESLint.SourceCode>,
-  fixer: TSESLint.RuleFixer,
-  node: TSESTree.Identifier,
-) {
-  const nextToken = sourceCode.getTokenAfter(node)
-  const isNextTokenComma = nextToken && ASTUtils.isCommaToken(nextToken)
-  return [
-    fixer.remove(node),
-    ...(isNextTokenComma ? [fixer.remove(nextToken)] : []),
-  ] as const
-}
