@@ -26,7 +26,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     messages: {
       [onFunctionExplicitReturnType]:
         'On functions should have an explicit return type when using arrow functions: `on(action, (state): State => {}`.',
-      [onFunctionExplicitReturnTypeSuggest]: 'Add the explicit return type `State` (if the interface/type is named differently you need to manually correct the return type).',
+      [onFunctionExplicitReturnTypeSuggest]:
+        'Add the explicit return type `State` (if the interface/type is named differently you need to manually correct the return type).',
     },
   },
   defaultOptions: [],
