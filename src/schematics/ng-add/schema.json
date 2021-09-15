@@ -3,6 +3,50 @@
   "$id": "SchematicsEslintPluginNgRx",
   "title": "eslint-plugin-ngrx schema",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "config": {
+      "description": "The config to be used.",
+      "type": "string",
+      "default": "recommended",
+      "enum": [
+        "recommended",
+        "strict",
+        "store",
+        "effects",
+        "component-store",
+        "all"
+      ],
+      "x-prompt": {
+        "message": "Which config would you like to use?",
+        "type": "list",
+        "items": [
+          {
+            "value": "recommended",
+            "label": "recommended (all the recommended rules configured with the recommended severity) [https://github.com/timdeschryver/eslint-plugin-ngrx/blob/main/src/configs/recommended.ts]"
+          },
+          {
+            "value": "strict",
+            "label": "recommended (all rules configured as `error`) [https://github.com/timdeschryver/eslint-plugin-ngrx/blob/main/src/configs/strict.ts]"
+          },
+          {
+            "value": "store",
+            "label": "store (all global store rules configured with the recommended severity) [https://github.com/timdeschryver/eslint-plugin-ngrx/blob/main/src/configs/store.ts]"
+          },
+          {
+            "value": "effects",
+            "label": "effects (all effects rules configured with the recommended severity) [https://github.com/timdeschryver/eslint-plugin-ngrx/blob/main/src/configs/effects.ts]"
+          },
+          {
+            "value": "component-store",
+            "label": "component-store (all component store rules configured with the recommended severity) [https://github.com/timdeschryver/eslint-plugin-ngrx/blob/main/src/configs/component-store.ts]"
+          },
+          {
+            "value": "all",
+            "label": "all (all rules configured with the recommended severity) [https://github.com/timdeschryver/eslint-plugin-ngrx/blob/main/src/configs/all.ts]"
+          }
+        ]
+      }
+    }
+  },
   "required": []
 }

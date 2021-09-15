@@ -11,7 +11,7 @@ const schematicRunner = new SchematicTestRunner(
   'src/schematics/collection.json',
 )
 
-test('registers the plugin', async () => {
+test('registers the plugin with the recommended config', async () => {
   const appTree = new UnitTestTree(Tree.empty())
 
   const initialConfig = {}
@@ -23,6 +23,25 @@ test('registers the plugin', async () => {
   const eslintJson = JSON.parse(eslintContent)
   assert.equal(eslintJson, {
     extends: ['plugin:ngrx/recommended'],
+    plugins: ['ngrx'],
+  })
+})
+
+test('registers the plugin with a different config', async () => {
+  const appTree = new UnitTestTree(Tree.empty())
+
+  const initialConfig = {}
+  appTree.create('./.eslintrc.json', JSON.stringify(initialConfig, null, 2))
+
+  const options = { config: 'strict' }
+  await schematicRunner
+    .runSchematicAsync('ng-add', options, appTree)
+    .toPromise()
+
+  const eslintContent = appTree.readContent(`.eslintrc.json`)
+  const eslintJson = JSON.parse(eslintContent)
+  assert.equal(eslintJson, {
+    extends: [`plugin:ngrx/${options.config}`],
     plugins: ['ngrx'],
   })
 })
