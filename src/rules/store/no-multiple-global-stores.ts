@@ -55,8 +55,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
             messageId: noMultipleGlobalStores,
             suggest: [
               {
-                fix: (fixer) =>
-                  fixer.removeRange(getRemoveRangeFor(node, sourceCode)),
+                fix: (fixer) => getFixes(sourceCode, fixer, node),
                 messageId: noMultipleGlobalStoresSuggest,
               },
             ],
@@ -67,21 +66,17 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
 })
 
-function getRemoveRangeFor(
-  node: TSESTree.Identifier,
+function getFixes(
   sourceCode: Readonly<TSESLint.SourceCode>,
-): TSESTree.Range {
+  fixer: TSESLint.RuleFixer,
+  node: TSESTree.Identifier,
+) {
   const { parent } = node
   const nodeToRemove = parent && isTSParameterProperty(parent) ? parent : node
-  const previousToken = sourceCode.getTokenBefore(nodeToRemove)
   const nextToken = sourceCode.getTokenAfter(nodeToRemove)
-  const isCommaPreviousToken =
-    previousToken && ASTUtils.isCommaToken(previousToken)
-  const isCommaNextToken = nextToken && ASTUtils.isCommaToken(nextToken)
-  const isLastProperty = isCommaPreviousToken && !isCommaNextToken
-
+  const isNextTokenComma = nextToken && ASTUtils.isCommaToken(nextToken)
   return [
-    isLastProperty ? previousToken.range[0] : nodeToRemove.range[0],
-    isCommaNextToken ? nextToken.range[1] : nodeToRemove.range[1],
-  ]
+    fixer.remove(nodeToRemove),
+    ...(isNextTokenComma ? [fixer.remove(nextToken)] : []),
+  ] as const
 }
