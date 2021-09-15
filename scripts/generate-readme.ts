@@ -13,6 +13,7 @@ const moduleRules = Object.entries(rules).reduce((all, [ruleName, rule]) => {
       rule.meta.type,
       `${rule.meta.docs?.recommended} (${rule.meta.docs?.category})`,
       rule.meta.fixable ? 'Yes' : 'No',
+      rule.meta.docs?.suggestion ? 'Yes' : 'No',
       rule.meta.schema.length ? 'Yes' : 'No',
     ],
   ])
@@ -46,7 +47,7 @@ moduleRules['effects'] = moduleRules['effects'].concat([
   ],
 ])
 
-const tableHeader = `| Name | Description | Recommended | Category | Fixable | Configurable |
+const tableHeader = `| Name | Description | Recommended | Category | Fixable | Has suggestions | Configurable |
 | --- | --- | --- | --- | --- | --- |`
 
 const config = Object.entries(moduleRules).map(([module, pluginRules]) => {
