@@ -1,8 +1,8 @@
-import { stripIndent } from 'common-tags'
-import { fromFixture } from 'eslint-etc'
+import { stripIndents } from 'common-tags'
 import path from 'path'
 import rule, {
-  messageId,
+  avoidDuplicateActionsInReducer,
+  avoidDuplicateActionsInReducerSuggest,
 } from '../../src/rules/store/avoid-duplicate-actions-in-reducer'
 import { ruleTester } from '../utils'
 
@@ -37,31 +37,140 @@ ruleTester().run(path.parse(__filename).name, rule, {
     )`,
   ],
   invalid: [
-    fromFixture(
-      stripIndent`
-        export const reducer = createReducer(
-          {},
-          on(abc, state => state),
-             ~~~           [${messageId} { "actionName": "abc" }]
-          on(def, state => state),
-          on(abc, (state, props) => state),
-             ~~~           [${messageId} { "actionName": "abc" }]
+    {
+      code: stripIndents`
+      export const reducer = createReducer(
+        {},
+        on(abc, state => state),
+        on(def, state => state),
+        on(abc, (state, props) => state),
+      )`,
+      errors: [
+        {
+          column: 4,
+          endColumn: 7,
+          line: 3,
+          messageId: avoidDuplicateActionsInReducer,
+          suggestions: [
+            {
+              messageId: avoidDuplicateActionsInReducerSuggest,
+              data: {
+                actionName: 'abc',
+              },
+              output: stripIndents`
+              export const reducer = createReducer(
+                {},
 
-        )`,
-    ),
-    fromFixture(
-      stripIndent`
-        export const reducer = createReducer(
-          {},
-          on(foo1, state => state),
-             ~~~~           [${messageId} { "actionName": "foo1" }]
-          on(foo2, state => state),
-          on(foo1, (state, props) => state),
-             ~~~~           [${messageId} { "actionName": "foo1" }]
-          on(foo1, state => state),
-             ~~~~           [${messageId} { "actionName": "foo1" }]
-          on(foo3, state => state),
-        )`,
-    ),
+                on(def, state => state),
+                on(abc, (state, props) => state),
+              )`,
+            },
+          ],
+        },
+        {
+          column: 4,
+          endColumn: 7,
+          line: 5,
+          messageId: avoidDuplicateActionsInReducer,
+          suggestions: [
+            {
+              messageId: avoidDuplicateActionsInReducerSuggest,
+              data: {
+                actionName: 'abc',
+              },
+              output: stripIndents`
+              export const reducer = createReducer(
+                {},
+                on(abc, state => state),
+                on(def, state => state),
+
+              )`,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: stripIndents`
+      export const reducer = createReducer(
+        {},
+        on(foo, state => state),
+        on(foo2, state => state),
+        on(foo, (state, props) => state),
+        on(foo, state => state),
+        on(foo3, state => state),
+      )`,
+      errors: [
+        {
+          column: 4,
+          endColumn: 7,
+          line: 3,
+          messageId: avoidDuplicateActionsInReducer,
+          suggestions: [
+            {
+              messageId: avoidDuplicateActionsInReducerSuggest,
+              data: {
+                actionName: 'foo',
+              },
+              output: stripIndents`
+              export const reducer = createReducer(
+                {},
+
+                on(foo2, state => state),
+                on(foo, (state, props) => state),
+                on(foo, state => state),
+                on(foo3, state => state),
+              )`,
+            },
+          ],
+        },
+        {
+          column: 4,
+          endColumn: 7,
+          line: 5,
+          messageId: avoidDuplicateActionsInReducer,
+          suggestions: [
+            {
+              messageId: avoidDuplicateActionsInReducerSuggest,
+              data: {
+                actionName: 'foo',
+              },
+              output: stripIndents`
+              export const reducer = createReducer(
+                {},
+                on(foo, state => state),
+                on(foo2, state => state),
+
+                on(foo, state => state),
+                on(foo3, state => state),
+              )`,
+            },
+          ],
+        },
+        {
+          column: 4,
+          endColumn: 7,
+          line: 6,
+          messageId: avoidDuplicateActionsInReducer,
+          suggestions: [
+            {
+              messageId: avoidDuplicateActionsInReducerSuggest,
+              data: {
+                actionName: 'foo',
+              },
+              output: stripIndents`
+              export const reducer = createReducer(
+                {},
+                on(foo, state => state),
+                on(foo2, state => state),
+                on(foo, (state, props) => state),
+
+                on(foo3, state => state),
+              )`,
+            },
+          ],
+        },
+      ],
+    },
   ],
 })

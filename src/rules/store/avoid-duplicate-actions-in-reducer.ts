@@ -1,10 +1,14 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { createReducer, docsUrl } from '../../utils'
+import { createReducer, docsUrl, getNodeToCommaRemoveFix } from '../../utils'
 
-export const messageId = 'avoidDuplicateActionsInReducer'
-export type MessageIds = typeof messageId
+export const avoidDuplicateActionsInReducer = 'avoidDuplicateActionsInReducer'
+export const avoidDuplicateActionsInReducerSuggest =
+  'avoidDuplicateActionsInReducerSuggest'
+export type MessageIds =
+  | typeof avoidDuplicateActionsInReducer
+  | typeof avoidDuplicateActionsInReducerSuggest
 
 type Options = []
 
@@ -16,15 +20,18 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Best Practices',
       description: 'A `Reducer` should handle an `Action` once.',
       recommended: 'warn',
+      suggestion: true,
     },
     schema: [],
     messages: {
-      [messageId]:
+      [avoidDuplicateActionsInReducer]:
         'The `Reducer` handles a duplicate `Action` `{{ actionName }}`.',
+      [avoidDuplicateActionsInReducerSuggest]: 'Remove this duplication.',
     },
   },
   defaultOptions: [],
   create: (context) => {
+    const sourceCode = context.getSourceCode()
     const collectedActions = new Map<string, TSESTree.Identifier[]>()
 
     return {
@@ -43,10 +50,19 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           for (const node of identifiers) {
             context.report({
               node,
-              messageId,
+              messageId: avoidDuplicateActionsInReducer,
               data: {
                 actionName,
               },
+              suggest: [
+                {
+                  messageId: avoidDuplicateActionsInReducerSuggest,
+                  fix: (fixer) =>
+                    node.parent
+                      ? getNodeToCommaRemoveFix(sourceCode, fixer, node.parent)
+                      : [],
+                },
+              ],
             })
           }
         }
