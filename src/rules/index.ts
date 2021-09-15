@@ -17,11 +17,11 @@ const excludedFiles = ['index']
 
 export const rules = Array.from(traverseFolder(rulesDir))
   .filter((rule) => !excludedFiles.includes(rule.file))
-  .reduce((allRules, rule) => {
+  .reduce<Record<string, RuleModule>>((allRules, rule) => {
     const ruleModule = importDefault(rule.path) as RuleModule
     ruleModule.meta.module = path.basename(path.dirname(rule.path))
     return {
       ...allRules,
       [rule.file]: ruleModule,
     }
-  }, {} as Record<string, RuleModule>)
+  }, {})
