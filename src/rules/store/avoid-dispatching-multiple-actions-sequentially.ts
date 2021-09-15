@@ -31,7 +31,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     const collectedDispatches = new Set<TSESTree.CallExpression>()
 
     return {
-      [`BlockStatement > ${actionDispatch(storeName)}`](
+      [`BlockStatement > ExpressionStatement > ${actionDispatch(storeName)}`](
         node: TSESTree.CallExpression,
       ) {
         collectedDispatches.add(node)

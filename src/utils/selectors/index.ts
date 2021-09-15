@@ -1,4 +1,5 @@
 export const effectCreator = `ClassProperty[value.callee.name='createEffect']`
+export const createEffectExpression = `ClassProperty > CallExpression[callee.name='createEffect']`
 
 export const effectDecorator = `Decorator[expression.callee.name='Effect']`
 export const classPropertyWithEffectDecorator =
@@ -12,9 +13,6 @@ export const actionCreatorPropsComputed =
   `${actionCreatorProps} > TSTypeParameterInstantiation > :matches(TSTypeReference[typeName.name!='Readonly'], [type=/^TS(.*)(Keyword|Type)$/])` as const
 
 export const constructorExit = `MethodDefinition[kind='constructor']:exit`
-
-export const dispatchInEffects = (storeName: string) =>
-  `ClassProperty > CallExpression:has(Identifier[name='createEffect']) CallExpression > MemberExpression:has(Identifier[name='dispatch']):has(MemberExpression > Identifier[name='${storeName}'])` as const
 
 export function metadataProperty(key: RegExp): string
 export function metadataProperty<TKey extends string>(
@@ -46,7 +44,12 @@ export const effectsInNgModuleProviders =
   `${ngModuleProviders} Identifier` as const
 
 export const actionDispatch = (storeName: string) =>
-  `ExpressionStatement > CallExpression:matches([callee.object.name='${storeName}'][callee.property.name='dispatch'], [callee.object.object.type='ThisExpression'][callee.object.property.name='${storeName}'][callee.property.name='dispatch'])` as const
+  `CallExpression:matches([callee.object.name='${storeName}'][callee.property.name='dispatch'], [callee.object.object.type='ThisExpression'][callee.object.property.name='${storeName}'][callee.property.name='dispatch'])` as const
+
+export const dispatchInEffects = (storeName: string) =>
+  `${createEffectExpression} ${actionDispatch(
+    storeName,
+  )} > MemberExpression` as const
 
 export const storeExpression = (storeName: string) =>
   `CallExpression:matches([callee.object.name='${storeName}'], [callee.object.object.type='ThisExpression'][callee.object.property.name='${storeName}'])` as const
@@ -72,8 +75,6 @@ export const storeActionReducerMap =
   `${ngModuleImports} CallExpression[callee.object.name='StoreModule'][callee.property.name=/^for(Root|Feature)$/] > ObjectExpression:first-child` as const
 
 export const actionReducerMap = `VariableDeclarator[id.typeAnnotation.typeAnnotation.typeName.name='ActionReducerMap'] > ObjectExpression`
-
-export const createEffectExpression = `ClassProperty > CallExpression[callee.name='createEffect']`
 
 const mapOperators = '(concat|exhaust|flat|merge|switch)Map'
 const mapToOperators = '(concat|merge|switch)MapTo'
