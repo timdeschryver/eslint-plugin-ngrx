@@ -54,7 +54,7 @@ function getFixes(
   { params }: TSESTree.ArrowFunctionExpression,
   sourceCode: Readonly<TSESLint.SourceCode>,
   fixer: TSESLint.RuleFixer,
-): TSESLint.RuleFix | readonly TSESLint.RuleFix[] {
+) {
   const [firstParam] = params
   const lastParam = getLast(params)
   const previousToken = sourceCode.getTokenBefore(firstParam)
@@ -69,5 +69,5 @@ function getFixes(
   return [
     fixer.insertTextBefore(firstParam, '('),
     fixer.insertTextAfter(lastParam, '): State'),
-  ]
+  ] as const
 }
