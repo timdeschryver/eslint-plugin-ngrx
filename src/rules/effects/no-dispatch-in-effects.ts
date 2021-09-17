@@ -1,4 +1,4 @@
-import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
+import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
@@ -16,7 +16,7 @@ export type MessageIds =
   | typeof noDispatchInEffectsSuggest
 
 type Options = []
-type DispatchInEffects = TSESTree.MemberExpression & {
+type MemberExpressionWithinCallExpression = TSESTree.MemberExpression & {
   parent: TSESTree.CallExpression
 }
 
@@ -43,14 +43,17 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     if (!storeName) return {}
 
     return {
-      [dispatchInEffects(storeName)](node: DispatchInEffects) {
+      [dispatchInEffects(storeName)](
+        node: MemberExpressionWithinCallExpression,
+      ) {
+        const nodeToReport = getNodeToReport(node)
         context.report({
-          node,
+          node: nodeToReport,
           messageId: noDispatchInEffects,
           suggest: [
             {
               messageId: noDispatchInEffectsSuggest,
-              fix: (fixer) => getFixes(fixer, node),
+              fix: (fixer) => fixer.remove(nodeToReport),
             },
           ],
         })
@@ -59,13 +62,11 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
 })
 
-function getFixes(fixer: TSESLint.RuleFixer, node: DispatchInEffects) {
+function getNodeToReport(node: MemberExpressionWithinCallExpression) {
   const { parent } = node
   const { parent: grandParent } = parent
-  const nodeToRemove =
-    grandParent &&
+  return grandParent &&
     (isArrowFunctionExpression(grandParent) || isReturnStatement(grandParent))
-      ? node
-      : parent
-  return fixer.remove(nodeToRemove)
+    ? node
+    : parent
 }
