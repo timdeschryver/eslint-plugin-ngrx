@@ -1,4 +1,4 @@
-import { stripIndent, stripIndents } from 'common-tags'
+import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
@@ -150,7 +150,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       },
     ),
     fromFixture(
-      stripIndents`
+      stripIndent`
       import { Store } from '@ngrx/store'
       @Injectable()
       export class FixtureEffects {
@@ -173,7 +173,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         suggestions: [
           {
             messageId: noDispatchInEffectsSuggest,
-            output: stripIndents`
+            output: stripIndent`
             import { Store } from '@ngrx/store'
             @Injectable()
             export class FixtureEffects {
