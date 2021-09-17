@@ -1,9 +1,10 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
-import { ASTUtils, ESLintUtils } from '@typescript-eslint/experimental-utils'
+import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
   constructorExit,
   docsUrl,
+  getNodeToCommaRemoveFix,
   injectedStore,
   isTSParameterProperty,
 } from '../../utils'
@@ -69,14 +70,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
 function getFixes(
   sourceCode: Readonly<TSESLint.SourceCode>,
   fixer: TSESLint.RuleFixer,
-  node: TSESTree.Identifier,
+  node: TSESTree.Node,
 ) {
   const { parent } = node
   const nodeToRemove = parent && isTSParameterProperty(parent) ? parent : node
-  const nextToken = sourceCode.getTokenAfter(nodeToRemove)
-  const isNextTokenComma = nextToken && ASTUtils.isCommaToken(nextToken)
-  return [
-    fixer.remove(nodeToRemove),
-    ...(isNextTokenComma ? [fixer.remove(nextToken)] : []),
-  ] as const
+  return getNodeToCommaRemoveFix(sourceCode, fixer, nodeToRemove)
 }

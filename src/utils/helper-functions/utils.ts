@@ -1,4 +1,5 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
+import { ASTUtils } from '@typescript-eslint/experimental-utils'
 import {
   isCallExpression,
   isClassProperty,
@@ -186,6 +187,19 @@ export function getImportRemoveFix(
     tokenBeforeImportSpecifier.range[0],
     importSpecifier.range[1],
   ])
+}
+
+export function getNodeToCommaRemoveFix(
+  sourceCode: Readonly<TSESLint.SourceCode>,
+  fixer: TSESLint.RuleFixer,
+  node: TSESTree.Node,
+) {
+  const nextToken = sourceCode.getTokenAfter(node)
+  const isNextTokenComma = nextToken && ASTUtils.isCommaToken(nextToken)
+  return [
+    fixer.remove(node),
+    ...(isNextTokenComma ? [fixer.remove(nextToken)] : []),
+  ] as const
 }
 
 export function getInterfaceName(
