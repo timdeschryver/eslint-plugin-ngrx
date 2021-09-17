@@ -1,4 +1,5 @@
 import { stripIndent, stripIndents } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
   noDispatchInEffects,
@@ -19,47 +20,95 @@ ruleTester().run(path.parse(__filename).name, rule, {
 
       constructor(private actions: Actions, private store: Store) {}
     }`,
+    `
+    @Injectable()
+    export class FixtureEffects {
+      effectOK1 = createEffect(
+        () =>
+          this.actions.pipe(
+            ofType(customerActions.delete),
+            map(() => {
+              customObject.dispatch({ somethingElse: true })
+              return { type: 'PONG' }
+            }),
+          ),
+        { dispatch: false },
+      )
+
+      constructor(private actions: Actions, private store: Store) {}
+    }`,
   ],
   invalid: [
-    {
-      code: stripIndent`
+    fromFixture(
+      stripIndent`
       import { Store } from '@ngrx/store'
       @Injectable()
       export class FixtureEffects {
         effectNOK = createEffect(() => this.actions.pipe(
-          ofType('PING'),
-          map(() => this.store.dispatch({ type: 'PONG' }))
+          ofType(someAction),
+          tap(() => this.store.dispatch(awesomeAction()))
+                    ~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
         ), { dispatch: false })
 
         constructor(private actions: Actions, private store: Store) {}
       }`,
-      errors: [
-        {
-          column: 15,
-          endColumn: 34,
-          line: 6,
-          messageId: noDispatchInEffects,
-          suggestions: [
-            {
-              messageId: noDispatchInEffectsSuggest,
-              output: stripIndent`
+      {
+        suggestions: [
+          {
+            messageId: noDispatchInEffectsSuggest,
+            output: stripIndent`
             import { Store } from '@ngrx/store'
             @Injectable()
             export class FixtureEffects {
               effectNOK = createEffect(() => this.actions.pipe(
-                ofType('PING'),
-                map(() => ({ type: 'PONG' }))
+                ofType(someAction),
+                tap(() => (awesomeAction()))
               ), { dispatch: false })
 
               constructor(private actions: Actions, private store: Store) {}
             }`,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+          },
+        ],
+      },
+    ),
+    fromFixture(
+      stripIndent`
+      import { Store } from '@ngrx/store'
+      @Injectable()
+      export class FixtureEffects {
+        effectNOK = createEffect(() => this.actions.pipe(
+          ofType(userActions.add),
+          map(() => {
+            return this.store.dispatch({ type: 'PONG' });
+                   ~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
+          })
+        ))
+
+        constructor(private actions: Actions, private store: Store) {}
+      }`,
+      {
+        suggestions: [
+          {
+            messageId: noDispatchInEffectsSuggest,
+            output: stripIndent`
+            import { Store } from '@ngrx/store'
+            @Injectable()
+            export class FixtureEffects {
+              effectNOK = createEffect(() => this.actions.pipe(
+                ofType(userActions.add),
+                map(() => {
+                  return ({ type: 'PONG' });
+                })
+              ))
+
+              constructor(private actions: Actions, private store: Store) {}
+            }`,
+          },
+        ],
+      },
+    ),
+    fromFixture(
+      stripIndent`
       import { Store } from '@ngrx/store'
       @Injectable()
       export class FixtureEffects {
@@ -69,46 +118,39 @@ ruleTester().run(path.parse(__filename).name, rule, {
               ofType('PING'),
               map(() => {
                 return this.customName.dispatch({ /* you shouldn't do this */ type: 'PONG' })
+                       ~~~~~~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
               }),
             ),
-          { dispatch: false },
         )
 
         constructor(private actions: Actions, private customName: Store) {}
       }`,
-      errors: [
-        {
-          column: 18,
-          endColumn: 42,
-          line: 9,
-          messageId: noDispatchInEffects,
-          suggestions: [
-            {
-              messageId: noDispatchInEffectsSuggest,
-              output: stripIndent`
-              import { Store } from '@ngrx/store'
-              @Injectable()
-              export class FixtureEffects {
-                effectNOK = createEffect(
-                  () =>
-                    this.actions.pipe(
-                      ofType('PING'),
-                      map(() => {
-                        return ({ /* you shouldn't do this */ type: 'PONG' })
-                      }),
-                    ),
-                  { dispatch: false },
-                )
+      {
+        suggestions: [
+          {
+            messageId: noDispatchInEffectsSuggest,
+            output: stripIndent`
+            import { Store } from '@ngrx/store'
+            @Injectable()
+            export class FixtureEffects {
+              effectNOK = createEffect(
+                () =>
+                  this.actions.pipe(
+                    ofType('PING'),
+                    map(() => {
+                      return ({ /* you shouldn't do this */ type: 'PONG' })
+                    }),
+                  ),
+              )
 
-                constructor(private actions: Actions, private customName: Store) {}
-              }`,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: stripIndents`
+              constructor(private actions: Actions, private customName: Store) {}
+            }`,
+          },
+        ],
+      },
+    ),
+    fromFixture(
+      stripIndents`
       import { Store } from '@ngrx/store'
       @Injectable()
       export class FixtureEffects {
@@ -116,47 +158,42 @@ ruleTester().run(path.parse(__filename).name, rule, {
           () =>
             this.actions.pipe(
               ofType('PING'),
-              map(() => {
-                this.store$.dispatch(someAction())// you shouldn't do this
-                return anotherAction()
+              tap(() => {
+                this.store$.dispatch(someAction());// you shouldn't do this
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
+                return somethingElse()
               }),
             ),
-          { dispatch: false },
+          { dispatch: false, useEffectsErrorHandler: false },
         )
 
         constructor(private actions: Actions, private readonly store$: Store) {}
       }`,
-      errors: [
-        {
-          column: 1,
-          endColumn: 21,
-          line: 9,
-          messageId: noDispatchInEffects,
-          suggestions: [
-            {
-              messageId: noDispatchInEffectsSuggest,
-              output: stripIndents`
-              import { Store } from '@ngrx/store'
-              @Injectable()
-              export class FixtureEffects {
-                effectNOK = createEffect(
-                  () =>
-                    this.actions.pipe(
-                      ofType('PING'),
-                      map(() => {
-                        // you shouldn't do this
-                        return anotherAction()
-                      }),
-                    ),
-                  { dispatch: false },
-                )
+      {
+        suggestions: [
+          {
+            messageId: noDispatchInEffectsSuggest,
+            output: stripIndents`
+            import { Store } from '@ngrx/store'
+            @Injectable()
+            export class FixtureEffects {
+              effectNOK = createEffect(
+                () =>
+                  this.actions.pipe(
+                    ofType('PING'),
+                    tap(() => {
+                      ;// you shouldn't do this
+                      return somethingElse()
+                    }),
+                  ),
+                { dispatch: false, useEffectsErrorHandler: false },
+              )
 
-                constructor(private actions: Actions, private readonly store$: Store) {}
-              }`,
-            },
-          ],
-        },
-      ],
-    },
+              constructor(private actions: Actions, private readonly store$: Store) {}
+            }`,
+          },
+        ],
+      },
+    ),
   ],
 })
