@@ -76,7 +76,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       import { Store } from '@ngrx/store'
       @Injectable()
       export class FixtureEffects {
-        effectNOK = createEffect(() => this.actions.pipe(
+        effectNOK1 = createEffect(() => this.actions.pipe(
           ofType(userActions.add),
           map(() => {
             return this.store.dispatch({ type: 'PONG' });
@@ -94,7 +94,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
             import { Store } from '@ngrx/store'
             @Injectable()
             export class FixtureEffects {
-              effectNOK = createEffect(() => this.actions.pipe(
+              effectNOK1 = createEffect(() => this.actions.pipe(
                 ofType(userActions.add),
                 map(() => {
                   return ({ type: 'PONG' });
@@ -112,7 +112,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       import { Store } from '@ngrx/store'
       @Injectable()
       export class FixtureEffects {
-        effectNOK = createEffect(
+        effectNOK2 = createEffect(
           () =>
             this.actions.pipe(
               ofType('PING'),
@@ -133,7 +133,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
             import { Store } from '@ngrx/store'
             @Injectable()
             export class FixtureEffects {
-              effectNOK = createEffect(
+              effectNOK2 = createEffect(
                 () =>
                   this.actions.pipe(
                     ofType('PING'),
@@ -154,7 +154,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       import { Store } from '@ngrx/store'
       @Injectable()
       export class FixtureEffects {
-        effectNOK = createEffect(
+        effectNOK3 = createEffect(
           () =>
             this.actions.pipe(
               ofType('PING'),
@@ -177,7 +177,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
             import { Store } from '@ngrx/store'
             @Injectable()
             export class FixtureEffects {
-              effectNOK = createEffect(
+              effectNOK3 = createEffect(
                 () =>
                   this.actions.pipe(
                     ofType('PING'),
