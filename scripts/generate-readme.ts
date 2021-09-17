@@ -5,20 +5,23 @@ import { rules } from '../src/rules'
 
 const prettierConfig = resolveConfig.sync(__dirname)
 
-const moduleRules = Object.entries(rules).reduce((all, [ruleName, rule]) => {
-  all[rule.meta.module] = (all[rule.meta.module] || []).concat([
-    [
-      `[ngrx/${ruleName}](${rule.meta.docs?.url})`,
-      rule.meta.docs?.description ?? 'TODO',
-      rule.meta.type,
-      `${rule.meta.docs?.recommended} (${rule.meta.docs?.category})`,
-      rule.meta.fixable ? 'Yes' : 'No',
-      rule.meta.docs?.suggestion ? 'Yes' : 'No',
-      rule.meta.schema.length ? 'Yes' : 'No',
-    ],
-  ])
-  return all
-}, {} as Record<string, string[][]>)
+const moduleRules = Object.entries(rules).reduce<Record<string, string[][]>>(
+  (all, [ruleName, rule]) => {
+    all[rule.meta.module] = (all[rule.meta.module] ?? []).concat([
+      [
+        `[ngrx/${ruleName}](${rule.meta.docs?.url})`,
+        rule.meta.docs?.description ?? 'TODO',
+        rule.meta.type,
+        `${rule.meta.docs?.recommended} (${rule.meta.docs?.category})`,
+        rule.meta.fixable ? 'Yes' : 'No',
+        rule.meta.docs?.suggestion ? 'Yes' : 'No',
+        rule.meta.schema.length ? 'Yes' : 'No',
+      ],
+    ])
+    return all
+  },
+  {},
+)
 
 moduleRules['effects'] = moduleRules['effects'].concat([
   [

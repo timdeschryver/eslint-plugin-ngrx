@@ -13,12 +13,15 @@ const getRules = (
   predicate: (rule: RuleModule) => boolean,
   setting = (rule: RuleModule) => rule.meta.docs?.recommended || 'warn',
 ) =>
-  Object.entries(rules).reduce((rules, [ruleName, rule]) => {
-    if (predicate(rule)) {
-      rules[`${RULE_NAME_PREFIX}${ruleName}`] = setting(rule)
-    }
-    return rules
-  }, {} as Record<string, string>)
+  Object.entries(rules).reduce<Record<string, string>>(
+    (rules, [ruleName, rule]) => {
+      if (predicate(rule)) {
+        rules[`${RULE_NAME_PREFIX}${ruleName}`] = setting(rule)
+      }
+      return rules
+    },
+    {},
+  )
 
 const rxjsRules = {
   'rxjs/no-unsafe-catch': 'warn',

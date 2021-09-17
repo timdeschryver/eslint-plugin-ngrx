@@ -5,7 +5,7 @@ export function* traverseFolder(
   folder: string,
   extensions = ['.ts', '.js'],
 ): Generator<{ folder: string; file: string; path: string }> {
-  const folders = fs.readdirSync(folder, { withFileTypes: true }) as fs.Dirent[]
+  const folders = fs.readdirSync(folder, { withFileTypes: true })
   for (const folderEntry of folders) {
     const entryPath = path.resolve(folder, folderEntry.name)
     if (folderEntry.isDirectory()) {

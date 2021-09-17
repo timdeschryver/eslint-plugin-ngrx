@@ -40,7 +40,7 @@
     "build": "tsc",
     "postbuild": "npm run copy:schematics",
     "copy:schematics": "cpy ./schematics/**/*.json ../dist --cwd=src --parents",
-    "lint:all": "eslint ./src/**/*.ts ./tests/**/*.ts --fix",
+    "lint:all": "eslint ./scripts/**/*.ts ./src/**/*.ts ./tests/**/*.ts --fix",
     "prettier:all": "prettier --write .",
     "g:config": "ts-node ./scripts/generate-config.ts",
     "g:readme": "ts-node ./scripts/generate-readme.ts",

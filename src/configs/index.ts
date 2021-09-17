@@ -16,10 +16,10 @@ const excludedFiles = ['index']
 
 export const configs = Array.from(traverseFolder(configDir))
   .filter((config) => !excludedFiles.includes(config.file))
-  .reduce((allConfigs, config) => {
+  .reduce<Record<string, TSESLint.Linter.RuleEntry>>((allConfigs, config) => {
     const entry = importDefault(config.path) as TSESLint.Linter.RuleEntry
     return {
       ...allConfigs,
       [config.file]: entry,
     }
-  }, {} as Record<string, TSESLint.Linter.RuleEntry>)
+  }, {})
