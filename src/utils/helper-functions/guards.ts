@@ -10,6 +10,7 @@ const isNodeOfType =
 export const isArrowFunctionExpression = isNodeOfType(
   AST_NODE_TYPES.ArrowFunctionExpression,
 )
+export const isReturnStatement = isNodeOfType(AST_NODE_TYPES.ReturnStatement)
 export const isMethodDefinition = isNodeOfType(AST_NODE_TYPES.MethodDefinition)
 export const isCallExpression = isNodeOfType(AST_NODE_TYPES.CallExpression)
 export const isClassDeclaration = isNodeOfType(AST_NODE_TYPES.ClassDeclaration)

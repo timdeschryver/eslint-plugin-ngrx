@@ -1,12 +1,24 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { dispatchInEffects, docsUrl, findNgRxStoreName } from '../../utils'
+import {
+  dispatchInEffects,
+  docsUrl,
+  findNgRxStoreName,
+  isArrowFunctionExpression,
+  isReturnStatement,
+} from '../../utils'
 
-export const messageId = 'NoDispatchInEffects'
-export type MessageIds = typeof messageId
+export const noDispatchInEffects = 'noDispatchInEffects'
+export const noDispatchInEffectsSuggest = 'noDispatchInEffectsSuggest'
+export type MessageIds =
+  | typeof noDispatchInEffects
+  | typeof noDispatchInEffectsSuggest
 
 type Options = []
+type MemberExpressionWithinCallExpression = TSESTree.MemberExpression & {
+  parent: TSESTree.CallExpression
+}
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: path.parse(__filename).name,
@@ -16,10 +28,13 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Possible Errors',
       description: 'An `Effect` should not call `store.dispatch`.',
       recommended: 'warn',
+      suggestion: true,
     },
     schema: [],
     messages: {
-      [messageId]: 'Calling `store.dispatch` in an `Effect` is forbidden.',
+      [noDispatchInEffects]:
+        'Calling `store.dispatch` in an `Effect` is forbidden.',
+      [noDispatchInEffectsSuggest]: 'Remove `store.dispatch`.',
     },
   },
   defaultOptions: [],
@@ -28,12 +43,30 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     if (!storeName) return {}
 
     return {
-      [dispatchInEffects(storeName)](node: TSESTree.MemberExpression) {
+      [dispatchInEffects(storeName)](
+        node: MemberExpressionWithinCallExpression,
+      ) {
+        const nodeToReport = getNodeToReport(node)
         context.report({
-          node,
-          messageId,
+          node: nodeToReport,
+          messageId: noDispatchInEffects,
+          suggest: [
+            {
+              messageId: noDispatchInEffectsSuggest,
+              fix: (fixer) => fixer.remove(nodeToReport),
+            },
+          ],
         })
       },
     }
   },
 })
+
+function getNodeToReport(node: MemberExpressionWithinCallExpression) {
+  const { parent } = node
+  const { parent: grandParent } = parent
+  return grandParent &&
+    (isArrowFunctionExpression(grandParent) || isReturnStatement(grandParent))
+    ? node
+    : parent
+}
