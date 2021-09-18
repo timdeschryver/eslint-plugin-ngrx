@@ -87,24 +87,19 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private actions: Actions, private store: Store) {}
       }`,
       {
-        suggestions: [
-          {
-            messageId: noDispatchInEffectsSuggest,
-            output: stripIndent`
-            import { Store } from '@ngrx/store'
-            @Injectable()
-            export class FixtureEffects {
-              effectNOK1 = createEffect(() => this.actions.pipe(
-                ofType(userActions.add),
-                map(() => {
-                  return ({ type: 'PONG' });
-                })
-              ))
+        output: stripIndent`
+        import { Store } from '@ngrx/store'
+        @Injectable()
+        export class FixtureEffects {
+          effectNOK1 = createEffect(() => this.actions.pipe(
+            ofType(userActions.add),
+            map(() => {
+              return ({ type: 'PONG' });
+            })
+          ))
 
-              constructor(private actions: Actions, private store: Store) {}
-            }`,
-          },
-        ],
+          constructor(private actions: Actions, private store: Store) {}
+        }`,
       },
     ),
     fromFixture(
@@ -121,32 +116,29 @@ ruleTester().run(path.parse(__filename).name, rule, {
                        ~~~~~~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
               }),
             ),
+          { 'dispatch': true },
         )
 
         constructor(private actions: Actions, private customName: Store) {}
       }`,
       {
-        suggestions: [
-          {
-            messageId: noDispatchInEffectsSuggest,
-            output: stripIndent`
-            import { Store } from '@ngrx/store'
-            @Injectable()
-            export class FixtureEffects {
-              effectNOK2 = createEffect(
-                () =>
-                  this.actions.pipe(
-                    ofType('PING'),
-                    map(() => {
-                      return ({ /* you shouldn't do this */ type: 'PONG' })
-                    }),
-                  ),
-              )
+        output: stripIndent`
+        import { Store } from '@ngrx/store'
+        @Injectable()
+        export class FixtureEffects {
+          effectNOK2 = createEffect(
+            () =>
+              this.actions.pipe(
+                ofType('PING'),
+                map(() => {
+                  return ({ /* you shouldn't do this */ type: 'PONG' })
+                }),
+              ),
+            { 'dispatch': true },
+          )
 
-              constructor(private actions: Actions, private customName: Store) {}
-            }`,
-          },
-        ],
+          constructor(private actions: Actions, private customName: Store) {}
+        }`,
       },
     ),
     fromFixture(
@@ -164,7 +156,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
                 return somethingElse()
               }),
             ),
-          { dispatch: false, useEffectsErrorHandler: false },
+          { ...options, useEffectsErrorHandler: false },
         )
 
         constructor(private actions: Actions, private readonly store$: Store) {}
@@ -186,7 +178,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
                       return somethingElse()
                     }),
                   ),
-                { dispatch: false, useEffectsErrorHandler: false },
+                { ...options, useEffectsErrorHandler: false },
               )
 
               constructor(private actions: Actions, private readonly store$: Store) {}
