@@ -29,6 +29,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Possible Errors',
       description: 'Avoid effects that re-emit filtered actions.',
       recommended: 'error',
+      requiresTypeChecking: true,
     },
     schema: [],
     messages: {
