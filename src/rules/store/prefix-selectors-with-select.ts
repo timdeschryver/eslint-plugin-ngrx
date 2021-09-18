@@ -27,7 +27,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     messages: {
       [prefixSelectorsWithSelect]: 'The selector should start with "select".',
       [prefixSelectorsWithSelectSuggest]:
-        'Prefix the selector with the word "select" => `{{name}}`.',
+        'Prefix the selector with "select": `{{name}}`.',
     },
   },
   defaultOptions: [],
@@ -82,7 +82,7 @@ function getSuggestedName(name: string) {
 
   // Ex: 'getCount' => 'selectCount'
   possibleReplacedName = name.replace(
-    /[a-z\d]+([A-Z][A-Za-z\d]+)/,
+    /^get([A-Z][A-Za-z\d]+)/,
     (_, capitalizedWord: string) => {
       return `${selectWord}${capitalizedWord}`
     },

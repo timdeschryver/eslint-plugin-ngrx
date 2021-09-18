@@ -148,10 +148,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
           {
             messageId: prefixSelectorsWithSelectSuggest,
             data: {
-              name: 'selectSelect',
+              name: 'selectCreateSelect',
             },
             output: stripIndent`
-            export const selectSelect = createSelectorFactory((projectionFun) =>
+            export const selectCreateSelect = createSelectorFactory((projectionFun) =>
               defaultMemoize(
                 projectionFun,
                 orderDoesNotMatterComparer,
