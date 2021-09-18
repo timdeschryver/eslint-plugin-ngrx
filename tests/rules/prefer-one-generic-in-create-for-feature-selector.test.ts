@@ -48,8 +48,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
     ),
     fromFixture(
       stripIndent`
-        const featureNotOk2 = createFeatureSelector<GlobalState, StateA & StateB>('feature-state')
-                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${preferOneGenericInCreateForFeatureSelector}]
+        const featureNotOk2 = createFeatureSelector<GlobalState  , StateA & StateB>('feature-state')
+                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${preferOneGenericInCreateForFeatureSelector}]
       `,
       {
         suggestions: [

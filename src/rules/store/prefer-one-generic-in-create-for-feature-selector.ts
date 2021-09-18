@@ -33,6 +33,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
+    const sourceCode = context.getSourceCode()
+
     return {
       [`CallExpression[callee.name='createFeatureSelector'] > TSTypeParameterInstantiation[params.length>1]`](
         node: TSESTree.TSTypeParameterInstantiation,
@@ -44,9 +46,10 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
             {
               fix: (fixer) => {
                 const [globalState] = node.params
+                const nextToken = sourceCode.getTokenAfter(globalState)
                 return fixer.removeRange([
                   globalState.range[0],
-                  globalState.range[1] + 1,
+                  nextToken?.range[1] ?? globalState.range[1] + 1,
                 ])
               },
               messageId: preferOneGenericInCreateForFeatureSelectorSuggest,
