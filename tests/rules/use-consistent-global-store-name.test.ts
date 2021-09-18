@@ -49,6 +49,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
           suggestions: [
             {
               messageId: useConsistentGlobalStoreNameSuggest,
+              data: {
+                storeName: 'store',
+              },
               output: stripIndents`
               import { Store } from '@ngrx/store'
               @Component()
@@ -81,6 +84,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
           suggestions: [
             {
               messageId: useConsistentGlobalStoreNameSuggest,
+              data: {
+                storeName: 'customName',
+              },
               output: stripIndents`
               import { Store } from '@ngrx/store'
               @Component()
