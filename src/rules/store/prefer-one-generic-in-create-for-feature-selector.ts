@@ -1,7 +1,7 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { docsUrl, isIdentifier, isTSTypeReference } from '../../utils'
+import { docsUrl } from '../../utils'
 
 export const preferOneGenericInCreateForFeatureSelector =
   'preferOneGenericInCreateForFeatureSelector'
@@ -33,8 +33,10 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
+    const sourceCode = context.getSourceCode()
+
     return {
-      [`CallExpression[callee.name='createFeatureSelector'] TSTypeParameterInstantiation[params.length>1]`](
+      [`CallExpression[callee.name='createFeatureSelector'] > TSTypeParameterInstantiation[params.length>1]`](
         node: TSESTree.TSTypeParameterInstantiation,
       ) {
         context.report({
@@ -43,17 +45,12 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           suggest: [
             {
               fix: (fixer) => {
-                const [, featureState] = node.params
-                if (
-                  isTSTypeReference(featureState) &&
-                  isIdentifier(featureState.typeName)
-                ) {
-                  return fixer.replaceText(
-                    node,
-                    `<${featureState.typeName.name}>`,
-                  )
-                }
-                return []
+                const [globalState] = node.params
+                const nextToken = sourceCode.getTokenAfter(globalState)
+                return fixer.removeRange([
+                  globalState.range[0],
+                  nextToken?.range[1] ?? globalState.range[1] + 1,
+                ])
               },
               messageId: preferOneGenericInCreateForFeatureSelectorSuggest,
             },
