@@ -36,7 +36,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         typeParameters: TSESTree.TSTypeParameterInstantiation
       }) {
         context.report({
-          // TODO: Turn it into a fix once https://github.com/ngrx/platform/issues/2780 is fixed.
           suggest: [
             {
               fix: (fixer) => fixer.remove(typeParameters),
