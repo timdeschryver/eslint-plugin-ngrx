@@ -1,5 +1,7 @@
+import reportMessageFormat from './report-message-format'
+
 module.exports = {
   rules: {
-    'first-rule': require('./first-rule'),
+    'report-message-format': reportMessageFormat,
   },
 }
