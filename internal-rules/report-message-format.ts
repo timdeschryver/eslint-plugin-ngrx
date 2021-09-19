@@ -32,7 +32,7 @@ export default ESLintUtils.RuleCreator(() => '')<Options, MessageIds>({
 
     return {
       [`CallExpression[callee.callee.object.name='ESLintUtils'][callee.callee.property.name='RuleCreator'] Property[key.name='meta'] Property[key.name='messages'] :matches(Literal[value!=${pattern}], TemplateLiteral[quasis.length=1][quasis.0.value.raw!=${pattern}])`](
-        node: TSESTree.StringLiteral | TSESTree.TemplateElement,
+        node: TSESTree.StringLiteral | TSESTree.TemplateLiteral,
       ) {
         context.report({
           node,
