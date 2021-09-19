@@ -14,6 +14,37 @@ ruleTester().run(path.parse(__filename).name, rule, {
     import { Store } from '@ngrx/store'
     @Component()
     export class FixtureComponent {
+      constructor(private store: Store) {}
+    }
+    `,
+    `
+    import { Store, select } from '@ngrx/store'
+    @Component()
+    export class FixtureComponent {
+      constructor(private store: Store) {}
+    }
+    `,
+    `
+    import { Store, select } from '@ngrx/store'
+    @Component()
+    export class FixtureComponent {
+      foo$ = select(selector)
+      constructor(private store: Store) {}
+    }
+    `,
+    `
+    import { select } from '@my-org/framework'
+    import { Store } from '@ngrx/store'
+    @Component()
+    export class FixtureComponent {
+      foo$ = this.store.pipe(select(selector))
+      constructor(private store: Store) {}
+    }
+    `,
+    `
+    import { Store } from '@ngrx/store'
+    @Component()
+    export class FixtureComponent {
       foo$ = this.store.select(selector)
       constructor(private store: Store) {}
     }
@@ -22,13 +53,21 @@ ruleTester().run(path.parse(__filename).name, rule, {
     import { Store } from '@ngrx/store'
     @Component()
     export class FixtureComponent {
+      foo$ = this.store.select(selector)
+      constructor(private store: Store) {}
+    }
+    `,
+    `
+    import { Store, select } from '@ngrx/store'
+    @Component()
+    export class FixtureComponent {
       foo$ = this.customName.select(selector)
       constructor(private customName: Store) {}
     }
     `,
     {
       code: `
-      import { Store } from '@ngrx/store'
+      import { Store, select } from '@ngrx/store'
       @Component()
       export class FixtureComponent {
         foo$ = this.store.pipe(select(selector))
@@ -39,7 +78,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     },
     {
       code: `
-      import { Store } from '@ngrx/store'
+      import { select, Store } from '@ngrx/store'
       @Component()
       export class FixtureComponent {
         foo$ = this.store.select(selector)
@@ -53,10 +92,11 @@ ruleTester().run(path.parse(__filename).name, rule, {
     fromFixture(
       stripIndent`
         import { select, Store } from '@ngrx/store'
+                 ~~~~~~ [${methodSelectMessageId}]
         @Component()
         export class FixtureComponent {
-          foo$ = this.store.pipe(select(selector))
-                                 ~~~~~~ [${methodSelectMessageId}]
+          foo$ = this.store.pipe( select(selector), )
+                                  ~~~~~~ [${methodSelectMessageId}]
           constructor(private store: Store) {}
         }
       `,
@@ -65,7 +105,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           import {  Store } from '@ngrx/store'
           @Component()
           export class FixtureComponent {
-            foo$ = this.store.select(selector)
+            foo$ = this.store. select((selector), )
             constructor(private store: Store) {}
           }
         `,
@@ -73,11 +113,14 @@ ruleTester().run(path.parse(__filename).name, rule, {
     ),
     fromFixture(
       stripIndent`
-        import { Store } from '@ngrx/store'
+        import { Store, select } from '@ngrx/store'
+                        ~~~~~~ [${methodSelectMessageId}]
         @Component()
         export class FixtureComponent {
-          foo$ = this.store.pipe(select(selector, selector2), filter(Boolean))
-                                 ~~~~~~ [${methodSelectMessageId}]
+          foo$ = this.store.pipe  (select
+                                   ~~~~~~ [${methodSelectMessageId}]
+            (selector, selector2), filter(Boolean))
+
           constructor(private store: Store) {}
         }
       `,
@@ -87,7 +130,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
           import { Store } from '@ngrx/store'
           @Component()
           export class FixtureComponent {
-            foo$ = this.store.select(selector, selector2).pipe( filter(Boolean))
+            foo$ = this.store.select
+              (selector, selector2).pipe  ( filter(Boolean))
+
             constructor(private store: Store) {}
           }
         `,
@@ -100,8 +145,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
         export class FixtureComponent {
           foo$
           constructor(private store: Store) {
-            this.foo$ = store.select(selector)
+            this.foo$ = store.select(
                               ~~~~~~ [${operatorSelectMessageId}]
+              selector,
+            )
           }
         }
       `,
@@ -113,7 +160,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
           export class FixtureComponent {
             foo$
             constructor(private store: Store) {
-              this.foo$ = store.pipe(select(selector))
+              this.foo$ = store.pipe(select(
+                selector,
+              ))
             }
           }
         `,
@@ -124,6 +173,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         import {
           Store,
           select,
+          ~~~~~~ [${methodSelectMessageId}]
         } from '@ngrx/store'
         @Component()
         export class FixtureComponent {
@@ -150,7 +200,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
         output: stripIndent`
           import {
             Store,
-            select,
           } from '@ngrx/store'
           @Component()
           export class FixtureComponent {
