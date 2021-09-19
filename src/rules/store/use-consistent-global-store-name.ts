@@ -31,7 +31,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     messages: {
       [useConsistentGlobalStoreName]:
         'Global store should have the name `{{ storeName }}`.',
-      [useConsistentGlobalStoreNameSuggest]: 'Use `{{ storeName }}`.',
+      [useConsistentGlobalStoreNameSuggest]: 'Use `{{ storeName }}`',
     },
   },
   defaultOptions: ['store'],
