@@ -21,6 +21,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       category: 'Best Practices',
       description: 'An `Effect` should not return multiple actions.',
       recommended: 'warn',
+      requiresTypeChecking: true,
     },
     schema: [],
     messages: {
