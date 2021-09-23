@@ -156,13 +156,13 @@ ruleTester().run(path.parse(__filename).name, rule, {
                 return somethingElse()
               }),
             ),
-          // Note that it's correct to suggest, instead of fix, here, because although it doesn't have dispatch: fase explicitly, it may have implicitly through options
           { dispatch: true, useEffectsErrorHandler: false, ...options },
         )
 
         constructor(private actions: Actions, private readonly store$: Store) {}
       }`,
       {
+        // Note that it's correct to suggest, instead of fix, here, because although it doesn't have dispatch: false explicitly, it may have implicitly through options
         suggestions: [
           {
             messageId: noDispatchInEffectsSuggest,
