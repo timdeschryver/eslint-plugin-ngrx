@@ -4,18 +4,18 @@ import { format, resolveConfig } from 'prettier'
 import { rules } from '../src/rules'
 
 const prettierConfig = resolveConfig.sync(__dirname)
-
 const moduleRules = Object.entries(rules).reduce<Record<string, string[][]>>(
-  (all, [ruleName, rule]) => {
-    all[rule.meta.module] = (all[rule.meta.module] ?? []).concat([
+  (all, [ruleName, { meta }]) => {
+    all[meta.module] = (all[meta.module] ?? []).concat([
       [
-        `[ngrx/${ruleName}](${rule.meta.docs?.url})`,
-        rule.meta.docs?.description ?? 'TODO',
-        rule.meta.type,
-        `${rule.meta.docs?.recommended} (${rule.meta.docs?.category})`,
-        rule.meta.fixable ? 'Yes' : 'No',
-        rule.meta.docs?.suggestion ? 'Yes' : 'No',
-        rule.meta.schema.length ? 'Yes' : 'No',
+        `[ngrx/${ruleName}](${meta.docs?.url})`,
+        meta.docs?.description ?? 'TODO',
+        meta.type,
+        `${meta.docs?.recommended} (${meta.docs?.category})`,
+        meta.fixable ? 'Yes' : 'No',
+        meta.docs?.suggestion ? 'Yes' : 'No',
+        meta.schema.length ? 'Yes' : 'No',
+        meta.docs?.requiresTypeChecking ? 'Yes' : 'No',
       ],
     ])
     return all
@@ -50,8 +50,8 @@ moduleRules['effects'] = moduleRules['effects'].concat([
   ],
 ])
 
-const tableHeader = `| Name | Description | Recommended | Category | Fixable | Has suggestions | Configurable |
-| --- | --- | --- | --- | --- | --- |`
+const tableHeader = `| Name | Description | Recommended | Category | Fixable | Has suggestions | Configurable | Requires type information
+| --- | --- | --- | --- | --- | --- | --- | --- |`
 
 const config = Object.entries(moduleRules).map(([module, pluginRules]) => {
   const tableBody = pluginRules.map((rule) => `|${rule.join('|')}|`).join(EOL)
