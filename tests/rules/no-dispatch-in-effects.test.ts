@@ -156,7 +156,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
                 return somethingElse()
               }),
             ),
-          { ...options, useEffectsErrorHandler: false },
+          { dispatch: true, useEffectsErrorHandler: false, ...options },
         )
 
         constructor(private actions: Actions, private readonly store$: Store) {}
@@ -178,7 +178,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
                       return somethingElse()
                     }),
                   ),
-                { ...options, useEffectsErrorHandler: false },
+                { dispatch: true, useEffectsErrorHandler: false, ...options },
               )
 
               constructor(private actions: Actions, private readonly store$: Store) {}

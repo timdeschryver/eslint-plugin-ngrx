@@ -97,22 +97,13 @@ function isLikelyToContainDispatchFalse({
     return false
   }
 
-  let hasDispatchFalse = false
-
-  for (const property of callExpressionArgument.properties) {
-    if (
+  return callExpressionArgument.properties.some((property) => {
+    return (
       !isProperty(property) ||
-      (property.computed && isIdentifier(property.key))
-    ) {
-      return true
-    }
-
-    if (!hasDispatchFalse && isDispatchFalse(property)) {
-      hasDispatchFalse = true
-    }
-  }
-
-  return hasDispatchFalse
+      (property.computed && isIdentifier(property.key)) ||
+      isDispatchFalse(property)
+    )
+  })
 }
 
 function isDispatchFalse(property: TSESTree.Property) {
