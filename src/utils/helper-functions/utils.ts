@@ -303,6 +303,10 @@ export function getRawText(node: TSESTree.Node): string {
   throw Error(`Unexpected \`node.type\` provided: ${node.type}`)
 }
 
+export function capitalize<T extends string>(text: T): Capitalize<T> {
+  return `${text[0].toUpperCase()}${text.slice(1)}` as Capitalize<T>
+}
+
 function findCorrespondingNameBy(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
   moduleName: string,
