@@ -5,10 +5,11 @@ import {
   docsUrl,
   findNgRxStoreName,
   getImportAddFix,
-  getImportDeclarations,
   getImportRemoveFix,
   getNearestUpperNodeFrom,
+  isCallExpression,
   isClassDeclaration,
+  isMemberExpression,
   MODULE_PATHS,
   pipeableSelect,
   storeSelect,
@@ -16,7 +17,6 @@ import {
 
 export const methodSelectMessageId = 'methodSelect'
 export const operatorSelectMessageId = 'operatorSelect'
-
 export type MessageIds =
   | typeof methodSelectMessageId
   | typeof operatorSelectMessageId
@@ -72,46 +72,47 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     const storeName = findNgRxStoreName(context)
     if (!storeName) return {}
 
-    if (mode === SelectStyle.Method) {
-      const sourceCode = context.getSourceCode()
-
+    if (mode === SelectStyle.Operator) {
       return {
-        [pipeableSelect(storeName)](node: CallExpression) {
+        [storeSelect(storeName)](node: CallExpression) {
           context.report({
-            node: node.callee,
-            messageId: methodSelectMessageId,
-            fix: (fixer) => {
-              const importDeclarations =
-                getImportDeclarations(node, MODULE_PATHS.store) ?? []
-              const text = sourceCode.getText()
-              const totalPipeSelectOccurrences =
-                getTotalPipeSelectOccurrences(text)
-              const importRemoveFix =
-                totalPipeSelectOccurrences === 1
-                  ? getImportRemoveFix(
-                      sourceCode,
-                      importDeclarations,
-                      'select',
-                      fixer,
-                    )
-                  : []
-
-              return getOperatorToMethodFixes(node, sourceCode, fixer).concat(
-                importRemoveFix,
-              )
-            },
+            node: node.callee.property,
+            messageId: operatorSelectMessageId,
+            fix: (fixer) => getMethodToOperatorFixes(node, fixer),
           })
         },
       }
     }
 
+    const sourceCode = context.getSourceCode()
+
     return {
-      [storeSelect(storeName)](node: CallExpression) {
+      [`Program:has(${pipeableSelect(
+        storeName,
+      )}) ImportDeclaration[source.value='${
+        MODULE_PATHS.store
+      }'] > ImportSpecifier[imported.name='select']`](
+        node: TSESTree.ImportSpecifier & {
+          parent: TSESTree.ImportDeclaration
+        },
+      ) {
         context.report({
-          node: node.callee.property,
-          messageId: operatorSelectMessageId,
-          fix: (fixer) => getMethodToOperatorFixes(node, fixer),
+          node,
+          messageId: methodSelectMessageId,
+          fix: (fixer) =>
+            getImportRemoveFix(sourceCode, [node.parent], 'select', fixer),
         })
+
+        const [{ references }] = context.getDeclaredVariables(node)
+
+        for (const { identifier } of references) {
+          context.report({
+            node: identifier,
+            messageId: methodSelectMessageId,
+            fix: (fixer) =>
+              getOperatorToMethodFixes(identifier, sourceCode, fixer),
+          })
+        }
       },
     }
   },
@@ -120,7 +121,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
 function getMethodToOperatorFixes(
   node: CallExpression,
   fixer: TSESLint.RuleFixer,
-): TSESLint.RuleFix[] {
+): readonly TSESLint.RuleFix[] {
   const classDeclaration = getNearestUpperNodeFrom(node, isClassDeclaration)
 
   if (!classDeclaration) {
@@ -141,43 +142,44 @@ function getMethodToOperatorFixes(
 }
 
 function getOperatorToMethodFixes(
-  node: CallExpression,
+  identifier: TSESTree.Node,
   sourceCode: Readonly<TSESLint.SourceCode>,
   fixer: TSESLint.RuleFixer,
-): TSESLint.RuleFix[] {
-  const { parent } = node
-  const pipeContainsOnlySelect = parent.arguments.length === 1
+): readonly TSESLint.RuleFix[] {
+  const select = identifier.parent
+  const storePipe = select?.parent
 
-  if (pipeContainsOnlySelect) {
-    const pipeRange: TSESTree.Range = [
-      parent.callee.property.range[0],
-      parent.callee.property.range[1] + 1,
-    ]
-    const trailingParenthesisRange: TSESTree.Range = [
-      parent.range[1] - 1,
-      parent.range[1],
-    ]
+  if (
+    !storePipe ||
+    !isCallExpression(storePipe) ||
+    !isMemberExpression(storePipe.callee)
+  ) {
+    return []
+  }
 
+  const pipeContainsOnlySelect = storePipe.arguments.length === 1
+
+  if (!pipeContainsOnlySelect) {
+    const selectContent = sourceCode.getText(select)
+    const nextTokenAfterSelect = sourceCode.getTokenAfter(select)
+    const store = storePipe.callee.object
     return [
-      fixer.removeRange(pipeRange),
-      fixer.removeRange(trailingParenthesisRange),
+      fixer.remove(select),
+      ...(nextTokenAfterSelect ? [fixer.remove(nextTokenAfterSelect)] : []),
+      fixer.insertTextAfter(store, `.${selectContent}`),
     ]
   }
 
-  const text = sourceCode.getText(node)
-  const nextToken = sourceCode.getTokenAfter(node)
-  const selectOperatorRange: TSESTree.Range = [
-    node.range[0],
-    nextToken?.range[1] ?? node.range[1],
+  const { property } = storePipe.callee
+  const nextTokenAfterPipe = sourceCode.getTokenAfter(property)
+  const [pipeInitialRange, pipeEndRange] = property.range
+  const pipeRange: TSESTree.Range = [
+    pipeInitialRange,
+    nextTokenAfterPipe?.range[1] ?? pipeEndRange,
   ]
-  const storeRange = parent.callee.object.range
-
+  const [, selectEndRange] = identifier.range
   return [
-    fixer.removeRange(selectOperatorRange),
-    fixer.insertTextAfterRange(storeRange, `.${text}`),
+    fixer.removeRange(pipeRange),
+    fixer.insertTextAfterRange([selectEndRange, selectEndRange + 1], '('),
   ]
-}
-
-function getTotalPipeSelectOccurrences(text: string) {
-  return text.replace(/\s/g, '').match(/pipe\(select\(/g)?.length ?? 0
 }
