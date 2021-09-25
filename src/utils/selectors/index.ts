@@ -1,5 +1,7 @@
 export const effectCreator = `ClassProperty[value.callee.name='createEffect']`
 export const createEffectExpression = `ClassProperty > CallExpression[callee.name='createEffect']`
+export const createEffectFunction =
+  `${createEffectExpression} > ArrowFunctionExpression` as const
 
 export const effectDecorator = `Decorator[expression.callee.name='Effect']`
 export const classPropertyWithEffectDecorator =
@@ -7,7 +9,7 @@ export const classPropertyWithEffectDecorator =
 
 export const actionCreator = `CallExpression[callee.name='createAction']`
 export const actionCreatorWithLiteral =
-  `${actionCreator}[arguments.0.type='Literal']` as const
+  `${actionCreator}[arguments.0.type='Literal'][arguments.0.raw=/^'/]` as const
 export const actionCreatorProps = `${actionCreator} CallExpression` as const
 export const actionCreatorPropsComputed =
   `${actionCreatorProps} > TSTypeParameterInstantiation > :matches(TSTypeReference[typeName.name!='Readonly'], [type=/^TS(.*)(Keyword|Type)$/])` as const
@@ -82,9 +84,6 @@ const mapOperatorsExpression =
   `${createEffectExpression} CallExpression[callee.name=/^${mapOperators}$/]` as const
 const mapToOperatorsExpression =
   `${createEffectExpression} CallExpression[callee.name=/^${mapToOperators}$/]` as const
-
-export const createEffectBody =
-  `${createEffectExpression} > ArrowFunctionExpression` as const
 
 export const effectsImplicitReturn =
   `${mapOperatorsExpression} > ArrowFunctionExpression > ArrayExpression, ${mapToOperatorsExpression} ArrayExpression` as const

@@ -28,9 +28,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     const storeName = findNgRxComponentStoreName(context)
     const selectors = [
       `ClassProperty > CallExpression[callee.object.type='ThisExpression'][callee.property.name='updater'] > ArrowFunctionExpression:not([returnType.typeAnnotation], :has(CallExpression))`,
-      storeName
-        ? `ClassProperty > CallExpression[callee.object.object.type='ThisExpression'][callee.object.property.name='${storeName}'][callee.property.name='updater'] > ArrowFunctionExpression:not([returnType.typeAnnotation], :has(CallExpression))`
-        : '',
+      storeName &&
+        `ClassProperty > CallExpression[callee.object.object.type='ThisExpression'][callee.object.property.name='${storeName}'][callee.property.name='updater'] > ArrowFunctionExpression:not([returnType.typeAnnotation], :has(CallExpression))`,
     ]
       .filter(Boolean)
       .join(',')

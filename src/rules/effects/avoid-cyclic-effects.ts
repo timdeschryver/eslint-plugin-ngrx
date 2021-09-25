@@ -33,7 +33,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     },
     schema: [],
     messages: {
-      [messageId]: 'Effects that re-emit filtered actions are forbidden.',
+      [messageId]: '`Effects` that re-emit filtered actions are forbidden.',
     },
   },
   defaultOptions: [],
