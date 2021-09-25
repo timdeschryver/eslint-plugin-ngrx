@@ -84,7 +84,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         @NgModule({
           imports: [
             StoreModule.forFeature({
-              'fooReducer': foo,
+              'foo-reducer': foo,
               FoeReducer: FoeReducer,
             }),
           ],
@@ -93,7 +93,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       errors: [
         {
           column: 7,
-          endColumn: 19,
+          endColumn: 20,
           line: 4,
           messageId: noReducerInKeyNames,
           suggestions: [
@@ -103,7 +103,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
                 @NgModule({
                   imports: [
                     StoreModule.forFeature({
-                      'foo': foo,
+                      'foo-': foo,
                       FoeReducer: FoeReducer,
                     }),
                   ],
@@ -124,7 +124,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
                 @NgModule({
                   imports: [
                     StoreModule.forFeature({
-                      'fooReducer': foo,
+                      'foo-reducer': foo,
                       Foe: FoeReducer,
                     }),
                   ],

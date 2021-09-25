@@ -49,6 +49,11 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
               messageId: noReducerInKeyNamesSuggest,
               fix: (fixer) => {
                 const keyName = getRawText(key)
+
+                if (!keyName) {
+                  return null
+                }
+
                 return fixer.replaceText(
                   key,
                   keyName.replace(new RegExp(reducerKeyword, 'i'), ''),
