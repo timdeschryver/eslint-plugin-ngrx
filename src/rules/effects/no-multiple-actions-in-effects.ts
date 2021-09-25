@@ -1,12 +1,8 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
+import { getTypeServices } from 'eslint-etc'
 import path from 'path'
-import {
-  docsUrl,
-  effectsImplicitReturn,
-  effectsReturn,
-  typecheck,
-} from '../../utils'
+import { docsUrl, effectsImplicitReturn, effectsReturn } from '../../utils'
 
 export const messageId = 'noMultipleActionsInEffects'
 export type MessageIds = typeof messageId
@@ -40,8 +36,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       [effectsReturn]({ argument }: TSESTree.ReturnStatement) {
         if (!argument) return
 
-        const { couldBeOfType } = typecheck(context)
-        if (couldBeOfType(argument, 'Array')) {
+        const { couldBeType } = getTypeServices(context)
+
+        if (couldBeType(argument, 'Array')) {
           context.report({
             node: argument,
             messageId,
