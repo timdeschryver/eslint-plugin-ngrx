@@ -33,17 +33,17 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     return {
       [actionCreatorPropsComputed](node: TSESTree.TSTypeReference) {
         context.report({
+          node,
+          messageId: preferInlineActionProps,
           suggest: [
             {
+              messageId: preferInlineActionPropsSuggest,
               fix: (fixer) => [
                 fixer.insertTextBefore(node, '{name: '),
                 fixer.insertTextAfter(node, '}'),
               ],
-              messageId: preferInlineActionPropsSuggest,
             },
           ],
-          node,
-          messageId: preferInlineActionProps,
         })
       },
     }

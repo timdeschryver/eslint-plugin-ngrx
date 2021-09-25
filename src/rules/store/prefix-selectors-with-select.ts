@@ -45,19 +45,18 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
               column: id.typeAnnotation?.range[0] ?? id.range[1],
             },
           },
-          node: id,
           messageId: prefixSelectorsWithSelect,
           suggest: [
             {
               messageId: prefixSelectorsWithSelectSuggest,
+              data: {
+                name: suggestedName,
+              },
               fix: (fixer) =>
                 fixer.replaceTextRange(
                   [id.range[0], id.typeAnnotation?.range[0] ?? id.range[1]],
                   suggestedName,
                 ),
-              data: {
-                name: suggestedName,
-              },
             },
           ],
         })
@@ -70,7 +69,7 @@ function getSuggestedName(name: string) {
   const selectWord = 'select'
   // Ex: 'selectfeature' => 'selectFeature'
   let possibleReplacedName = name.replace(
-    RegExp(`^${selectWord}(.+)`),
+    new RegExp(`^${selectWord}(.+)`),
     (_, lowercasedWord: string) => {
       return `${selectWord}${capitalize(lowercasedWord)}`
     },

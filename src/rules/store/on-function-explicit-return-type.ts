@@ -41,8 +41,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           messageId: onFunctionExplicitReturnType,
           suggest: [
             {
-              fix: (fixer) => getFixes(node, sourceCode, fixer),
               messageId: onFunctionExplicitReturnTypeSuggest,
+              fix: (fixer) => getFixes(node, sourceCode, fixer),
             },
           ],
         })
