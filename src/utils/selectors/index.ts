@@ -25,7 +25,7 @@ export function metadataProperty(key: RegExp | string): string {
 }
 
 export const injectedStore = `MethodDefinition[kind='constructor'] Identifier[typeAnnotation.typeAnnotation.typeName.name='Store']`
-export const typedStore = `MethodDefinition[kind='constructor'] Identifier>TSTypeAnnotation>TSTypeReference[typeName.name='Store'][typeParameters.params]`
+export const typedStore = `MethodDefinition[kind='constructor'] Identifier > TSTypeAnnotation > TSTypeReference[typeName.name='Store'][typeParameters.params]`
 
 export const ngModuleDecorator = `ClassDeclaration > Decorator > CallExpression[callee.name='NgModule']`
 

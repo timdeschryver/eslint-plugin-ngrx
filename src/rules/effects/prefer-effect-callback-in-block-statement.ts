@@ -4,7 +4,6 @@ import path from 'path'
 import { createEffectFunction, docsUrl } from '../../utils'
 
 export const messageId = 'preferEffectCallbackInBlockStatement'
-
 export type MessageIds = typeof messageId
 
 type Options = []
