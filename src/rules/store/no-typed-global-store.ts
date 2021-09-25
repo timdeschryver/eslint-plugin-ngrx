@@ -36,14 +36,14 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         typeParameters: TSESTree.TSTypeParameterInstantiation
       }) {
         context.report({
-          suggest: [
-            {
-              fix: (fixer) => fixer.remove(typeParameters),
-              messageId: noTypedStoreSuggest,
-            },
-          ],
           node: typeParameters,
           messageId,
+          suggest: [
+            {
+              messageId: noTypedStoreSuggest,
+              fix: (fixer) => fixer.remove(typeParameters),
+            },
+          ],
         })
       },
     }

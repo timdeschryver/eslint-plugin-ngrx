@@ -59,12 +59,12 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           suggest: [
             {
               messageId: useConsistentGlobalStoreNameSuggest,
+              data,
               fix: (fixer) =>
                 fixer.replaceTextRange(
                   [range[0], typeAnnotation.range[0]],
                   storeName,
                 ),
-              data,
             },
           ],
         })

@@ -56,8 +56,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
             messageId: noMultipleGlobalStores,
             suggest: [
               {
-                fix: (fixer) => getFixes(sourceCode, fixer, node),
                 messageId: noMultipleGlobalStoresSuggest,
+                fix: (fixer) => getFixes(sourceCode, fixer, node),
               },
             ],
           })

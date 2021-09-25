@@ -54,18 +54,18 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           node.parent.value.callee.name === createEffect
 
         context.report({
+          node,
+          messageId: noEffectDecorator,
           ...(isUsingEffectCreator
             ? {
                 suggest: [
                   {
-                    fix: (fixer) => fixer.remove(node),
                     messageId: noEffectDecoratorSuggest,
+                    fix: (fixer) => fixer.remove(node),
                   },
                 ],
               }
             : { fix: (fixer) => getFixes(node, sourceCode, fixer) }),
-          node,
-          messageId: noEffectDecorator,
         })
       },
     }

@@ -59,6 +59,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         )
 
         context.report({
+          node: node.key,
+          messageId: noEffectDecoratorAndCreator,
           ...(hasDecoratorArgument
             ? {
                 // In this case where the argument to the `@Effect({...})`
@@ -68,17 +70,15 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
                 // would be quite costly.
                 suggest: [
                   {
+                    messageId: noEffectDecoratorAndCreatorSuggest,
                     fix: (fixer) =>
                       getFixes(node, sourceCode, fixer, decorator),
-                    messageId: noEffectDecoratorAndCreatorSuggest,
                   },
                 ],
               }
             : {
                 fix: (fixer) => getFixes(node, sourceCode, fixer, decorator),
               }),
-          node: node.key,
-          messageId: noEffectDecoratorAndCreator,
         })
       },
     }

@@ -44,6 +44,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           messageId: preferOneGenericInCreateForFeatureSelector,
           suggest: [
             {
+              messageId: preferOneGenericInCreateForFeatureSelectorSuggest,
               fix: (fixer) => {
                 const [globalState] = node.params
                 const nextToken = sourceCode.getTokenAfter(globalState)
@@ -52,7 +53,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
                   nextToken?.range[1] ?? globalState.range[1] + 1,
                 ])
               },
-              messageId: preferOneGenericInCreateForFeatureSelectorSuggest,
             },
           ],
         })
