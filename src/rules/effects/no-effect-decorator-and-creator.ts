@@ -57,7 +57,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         const hasDecoratorArgument = Boolean(
           getDecoratorArguments(decorator)[0],
         )
-
+        const fix: TSESLint.ReportFixFunction = (fixer) =>
+          getFixes(node, sourceCode, fixer, decorator)
         context.report({
           node: node.key,
           messageId: noEffectDecoratorAndCreator,
@@ -71,14 +72,11 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
                 suggest: [
                   {
                     messageId: noEffectDecoratorAndCreatorSuggest,
-                    fix: (fixer) =>
-                      getFixes(node, sourceCode, fixer, decorator),
+                    fix,
                   },
                 ],
               }
-            : {
-                fix: (fixer) => getFixes(node, sourceCode, fixer, decorator),
-              }),
+            : { fix }),
         })
       },
     }
