@@ -3,9 +3,9 @@ import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import { docsUrl, typedStore } from '../../utils'
 
-export const messageId = 'noTypedStore'
+export const noTypedStore = 'noTypedStore'
 export const noTypedStoreSuggest = 'noTypedStoreSuggest'
-export type MessageIds = typeof messageId | typeof noTypedStoreSuggest
+export type MessageIds = typeof noTypedStore | typeof noTypedStoreSuggest
 
 type Options = []
 
@@ -19,10 +19,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       recommended: 'warn',
       suggestion: true,
     },
-    fixable: 'code',
     schema: [],
     messages: {
-      [messageId]:
+      [noTypedStore]:
         'Store should not be typed, use `Store` (without generic) instead.',
       [noTypedStoreSuggest]: 'Remove generic from `Store`.',
     },
@@ -37,7 +36,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       }) {
         context.report({
           node: typeParameters,
-          messageId,
+          messageId: noTypedStore,
           suggest: [
             {
               messageId: noTypedStoreSuggest,

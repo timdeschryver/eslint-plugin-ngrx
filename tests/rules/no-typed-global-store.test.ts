@@ -1,7 +1,7 @@
 import { stripIndent } from 'common-tags'
 import path from 'path'
 import rule, {
-  messageId,
+  noTypedStore,
   noTypedStoreSuggest,
 } from '../../src/rules/store/no-typed-global-store'
 import { ruleTester } from '../utils'
@@ -24,7 +24,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           column: 27,
           endColumn: 41,
           line: 2,
-          messageId,
+          messageId: noTypedStore,
           suggestions: [
             {
               messageId: noTypedStoreSuggest,
@@ -47,7 +47,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           column: 60,
           endColumn: 76,
           line: 2,
-          messageId,
+          messageId: noTypedStore,
           suggestions: [
             {
               messageId: noTypedStoreSuggest,
@@ -70,7 +70,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           column: 35,
           endColumn: 40,
           line: 2,
-          messageId,
+          messageId: noTypedStore,
           suggestions: [
             {
               messageId: noTypedStoreSuggest,
@@ -93,7 +93,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           column: 27,
           endColumn: 31,
           line: 2,
-          messageId,
+          messageId: noTypedStore,
           suggestions: [
             {
               messageId: noTypedStoreSuggest,
@@ -116,7 +116,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           column: 27,
           endColumn: 35,
           line: 2,
-          messageId,
+          messageId: noTypedStore,
           suggestions: [
             {
               messageId: noTypedStoreSuggest,

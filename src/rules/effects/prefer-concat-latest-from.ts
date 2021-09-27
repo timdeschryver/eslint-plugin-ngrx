@@ -25,7 +25,6 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       recommended: 'warn',
       suggestion: true,
     },
-    fixable: 'code',
     schema: [],
     messages: {
       [messageId]: 'Use `concatLatestFrom` instead of `withLatestFrom`.',
