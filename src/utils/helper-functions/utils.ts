@@ -279,7 +279,7 @@ export function getDecorator(
   )
 }
 
-export function getRawText(node: TSESTree.Node): string {
+export function getRawText(node: TSESTree.Node): string | null {
   if (isIdentifier(node)) {
     return node.name
   }
@@ -300,7 +300,7 @@ export function getRawText(node: TSESTree.Node): string {
     return `\`${node.quasis[0].value.raw}\``
   }
 
-  throw Error(`Unexpected \`node.type\` provided: ${node.type}`)
+  return null
 }
 
 export function capitalize<T extends string>(text: T): Capitalize<T> {
