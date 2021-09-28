@@ -26,8 +26,5 @@ export const addUser = createAction(
   props<{ id: number; fullName: string }>(),
 )
 // or
-export const addUser = createAction(
-  '[Users] Add User',
-  props<{ user: User }>(),
-)
+export const addUser = createAction('[Users] Add User', props<{ user: User }>())
 ```
