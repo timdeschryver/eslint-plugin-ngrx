@@ -11,7 +11,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
     `const ok1 = createAction('ok1', props<Readonly<{ description: string }>>())`,
     `const ok2 = createAction('ok2', props<Readonly<HttpErrorResponse & { description: string }>>())`,
     `const ok3 = createAction('ok3')`,
-    `const saveUserSuccess = createAction('[API/User] Save user success', (user: User<number>) => ({
+    `const ok4 = createAction('[Users] Add User', props<{ user: User }>())`,
+    `const ok5 = createAction('[API/User] Save user success', (user: User<number>) => ({
       kind: 'SAVE_SUCCESS',
       message,
       user,
