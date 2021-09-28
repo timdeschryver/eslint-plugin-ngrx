@@ -15,14 +15,16 @@ export interface User {
   id: number
   fullName: string
 }
-export const addName = createAction('[Users] Add User', props<User>())
+export const addUser = createAction('[Users] Add User', props<User>())
 ```
 
 Examples of **correct** code for this rule:
 
 ```ts
-export const addName = createAction(
+export const addUser = createAction(
   '[Users] Add User',
   props<{ id: number; fullName: string }>(),
 )
+// or
+export const addUser = createAction('[Users] Add User', props<{ user: User }>())
 ```
