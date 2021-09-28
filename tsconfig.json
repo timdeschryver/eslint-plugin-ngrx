@@ -12,6 +12,5 @@
     "skipLibCheck": true,
     "sourceMap": false
   },
-  "include": ["./src/**/*.ts"],
-  "exclude": ["./internal-rules/out/*.js"]
+  "include": ["./src/**/*.ts"]
 }
