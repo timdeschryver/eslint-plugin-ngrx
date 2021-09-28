@@ -27,7 +27,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
   invalid: [
     fromFixture(
       stripIndents`
-        import { Effects } from '@ngrx/effects'
+        import { Effect } from '@ngrx/effects'
         @Injectable()
         export class FixtureEffects {
           @Effect()
@@ -44,7 +44,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }`,
       {
         output: stripIndents`
-          import { Effects } from '@ngrx/effects'
+          import { Effect } from '@ngrx/effects'
           @Injectable()
           export class FixtureEffects {
 
