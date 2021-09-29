@@ -51,7 +51,7 @@ export const actionDispatch = (storeName: string) =>
 export const dispatchInEffects = (storeName: string) =>
   `${createEffectExpression} ${actionDispatch(
     storeName,
-  )} > MemberExpression` as const
+  )} > MemberExpression:has(Identifier[name='${storeName}'])` as const
 
 export const storeExpression = (storeName: string) =>
   `CallExpression:matches([callee.object.name='${storeName}'], [callee.object.object.type='ThisExpression'][callee.object.property.name='${storeName}'])` as const
