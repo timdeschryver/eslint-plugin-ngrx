@@ -36,7 +36,7 @@ jobs:
         run: npm run build
 
       - name: 🧪 Test
-        run: npm run test
+        run: npm run test:cov
 
       - name: 🚀 Release
         if: github.repository == 'timdeschryver/eslint-plugin-ngrx' && github.ref == 'refs/heads/main'
