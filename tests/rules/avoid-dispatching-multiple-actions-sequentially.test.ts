@@ -13,6 +13,15 @@ ruleTester().run(path.parse(__filename).name, rule, {
 
       @Component()
       export class FixtureComponent {
+        ngOnInit() {
+          this.dispatch(UserActions.add())
+        }
+      }`,
+    `
+      import { Store } from '@ngrx/store'
+
+      @Component()
+      export class FixtureComponent {
         constructor(private store: Store){}
         ping() {
           this.store.dispatch({ type: 'PING' })

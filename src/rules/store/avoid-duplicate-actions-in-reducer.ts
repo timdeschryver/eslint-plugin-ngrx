@@ -11,6 +11,7 @@ export type MessageIds =
   | typeof avoidDuplicateActionsInReducerSuggest
 
 type Options = []
+type Action = TSESTree.Identifier & { parent: TSESTree.CallExpression }
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: path.parse(__filename).name,
@@ -32,12 +33,14 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     const sourceCode = context.getSourceCode()
-    const collectedActions = new Map<string, TSESTree.Identifier[]>()
+    const collectedActions = new Map<string, Action[]>()
 
     return {
       [`${createReducer} > CallExpression[callee.name='on'][arguments.0.type='Identifier']`]({
         arguments: { 0: action },
-      }: TSESTree.CallExpression & { arguments: TSESTree.Identifier[] }) {
+      }: TSESTree.CallExpression & {
+        arguments: Action[]
+      }) {
         const actions = collectedActions.get(action.name) ?? []
         collectedActions.set(action.name, [...actions, action])
       },
@@ -58,9 +61,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
                 {
                   messageId: avoidDuplicateActionsInReducerSuggest,
                   fix: (fixer) =>
-                    node.parent
-                      ? getNodeToCommaRemoveFix(sourceCode, fixer, node.parent)
-                      : [],
+                    getNodeToCommaRemoveFix(sourceCode, fixer, node.parent),
                 },
               ],
             })
