@@ -15,27 +15,28 @@ ruleTester().run(path.parse(__filename).name, rule, {
     export class FixtureEffects {
       effectOK = createEffect(() => this.actions.pipe(
         ofType('PING'),
-        map(() => ({ type: 'PONG' }))
+        tap(() => ({ type: 'PONG' }))
       ))
 
       constructor(private actions: Actions, private store: Store) {}
     }`,
     `
+    import { Store } from '@ngrx/store'
     @Injectable()
     export class FixtureEffects {
       effectOK1 = createEffect(
         () =>
           this.actions.pipe(
-            ofType(customerActions.delete),
-            map(() => {
+            ofType(customerActions.remove),
+            tap(() => {
               customObject.dispatch({ somethingElse: true })
-              return { type: 'PONG' }
+              return customerActions.removeSuccess()
             }),
           ),
         { dispatch: false },
       )
 
-      constructor(private actions: Actions, private store: Store) {}
+      constructor(private actions: Actions, private store$: Store) {}
     }`,
   ],
   invalid: [
@@ -44,11 +45,16 @@ ruleTester().run(path.parse(__filename).name, rule, {
       import { Store } from '@ngrx/store'
       @Injectable()
       export class FixtureEffects {
-        effectNOK = createEffect(() => this.actions.pipe(
-          ofType(someAction),
-          tap(() => this.store.dispatch(awesomeAction()))
-                    ~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
-        ), { dispatch: false })
+        effectNOK = createEffect(
+          () => {
+            return this.actions.pipe(
+              ofType(someAction),
+              tap(() => this.store.dispatch(awesomeAction())),
+                        ~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
+            )
+          },
+          { dispatch: false },
+        )
 
         constructor(private actions: Actions, private store: Store) {}
       }`,
@@ -60,10 +66,15 @@ ruleTester().run(path.parse(__filename).name, rule, {
             import { Store } from '@ngrx/store'
             @Injectable()
             export class FixtureEffects {
-              effectNOK = createEffect(() => this.actions.pipe(
-                ofType(someAction),
-                tap(() => (awesomeAction()))
-              ), { dispatch: false })
+              effectNOK = createEffect(
+                () => {
+                  return this.actions.pipe(
+                    ofType(someAction),
+                    tap(() => (awesomeAction())),
+                  )
+                },
+                { dispatch: false },
+              )
 
               constructor(private actions: Actions, private store: Store) {}
             }`,
@@ -78,8 +89,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
       export class FixtureEffects {
         effectNOK1 = createEffect(() => this.actions.pipe(
           ofType(userActions.add),
-          map(() => {
-            return this.store.dispatch({ type: 'PONG' });
+          tap(() => {
+            return this.store.dispatch(userActions.addSuccess)
                    ~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
           })
         ))
@@ -87,19 +98,24 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private actions: Actions, private store: Store) {}
       }`,
       {
-        output: stripIndent`
-        import { Store } from '@ngrx/store'
-        @Injectable()
-        export class FixtureEffects {
-          effectNOK1 = createEffect(() => this.actions.pipe(
-            ofType(userActions.add),
-            map(() => {
-              return ({ type: 'PONG' });
-            })
-          ))
+        suggestions: [
+          {
+            messageId: noDispatchInEffectsSuggest,
+            output: stripIndent`
+            import { Store } from '@ngrx/store'
+            @Injectable()
+            export class FixtureEffects {
+              effectNOK1 = createEffect(() => this.actions.pipe(
+                ofType(userActions.add),
+                tap(() => {
+                  return (userActions.addSuccess)
+                })
+              ))
 
-          constructor(private actions: Actions, private store: Store) {}
-        }`,
+              constructor(private actions: Actions, private store: Store) {}
+            }`,
+          },
+        ],
       },
     ),
     fromFixture(
@@ -110,35 +126,38 @@ ruleTester().run(path.parse(__filename).name, rule, {
         effectNOK2 = createEffect(
           () =>
             this.actions.pipe(
-              ofType('PING'),
-              map(() => {
-                return this.customName.dispatch({ /* you shouldn't do this */ type: 'PONG' })
+              ofType(actions.ping),
+              tap(() => {
+                return this.customName.dispatch(/* you shouldn't do this */ actions.pong())
                        ~~~~~~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
               }),
             ),
-          { 'dispatch': true },
         )
 
         constructor(private actions: Actions, private customName: Store) {}
       }`,
       {
-        output: stripIndent`
-        import { Store } from '@ngrx/store'
-        @Injectable()
-        export class FixtureEffects {
-          effectNOK2 = createEffect(
-            () =>
-              this.actions.pipe(
-                ofType('PING'),
-                map(() => {
-                  return ({ /* you shouldn't do this */ type: 'PONG' })
-                }),
-              ),
-            { 'dispatch': true },
-          )
+        suggestions: [
+          {
+            messageId: noDispatchInEffectsSuggest,
+            output: stripIndent`
+            import { Store } from '@ngrx/store'
+            @Injectable()
+            export class FixtureEffects {
+              effectNOK2 = createEffect(
+                () =>
+                  this.actions.pipe(
+                    ofType(actions.ping),
+                    tap(() => {
+                      return (/* you shouldn't do this */ actions.pong())
+                    }),
+                  ),
+              )
 
-          constructor(private actions: Actions, private customName: Store) {}
-        }`,
+              constructor(private actions: Actions, private customName: Store) {}
+            }`,
+          },
+        ],
       },
     ),
     fromFixture(
@@ -149,10 +168,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
         effectNOK3 = createEffect(
           () =>
             this.actions.pipe(
-              ofType('PING'),
-              tap(() => {
-                this.store$.dispatch(someAction());// you shouldn't do this
-                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
+              ofType(bookActions.load),
+              map(() => {
+                this.store$.dispatch(bookActions.loadSuccess());// you shouldn't do this
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
                 return somethingElse()
               }),
             ),
@@ -162,7 +181,6 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private actions: Actions, private readonly store$: Store) {}
       }`,
       {
-        // Note that it's correct to suggest, instead of fix, here, because although it doesn't have dispatch: false explicitly, it may have implicitly through options
         suggestions: [
           {
             messageId: noDispatchInEffectsSuggest,
@@ -173,8 +191,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
               effectNOK3 = createEffect(
                 () =>
                   this.actions.pipe(
-                    ofType('PING'),
-                    tap(() => {
+                    ofType(bookActions.load),
+                    map(() => {
                       ;// you shouldn't do this
                       return somethingElse()
                     }),
