@@ -46,6 +46,27 @@ class Effect {
 }
 ```
 
+## Rule Config
+
+To configure this rule you can use the `strict` option.
+The default is `true`.
+
+To always report the uses of `withLatestFrom` use:
+
+```json
+"rules": {
+  "ngrx/prefer-concat-latest-from": ["warn", { "strict": true }]
+}
+```
+
+To report only needed uses of `withLatestFrom` use:
+
+```json
+"rules": {
+  "ngrx/prefer-concat-latest-from": ["warn", { "strict": false }]
+}
+```
+
 ## Further reading
 
 - [`concatLatestFrom` API](https://ngrx.io/api/effects/concatLatestFrom)
