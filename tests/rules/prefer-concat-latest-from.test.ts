@@ -9,86 +9,69 @@ import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
-    `
-    import { of } from 'rxjs';
-    class Test {
-      effectOK = createEffect(
-        () =>
-          this.actions$.pipe(
-            ofType(CollectionApiActions.addBookSuccess),
-            concatLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
-            switchMap(([action, bookCollection]) => {
-              return of({ type: 'noop' })
-            })
-          ),
-      );
-    }`,
     {
       code: `
-      import { of } from 'rxjs';
+      import { of, withLatestFrom } from 'rxjs'
       class Test {
-        effectOK1 = createEffect(() => {
-          return this.actions.pipe(
-            ofType(ProductDetailPage.loaded),
-            concatMap((action) =>
-              of(action).pipe(withLatestFrom(this.store.select(selectProducts))),
+        effectOK = createEffect(
+          () =>
+            this.actions$.pipe(
+              ofType(CollectionApiActions.addBookSuccess),
+              concatLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
+              switchMap(([, bookCollection]) => {
+                return of({ type: 'noop' })
+              })
             ),
-            mergeMapTo(of({ type: 'noop' }))
-          )
-        })
+        );
       }`,
-      options: [{ strict: false }],
+      options: [{ strict: true }],
     },
+    `
+    import { of, withLatestFrom } from 'rxjs'
+    class Test {
+      effectOK1 = createEffect(() => {
+        return this.actions.pipe(
+          ofType(ProductDetailPage.loaded),
+          concatMap((action) =>
+            of(action).pipe(withLatestFrom(this.store.select(selectProducts))),
+          ),
+          mergeMapTo(of({ type: 'noop' })),
+        )
+      })
+    }`,
+    `
+    import { of, withLatestFrom } from 'rxjs'
+    class Test {
+      effectOK2 = createEffect(() => {
+        return this.actions.pipe(
+          ofType(ProductDetailPage.loaded),
+          concatMap((action) =>
+            of(action).pipe(
+              withLatestFrom(this.store.select$(something), (one, other) => somethingElse())
+            ),
+          ),
+          mergeMap(([action, products]) => {
+            return of(products)
+          }),
+        )
+      })
+    }`,
   ],
   invalid: [
     fromFixture(
       stripIndent`
       import { of, withLatestFrom } from 'rxjs'
       class Test {
-        effectNOK = createEffect(() => {
-          return this.actions.pipe(
-            ofType(ProductDetailPage.loaded),
-            concatMap((action) =>
-              of(action).pipe(withLatestFrom(this.store.select(selectProducts))),
-                              ~~~~~~~~~~~~~~ [${messageId}]
-            ),
-            mergeMap(([action, products]) => {
-              return of(products)
-            }),
-          )
-        })
-      }`,
-      {
-        output: stripIndent`
-        import { concatLatestFrom } from '@ngrx/effects';
-        import { of, withLatestFrom } from 'rxjs'
-        class Test {
-          effectNOK = createEffect(() => {
-            return this.actions.pipe(
-              ofType(ProductDetailPage.loaded),
-              concatMap((action) =>
-                of(action).pipe(concatLatestFrom(() => this.store.select(selectProducts))),
-              ),
-              mergeMap(([action, products]) => {
-                return of(products)
-              }),
-            )
-          })
-        }`,
-      },
-    ),
-    fromFixture(
-      stripIndent`
-      import { of, withLatestFrom } from 'rxjs'
-      class Test {
-        effectNOK1 = createEffect(() =>
+        effectNOK = createEffect(() =>
           this.actions$.pipe(
             ofType(CollectionApiActions.addBookSuccess),
             withLatestFrom((action) =>
             ~~~~~~~~~~~~~~ [${messageId}]
               this.store.select(fromBooks.selectCollectionBookIds),
             ),
-            switchMap(() => of({ type: 'noop' })),
+            switchMap(([action, bookCollection]) => {
+              return of({ type: 'noop' })
+            }),
           ),
         )
       }`,
@@ -97,15 +80,50 @@ ruleTester().run(path.parse(__filename).name, rule, {
         import { concatLatestFrom } from '@ngrx/effects';
         import { of, withLatestFrom } from 'rxjs'
         class Test {
-          effectNOK1 = createEffect(() =>
+          effectNOK = createEffect(() =>
             this.actions$.pipe(
               ofType(CollectionApiActions.addBookSuccess),
               concatLatestFrom((action) =>
                 this.store.select(fromBooks.selectCollectionBookIds),
               ),
-              switchMap(() => of({ type: 'noop' })),
+              switchMap(([action, bookCollection]) => {
+                return of({ type: 'noop' })
+              }),
             ),
           )
+        }`,
+      },
+    ),
+    fromFixture(
+      stripIndent`
+      import { of, withLatestFrom } from 'rxjs'
+      class Test {
+        effectNOK1 = createEffect(() => {
+          return this.actions.pipe(
+            ofType(ProductDetailPage.loaded),
+            concatMap((action) =>
+              of(action).pipe(withLatestFrom(this.store.select(selectProducts))),
+                              ~~~~~~~~~~~~~~ [${messageId}]
+            ),
+            mergeMapTo(of({ type: 'noop' })),
+          )
+        })
+      }`,
+      {
+        options: [{ strict: true }],
+        output: stripIndent`
+        import { concatLatestFrom } from '@ngrx/effects';
+        import { of, withLatestFrom } from 'rxjs'
+        class Test {
+          effectNOK1 = createEffect(() => {
+            return this.actions.pipe(
+              ofType(ProductDetailPage.loaded),
+              concatMap((action) =>
+                of(action).pipe(concatLatestFrom(() => this.store.select(selectProducts))),
+              ),
+              mergeMapTo(of({ type: 'noop' })),
+            )
+          })
         }`,
       },
     ),
@@ -161,7 +179,7 @@ ruleTester({ ngrxModule: NGRX_MODULE_PATHS.effects, version: '^11.0.0' }).run(
       `
       import { of } from 'rxjs';
       class Test {
-        effectOK1 = createEffect(
+        effectOK = createEffect(
           () =>
             this.actions$.pipe(
               ofType(CollectionApiActions.addBookSuccess),

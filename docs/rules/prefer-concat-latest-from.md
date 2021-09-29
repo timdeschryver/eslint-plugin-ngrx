@@ -49,7 +49,7 @@ class Effect {
 ## Rule Config
 
 To configure this rule you can use the `strict` option.
-The default is `true`.
+The default is `false`.
 
 To always report the uses of `withLatestFrom` use:
 

@@ -12,7 +12,7 @@ export const messageId = 'preferConcatLatestFrom'
 export type MessageIds = typeof messageId
 
 type Options = [{ readonly strict: boolean }]
-const defaultOptions: Options[number] = { strict: true }
+const defaultOptions: Options[number] = { strict: false }
 
 type WithLatestFromIdentifier = TSESTree.Identifier & {
   parent: TSESTree.CallExpression
