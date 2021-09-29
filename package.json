@@ -39,7 +39,6 @@
     "test:config": "npm run g:config && npm run test",
     "prebuild": "rimraf ./dist",
     "build": "tsc",
-    "build:internal-rules": "tsc --project internal-rules/tsconfig.json",
     "postbuild": "npm run copy:schematics",
     "copy:schematics": "cpy ./schematics/**/*.json ../dist --cwd=src --parents",
     "lint:all": "eslint ./scripts/**/*.ts ./src/**/*.ts ./tests/**/*.ts --fix",
