@@ -131,6 +131,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     ),
     fromFixture(
       stripIndent`
+        import { Action } from '@ngrx/store'
         @Injectable()
         export class Effects {
           effectNOK6$ = createEffect(() =>
@@ -144,13 +145,15 @@ ruleTester().run(path.parse(__filename).name, rule, {
     ),
     fromFixture(
       stripIndent`
+        import { Action } from '@ngrx/store'
+        import { of } from 'rxjs'
         @Injectable()
         export class Effects {
           effectNOK7$ = createEffect(() => ({ debounce = 300 } = {}) =>
             this.actions$.pipe(switchMap(() => {
-              const actions: Action[] = [];
-              return actions.length > 0 ? actions : null;
-                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  [${messageId}]
+              let actions: Action[] | null;
+              return actions ?? of(foo());
+                     ~~~~~~~~~~~~~~~~~~~~  [${messageId}]
             }))
           )
         }`,
