@@ -1,13 +1,25 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
+import {
+  AST_NODE_TYPES,
+  ESLintUtils,
+} from '@typescript-eslint/experimental-utils'
 import { getTypeServices } from 'eslint-etc'
 import path from 'path'
-import { docsUrl, effectsImplicitReturn, effectsReturn } from '../../utils'
+import {
+  createEffectExpression,
+  docsUrl,
+  mapLikeOperatorsExplicitReturn,
+  mapLikeOperatorsImplicitReturn,
+} from '../../utils'
 
 export const messageId = 'noMultipleActionsInEffects'
 export type MessageIds = typeof messageId
 
 type Options = []
+type EffectsMapLikeOperatorsReturn =
+  | TSESTree.ArrowFunctionExpression
+  | TSESTree.CallExpression
+  | TSESTree.ReturnStatement
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: path.parse(__filename).name,
@@ -27,24 +39,34 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [effectsImplicitReturn](node: TSESTree.ArrayExpression) {
+      [`${createEffectExpression} :matches(${mapLikeOperatorsImplicitReturn}, ${mapLikeOperatorsExplicitReturn})`](
+        node: EffectsMapLikeOperatorsReturn,
+      ) {
+        const nodeToReport = getNodeToReport(node)
+
+        if (
+          !nodeToReport ||
+          !getTypeServices(context).couldBeType(nodeToReport, 'Array')
+        ) {
+          return
+        }
+
         context.report({
-          node,
+          node: nodeToReport,
           messageId,
         })
-      },
-      [effectsReturn]({ argument }: TSESTree.ReturnStatement) {
-        if (!argument) return
-
-        const { couldBeType } = getTypeServices(context)
-
-        if (couldBeType(argument, 'Array')) {
-          context.report({
-            node: argument,
-            messageId,
-          })
-        }
       },
     }
   },
 })
+
+function getNodeToReport(node: EffectsMapLikeOperatorsReturn) {
+  switch (node.type) {
+    case AST_NODE_TYPES.ArrowFunctionExpression:
+      return node.body
+    case AST_NODE_TYPES.CallExpression:
+      return node.arguments[0]
+    default:
+      return node.argument
+  }
+}
