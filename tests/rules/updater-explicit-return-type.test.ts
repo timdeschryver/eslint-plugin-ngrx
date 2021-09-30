@@ -31,7 +31,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
             super({movies: []});
           }
 
-          readonly addMovie = this.store.updater((state, movie): MoviesState => ({  movies: [...state.movies, movie] }));
+          readonly addMovie = this.store.updater((state, movie): MoviesState => ({ movies: [...state.movies, movie] }));
         }
       `,
     },
@@ -44,7 +44,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
             super({movies: []});
           }
 
-          readonly addMovie = this.store.updater<Movie>((state, movie): MoviesState => ({  movies: [...state.movies, movie] }));
+          readonly addMovie = this.store.updater<Movie>((state, movie): MoviesState => ({ movies: [...state.movies, movie] }));
         }
       `,
     },
@@ -89,8 +89,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
             super({movies: []});
           }
 
-          readonly addMovie = this.updater((state, movie) => ({  movies: [...state.movies, movie] }));
-                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
+          readonly addMovie = this.updater((state, movie) => ({ movies: [...state.movies, movie] }));
+                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
         }
       `,
     ),
@@ -103,8 +103,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
             super({movies: []});
           }
 
-          readonly addMovie = this.updater<Movie>((state, movie) => ({  movies: [...state.movies, movie] }));
-                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
+          readonly addMovie = this.updater<Movie>((state, movie) => ({ movies: [...state.movies, movie] }));
+                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
         }
       `,
     ),
@@ -114,8 +114,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
 
         export class MoviesStore {
           constructor(private store: ComponentStore) {}
-          readonly addMovie = this.store.updater((state, movie) => ({  movies: [...state.movies, movie] }));
-                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
+          readonly addMovie = this.store.updater((state, movie) => ({ movies: [...state.movies, movie] }));
+                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
         }
       `,
     ),
@@ -125,8 +125,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
 
         export class MoviesStore {
           constructor(private store: ComponentStore) {}
-          readonly addMovie = this.store.updater<Movie>((state, movie) => ({  movies: [...state.movies, movie] }));
-                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
+          readonly addMovie = this.store.updater<Movie>((state, movie) => ({ movies: [...state.movies, movie] }));
+                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
         }
       `,
     ),

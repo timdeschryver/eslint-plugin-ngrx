@@ -45,14 +45,6 @@ export const effectsInNgModuleImports =
 export const effectsInNgModuleProviders =
   `${ngModuleProviders} Identifier` as const
 
-export const actionDispatch = (storeName: string) =>
-  `CallExpression:matches([callee.object.name='${storeName}'][callee.property.name='dispatch'], [callee.object.object.type='ThisExpression'][callee.object.property.name='${storeName}'][callee.property.name='dispatch'])` as const
-
-export const dispatchInEffects = (storeName: string) =>
-  `${createEffectExpression} ${actionDispatch(
-    storeName,
-  )} > MemberExpression:has(Identifier[name='${storeName}'])` as const
-
 export const storeExpression = (storeName: string) =>
   `CallExpression:matches([callee.object.name='${storeName}'], [callee.object.object.type='ThisExpression'][callee.object.property.name='${storeName}'])` as const
 
@@ -67,6 +59,14 @@ export const pipeableSelect = (storeName: string) =>
 
 export const storeSelect = (storeName: string) =>
   `${storeExpression(storeName)}[callee.property.name='select']` as const
+
+export const storeDispatch = (storeName: string) =>
+  `${storeExpression(storeName)}[callee.property.name='dispatch']` as const
+
+export const dispatchInEffects = (storeName: string) =>
+  `${createEffectExpression} ${storeDispatch(
+    storeName,
+  )} > MemberExpression:has(Identifier[name='${storeName}'])` as const
 
 export const createReducer = `CallExpression[callee.name='createReducer']`
 

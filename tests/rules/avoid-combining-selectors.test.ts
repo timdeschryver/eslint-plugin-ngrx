@@ -12,6 +12,12 @@ ruleTester().run(path.parse(__filename).name, rule, {
       import { Store } from '@ngrx/store'
       @Component()
       export class FixtureComponent {
+        readonly test$ = somethingOutside();
+      }`,
+    `
+      import { Store } from '@ngrx/store'
+      @Component()
+      export class FixtureComponent {
         vm$ = this.store.select(selectItems)
         constructor(private store: Store){}
       }
