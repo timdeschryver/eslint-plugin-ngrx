@@ -32,31 +32,21 @@ ruleTester().run(path.parse(__filename).name, rule, {
           this.actions$.pipe(mapTo(action()))
         )
       }`,
+    // This specific test ensures that we only care about built-in `rxjs` operators.
     `
       @Injectable()
       export class Effects {
         effectOK3$ = createEffect(() =>
-          this.actions$.pipe(switchMapTop([foo()]))
+          this.actions$.pipe(
+            aconcatMapTo([foo()]),
+            switchMapTop([bar()]),
+          )
         )
       }`,
     `
       @Injectable()
       export class Effects {
         effectOK4$ = createEffect(() =>
-          this.actions$.pipe(aconcatMapTo([bar()]))
-        )
-      }`,
-    `
-      @Injectable()
-      export class Effects {
-        effectOK5$ = createEffect(() =>
-          this.actions$.pipe(mergeMapTo(foo()))
-        )
-      }`,
-    `
-      @Injectable()
-      export class Effects {
-        effectOK6$ = createEffect(() =>
           this.actions$.pipe(
             exhaustMap(() => {
               return of({}).pipe(
@@ -67,10 +57,11 @@ ruleTester().run(path.parse(__filename).name, rule, {
           )
         )
       }`,
+    // For more context, check this out: https://github.com/timdeschryver/eslint-plugin-ngrx/pull/240#discussion_r719036630.
     `
       @Injectable()
       export class Effects {
-        effectOK7$ = createEffect(() =>
+        effectOK5$ = createEffect(() =>
           this.actions$.pipe(switchMap(() => {
             const actions: Action[] = [];
             return actions.length > 0 ? actions : of(foo());
