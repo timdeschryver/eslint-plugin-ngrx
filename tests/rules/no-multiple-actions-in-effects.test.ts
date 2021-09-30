@@ -132,7 +132,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     ),
     fromFixture(
       stripIndent`
-        const actions = [foo(), bar()]
+        const actions = () => [foo(), bar()]
         @Injectable()
           export class Effects {
           effectNOK5$ = createEffect(() =>
