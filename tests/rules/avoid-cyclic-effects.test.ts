@@ -122,79 +122,34 @@ ruleTester().run(path.parse(__filename).name, rule, {
     // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
     `
       import { Injectable } from '@angular/core';
-      import { Actions, createEffect, concatLatestFrom, ofType } from '@ngrx/effects';
+      import { Actions, createEffect, ofType } from '@ngrx/effects';
       import { Action } from '@ngrx/store';
       import { of } from 'rxjs';
-      import { catchError, map, switchMap } from 'rxjs/operators';
+      import { switchMap } from 'rxjs/operators';
 
       enum OrderEntityActionTypes {
         postPortInData = '[Order Entity] Post PortIn Data',
         postPortInDataSuccess = '[Order Entity] Post PortIn Data Success',
-        postPartnerData = '[Order Entity] Post provider Data',
       }
 
-      type OrderContext = { id: string }
-      type OrderEntity = { id: string }
-      type PartnerData = { name: string }
-
       class PostPortInData implements Action {
-        public readonly type: OrderEntityActionTypes =
-          OrderEntityActionTypes.postPortInData
-
-        constructor(public payload: OrderContext) {}
+        readonly type = OrderEntityActionTypes.postPortInData
       }
 
       class PostPortInDataSuccess implements Action {
-        public readonly type: OrderEntityActionTypes =
-          OrderEntityActionTypes.postPortInDataSuccess
-      }
-
-      class PostPartnerData implements Action {
-        public readonly type: OrderEntityActionTypes =
-          OrderEntityActionTypes.postPartnerData
-
-        constructor(public payload: PartnerData) {}
-      }
-
-      type OrderEntityActions =
-        | PostPortInData
-        | PostPortInDataSuccess
-        | PostPartnerData
-
-      @Injectable()
-      class OrderEntityService {
-        queueContextCall(orderContext: OrderContext, orderEntity: OrderEntity) {
-          return of()
-        }
-      }
-
-      @Injectable()
-      class AppStoreFacadeService {
-        readonly order = { orderEntity$: of({}) }
+        readonly type = OrderEntityActionTypes.postPortInDataSuccess
       }
 
       @Injectable()
       class Effect {
-        public postPortInData$ = createEffect(() =>
+        readonly postPortInData$ = createEffect(() =>
           this.actions$.pipe(
             ofType<PostPortInData>(OrderEntityActionTypes.postPortInData),
-            map((action) => action.payload),
-            concatLatestFrom(() => this.appStoreFacadeService.order.orderEntity$),
-            switchMap(([orderContext, orderEntity]) =>
-              this.orderEntityService
-                .queueContextCall(orderContext, orderEntity)
-                .pipe(
-                  map(() => new PostPortInDataSuccess()),
-                ),
-            ),
+            switchMap(() => of(new PostPortInDataSuccess())),
           ),
         )
 
-        constructor(
-          private readonly actions$: Actions,
-          private readonly appStoreFacadeService: AppStoreFacadeService,
-          private readonly orderEntityService: OrderEntityService,
-        ) {}
+        constructor(private readonly actions$: Actions) {}
       }
     `,
   ],
@@ -281,81 +236,35 @@ ruleTester().run(path.parse(__filename).name, rule, {
     // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
     fromFixture(stripIndent`
       import { Injectable } from '@angular/core';
-      import { Actions, createEffect, concatLatestFrom, ofType } from '@ngrx/effects';
+      import { Actions, createEffect, ofType } from '@ngrx/effects';
       import { Action } from '@ngrx/store';
       import { of } from 'rxjs';
-      import { catchError, map, switchMap } from 'rxjs/operators';
+      import { switchMap } from 'rxjs/operators';
 
       enum OrderEntityActionTypes {
         postPortInData = '[Order Entity] Post PortIn Data',
         postPortInDataSuccess = '[Order Entity] Post PortIn Data Success',
-        postPartnerData = '[Order Entity] Post provider Data',
       }
 
-      type OrderContext = { id: string }
-      type OrderEntity = { id: string }
-      type PartnerData = { name: string }
-
       class PostPortInData implements Action {
-        public readonly type: OrderEntityActionTypes =
-          OrderEntityActionTypes.postPortInData
-
-        constructor(public payload: OrderContext) {}
+        readonly type = OrderEntityActionTypes.postPortInData
       }
 
       class PostPortInDataSuccess implements Action {
-        public readonly type: OrderEntityActionTypes =
-          OrderEntityActionTypes.postPortInDataSuccess
-      }
-
-      class PostPartnerData implements Action {
-        public readonly type: OrderEntityActionTypes =
-          OrderEntityActionTypes.postPartnerData
-
-        constructor(public payload: PartnerData) {}
-      }
-
-      type OrderEntityActions =
-        | PostPortInData
-        | PostPortInDataSuccess
-        | PostPartnerData
-
-      @Injectable()
-      class OrderEntityService {
-        queueContextCall(orderContext: OrderContext, orderEntity: OrderEntity) {
-          return of()
-        }
-      }
-
-      @Injectable()
-      class AppStoreFacadeService {
-        readonly order = { orderEntity$: of({}) }
+        readonly type = OrderEntityActionTypes.postPortInDataSuccess
       }
 
       @Injectable()
       class Effect {
-        public postPortInData$ = createEffect(() =>
+        readonly postPortInData$ = createEffect(() =>
           this.actions$.pipe(
           ~~~~~~~~~~~~~~~~~~ [${messageId}]
             ofType<PostPortInData>(OrderEntityActionTypes.postPortInData),
-            map((action) => action.payload),
-            concatLatestFrom(() => this.appStoreFacadeService.order.orderEntity$),
-            switchMap(([orderContext, orderEntity]) =>
-              this.orderEntityService
-                .queueContextCall(orderContext, orderEntity)
-                .pipe(
-                  map(() => new PostPortInDataSuccess()),
-                  catchError(() => of(new PostPortInData())),
-                ),
-            ),
+            switchMap(() => of(new PostPortInData())),
           ),
         )
 
-        constructor(
-          private readonly actions$: Actions,
-          private readonly appStoreFacadeService: AppStoreFacadeService,
-          private readonly orderEntityService: OrderEntityService,
-        ) {}
+        constructor(private readonly actions$: Actions) {}
       }
     `),
   ],
