@@ -78,15 +78,9 @@ export const storeActionReducerMap =
 
 export const actionReducerMap = `VariableDeclarator[id.typeAnnotation.typeAnnotation.typeName.name='ActionReducerMap'] > ObjectExpression`
 
-const mapOperators = '(concat|exhaust|flat|merge|switch)Map'
-const mapToOperators = '(concat|merge|switch)MapTo'
-const mapOperatorsExpression =
-  `${createEffectExpression} CallExpression[callee.name=/^${mapOperators}$/]` as const
-const mapToOperatorsExpression =
-  `${createEffectExpression} CallExpression[callee.name=/^${mapToOperators}$/]` as const
-
-export const effectsImplicitReturn =
-  `${mapOperatorsExpression} > ArrowFunctionExpression > ArrayExpression, ${mapToOperatorsExpression} ArrayExpression` as const
-
-export const effectsReturn =
-  `${mapOperatorsExpression} ReturnStatement` as const
+const mapLikeOperators = '/^(concat|exhaust|flat|merge|switch)Map$/'
+const mapLikeToOperators = '/^(concat|merge|switch)MapTo$/'
+export const mapLikeOperatorsExplicitReturn =
+  `CallExpression[callee.name=${mapLikeOperators}] ReturnStatement` as const
+export const mapLikeOperatorsImplicitReturn =
+  `:matches(CallExpression[callee.name=${mapLikeToOperators}], CallExpression[callee.name=${mapLikeOperators}] > ArrowFunctionExpression)` as const
