@@ -73,7 +73,6 @@
     "cpy-cli": "^3.1.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-internal-rules": "file:internal-rules",
     "eslint-plugin-prettier": "^3.4.0",
     "husky": "^7.0.1",
     "lint-staged": "^11.1.2",
