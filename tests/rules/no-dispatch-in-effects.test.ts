@@ -10,6 +10,12 @@ import { ruleTester } from '../utils'
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
+      import { Store } from '@ngrx/store'
+      @Component()
+      export class FixtureComponent {
+        readonly test$ = somethingOutside();
+      }`,
+    `
     import { Store } from '@ngrx/store'
     @Injectable()
     export class FixtureEffects {
