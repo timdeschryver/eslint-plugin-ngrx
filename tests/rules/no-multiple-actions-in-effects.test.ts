@@ -140,7 +140,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
               exhaustMap(() => {
                 return of({}).pipe(
                   switchMap(() => actions()),
-                                  ~~~~~~~  [${messageId}]
+                                  ~~~~~~~~~  [${messageId}]
                   catchError(() => of(bar()))
                 );
               })
