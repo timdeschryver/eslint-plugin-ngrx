@@ -28,7 +28,7 @@ const setup = `
 
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
-    fromFixture(stripIndent`
+    `
       ${setup}
       class Effect {
         foo$ = createEffect(() =>
@@ -42,8 +42,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           private actions$: Actions,
         ) {}
       }
-    `),
-    fromFixture(stripIndent`
+    `,
+    `
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -57,8 +57,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           private actions$: Actions,
         ) {}
       }
-    `),
-    fromFixture(stripIndent`
+    `,
+    `
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -72,8 +72,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           private actions$: Actions,
         ) {}
       }
-    `),
-    fromFixture(stripIndent`
+    `,
+    `
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -87,8 +87,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           private actions: Actions,
         ) {}
       }
-    `),
-    fromFixture(stripIndent`
+    `,
+    `
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -103,8 +103,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           private actions$: Actions,
         ) {}
       }
-    `),
-    fromFixture(stripIndent`
+    `,
+    `
       ${setup}
       class Effect {
         foo$ = createEffect(() =>
@@ -118,7 +118,85 @@ ruleTester().run(path.parse(__filename).name, rule, {
           private actions$: Actions,
         ) {}
       }
-    `),
+    `,
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
+    `
+      import { Injectable } from '@angular/core';
+      import { Actions, createEffect, concatLatestFrom, ofType } from '@ngrx/effects';
+      import { Action } from '@ngrx/store';
+      import { of } from 'rxjs';
+      import { catchError, map, switchMap } from 'rxjs/operators';
+
+      enum OrderEntityActionTypes {
+        postPortInData = '[Order Entity] Post PortIn Data',
+        postPortInDataSuccess = '[Order Entity] Post PortIn Data Success',
+        postPartnerData = '[Order Entity] Post provider Data',
+      }
+
+      type OrderContext = { id: string }
+      type OrderEntity = { id: string }
+      type PartnerData = { name: string }
+
+      class PostPortInData implements Action {
+        public readonly type: OrderEntityActionTypes =
+          OrderEntityActionTypes.postPortInData
+
+        constructor(public payload: OrderContext) {}
+      }
+
+      class PostPortInDataSuccess implements Action {
+        public readonly type: OrderEntityActionTypes =
+          OrderEntityActionTypes.postPortInDataSuccess
+      }
+
+      class PostPartnerData implements Action {
+        public readonly type: OrderEntityActionTypes =
+          OrderEntityActionTypes.postPartnerData
+
+        constructor(public payload: PartnerData) {}
+      }
+
+      type OrderEntityActions =
+        | PostPortInData
+        | PostPortInDataSuccess
+        | PostPartnerData
+
+      @Injectable()
+      class OrderEntityService {
+        queueContextCall(orderContext: OrderContext, orderEntity: OrderEntity) {
+          return of()
+        }
+      }
+
+      @Injectable()
+      class AppStoreFacadeService {
+        readonly order = { orderEntity$: of({}) }
+      }
+
+      @Injectable()
+      class Effect {
+        public postPortInData$ = createEffect(() =>
+          this.actions$.pipe(
+            ofType<PostPortInData>(OrderEntityActionTypes.postPortInData),
+            map((action) => action.payload),
+            concatLatestFrom(() => this.appStoreFacadeService.order.orderEntity$),
+            switchMap(([orderContext, orderEntity]) =>
+              this.orderEntityService
+                .queueContextCall(orderContext, orderEntity)
+                .pipe(
+                  map(() => new PostPortInDataSuccess()),
+                ),
+            ),
+          ),
+        )
+
+        constructor(
+          private readonly actions$: Actions,
+          private readonly appStoreFacadeService: AppStoreFacadeService,
+          private readonly orderEntityService: OrderEntityService,
+        ) {}
+      }
+    `,
   ],
   invalid: [
     fromFixture(stripIndent`
@@ -197,6 +275,86 @@ ruleTester().run(path.parse(__filename).name, rule, {
 
         constructor(
           private actions$: Actions,
+        ) {}
+      }
+    `),
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
+    fromFixture(stripIndent`
+      import { Injectable } from '@angular/core';
+      import { Actions, createEffect, concatLatestFrom, ofType } from '@ngrx/effects';
+      import { Action } from '@ngrx/store';
+      import { of } from 'rxjs';
+      import { catchError, map, switchMap } from 'rxjs/operators';
+
+      enum OrderEntityActionTypes {
+        postPortInData = '[Order Entity] Post PortIn Data',
+        postPortInDataSuccess = '[Order Entity] Post PortIn Data Success',
+        postPartnerData = '[Order Entity] Post provider Data',
+      }
+
+      type OrderContext = { id: string }
+      type OrderEntity = { id: string }
+      type PartnerData = { name: string }
+
+      class PostPortInData implements Action {
+        public readonly type: OrderEntityActionTypes =
+          OrderEntityActionTypes.postPortInData
+
+        constructor(public payload: OrderContext) {}
+      }
+
+      class PostPortInDataSuccess implements Action {
+        public readonly type: OrderEntityActionTypes =
+          OrderEntityActionTypes.postPortInDataSuccess
+      }
+
+      class PostPartnerData implements Action {
+        public readonly type: OrderEntityActionTypes =
+          OrderEntityActionTypes.postPartnerData
+
+        constructor(public payload: PartnerData) {}
+      }
+
+      type OrderEntityActions =
+        | PostPortInData
+        | PostPortInDataSuccess
+        | PostPartnerData
+
+      @Injectable()
+      class OrderEntityService {
+        queueContextCall(orderContext: OrderContext, orderEntity: OrderEntity) {
+          return of()
+        }
+      }
+
+      @Injectable()
+      class AppStoreFacadeService {
+        readonly order = { orderEntity$: of({}) }
+      }
+
+      @Injectable()
+      class Effect {
+        public postPortInData$ = createEffect(() =>
+          this.actions$.pipe(
+          ~~~~~~~~~~~~~~~~~~ [${messageId}]
+            ofType<PostPortInData>(OrderEntityActionTypes.postPortInData),
+            map((action) => action.payload),
+            concatLatestFrom(() => this.appStoreFacadeService.order.orderEntity$),
+            switchMap(([orderContext, orderEntity]) =>
+              this.orderEntityService
+                .queueContextCall(orderContext, orderEntity)
+                .pipe(
+                  map(() => new PostPortInDataSuccess()),
+                  catchError(() => of(new PostPortInData())),
+                ),
+            ),
+          ),
+        )
+
+        constructor(
+          private readonly actions$: Actions,
+          private readonly appStoreFacadeService: AppStoreFacadeService,
+          private readonly orderEntityService: OrderEntityService,
         ) {}
       }
     `),
