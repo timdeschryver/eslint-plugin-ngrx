@@ -139,7 +139,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
             this.actions$.pipe(
               exhaustMap(() => {
                 return of({}).pipe(
-                  switchMap(() => actions),
+                  switchMap(() => actions()),
                                   ~~~~~~~  [${messageId}]
                   catchError(() => of(bar()))
                 );
