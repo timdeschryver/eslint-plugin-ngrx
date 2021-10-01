@@ -6,7 +6,7 @@ import rule, {
 } from '../../src/rules/component-store/updater-explicit-return-type'
 import { ruleTester } from '../utils'
 
-const setup = stripIndent`
+const setup = `
   import type { SelectConfig } from '@ngrx/component-store'
   import { Projector } from '@ngrx/component-store'
   import { ComponentStore } from '@ngrx/component-store'
@@ -20,64 +20,47 @@ const setup = stripIndent`
     readonly movies: readonly Movie[];
   }
 `
+
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
-    {
-      code: stripIndent`
-        ${setup}
+    `${setup}
 
-        export class MoviesStore extends ComponentStore<MoviesState> {
-          constructor() {
-            super({movies: []});
-          }
+    export class MoviesStore extends ComponentStore<MoviesState> {
+      constructor() {
+        super({movies: []});
+      }
 
-          readonly addMovie = this.store.updater((state, movie): MoviesState => ({ movies: [...state.movies, movie] }));
-        }
-      `,
-    },
-    {
-      code: stripIndent`
-        ${setup}
+      readonly addMovie = this.updater((state, movie): MoviesState => ({ movies: [...state.movies, movie] }));
+    }`,
+    `${setup}
 
-        export class MoviesStore extends ComponentStore<MoviesState> {
-          constructor() {
-            super({movies: []});
-          }
+    export class MoviesStore extends ComponentStore<MoviesState> {
+      constructor() {
+        super({movies: []});
+      }
 
-          readonly addMovie = this.store.updater<Movie>((state, movie): MoviesState => ({ movies: [...state.movies, movie] }));
-        }
-      `,
-    },
-    {
-      code: stripIndent`
-        ${setup}
+      readonly addMovie = this.updater<Movie>((state, movie): MoviesState => ({ movies: [...state.movies, movie] }));
+    }`,
+    `${setup}
 
-        export class MoviesStore extends ComponentStore<MoviesState> {
-          constructor() {
-            super({movies: []});
-          }
+    export class MoviesStore {
+      constructor(private readonly store: ComponentStore<MoviesState>) {}
 
-          readonly addMovie = this.updater<Movie>((state, movie): MoviesState => ({
-            movies: [...state.movies, movie],
-          }));
-        }
-      `,
-    },
-    {
-      code: stripIndent`
-        ${setup}
+      readonly addMovie = this.store.updater<Movie>((state, movie): MoviesState => ({
+        movies: [...state.movies, movie],
+      }));
+    }`,
+    `${setup}
 
-        export class MoviesStore extends ComponentStore<MoviesState> {
-          constructor() {
-            super({movies: []});
-          }
+    export class MoviesStore {
+      readonly addMovie: Observable<unknown>
 
-          readonly addMovie = this.updater<Movie>((state, movie): MoviesState => ({
-            movies: [...state.movies, movie],
-          }));
-        }
-      `,
-    },
+      constructor(customStore: ComponentStore<MoviesState>) {
+        this.addMovie = customStore.updater<Movie>((state, movie): MoviesState => ({
+          movies: [...state.movies, movie],
+        }));
+      }
+    }`,
   ],
   invalid: [
     fromFixture(
@@ -113,7 +96,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ${setup}
 
         export class MoviesStore {
-          constructor(private store: ComponentStore) {}
+          constructor(private readonly store: ComponentStore<MoviesState>) {}
+
           readonly addMovie = this.store.updater((state, movie) => ({ movies: [...state.movies, movie] }));
                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
         }
@@ -124,9 +108,12 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ${setup}
 
         export class MoviesStore {
-          constructor(private store: ComponentStore) {}
-          readonly addMovie = this.store.updater<Movie>((state, movie) => ({ movies: [...state.movies, movie] }));
-                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
+          readonly addMovie: Observable<unknown>
+
+          constructor(customStore: ComponentStore<MoviesState>) {
+            this.addMovie = customStore.updater<Movie>((state, movie) => ({ movies: [...state.movies, movie] }));
+                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
+          }
         }
       `,
     ),
