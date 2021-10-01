@@ -1,5 +1,7 @@
 export const MODULE_PATHS = {
-  componentStore: '@ngrx/component-store',
+  ['component-store']: '@ngrx/component-store',
   effects: '@ngrx/effects',
   store: '@ngrx/store',
 } as const
+
+export type NGRX_MODULE = keyof typeof MODULE_PATHS

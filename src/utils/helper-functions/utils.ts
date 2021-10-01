@@ -348,7 +348,7 @@ export function findNgRxComponentStoreName(
 ): string | undefined {
   return findCorrespondingNameBy(
     context,
-    MODULE_PATHS.componentStore,
+    MODULE_PATHS['component-store'],
     'ComponentStore',
   )
 }

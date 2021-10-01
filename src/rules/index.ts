@@ -1,6 +1,7 @@
 import path from 'path'
+import type { NgRxRuleModule } from '../rule-creator'
+import type { NGRX_MODULE } from '../utils'
 import { traverseFolder } from '../utils'
-import type { RuleModule } from '../utils/types'
 
 // Copied from https://github.com/jest-community/eslint-plugin-jest/blob/main/src/index.ts
 
@@ -17,9 +18,11 @@ const excludedFiles = ['index']
 
 export const rules = Array.from(traverseFolder(rulesDir))
   .filter((rule) => !excludedFiles.includes(rule.file))
-  .reduce<Record<string, RuleModule>>((allRules, rule) => {
-    const ruleModule = importDefault(rule.path) as RuleModule
-    ruleModule.meta.module = path.basename(path.dirname(rule.path))
+  .reduce<Record<string, NgRxRuleModule>>((allRules, rule) => {
+    const ruleModule = importDefault(rule.path) as NgRxRuleModule
+    ruleModule.meta.module = path.basename(
+      path.dirname(rule.path),
+    ) as NGRX_MODULE
     return {
       ...allRules,
       [rule.file]: ruleModule,
