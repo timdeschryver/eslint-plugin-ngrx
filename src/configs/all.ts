@@ -31,6 +31,7 @@ export = {
     'ngrx/prefer-one-generic-in-create-for-feature-selector': 'warn',
     'ngrx/prefix-selectors-with-select': 'warn',
     'ngrx/select-style': 'warn',
+    'ngrx/use-action-creator-in-dispatch': 'warn',
     'ngrx/use-consistent-global-store-name': 'warn',
     'ngrx/use-selector-in-select': 'warn',
     'rxjs/no-unsafe-catch': 'warn',
