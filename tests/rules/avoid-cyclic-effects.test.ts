@@ -28,7 +28,7 @@ const setup = `
 
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
-    fromFixture(stripIndent`
+    `
       ${setup}
       class Effect {
         foo$ = createEffect(() =>
@@ -42,8 +42,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           private actions$: Actions,
         ) {}
       }
-    `),
-    fromFixture(stripIndent`
+    `,
+    `
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -57,8 +57,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           private actions$: Actions,
         ) {}
       }
-    `),
-    fromFixture(stripIndent`
+    `,
+    `
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -72,8 +72,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           private actions$: Actions,
         ) {}
       }
-    `),
-    fromFixture(stripIndent`
+    `,
+    `
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -87,8 +87,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           private actions: Actions,
         ) {}
       }
-    `),
-    fromFixture(stripIndent`
+    `,
+    `
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -103,8 +103,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           private actions$: Actions,
         ) {}
       }
-    `),
-    fromFixture(stripIndent`
+    `,
+    `
       ${setup}
       class Effect {
         foo$ = createEffect(() =>
@@ -118,7 +118,40 @@ ruleTester().run(path.parse(__filename).name, rule, {
           private actions$: Actions,
         ) {}
       }
-    `),
+    `,
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
+    `
+      import { Injectable } from '@angular/core';
+      import { Actions, createEffect, ofType } from '@ngrx/effects';
+      import { Action } from '@ngrx/store';
+      import { of } from 'rxjs';
+      import { switchMap } from 'rxjs/operators';
+
+      enum OrderEntityActionTypes {
+        postPortInData = '[Order Entity] Post PortIn Data',
+        postPortInDataSuccess = '[Order Entity] Post PortIn Data Success',
+      }
+
+      class PostPortInData implements Action {
+        readonly type = OrderEntityActionTypes.postPortInData
+      }
+
+      class PostPortInDataSuccess implements Action {
+        readonly type = OrderEntityActionTypes.postPortInDataSuccess
+      }
+
+      @Injectable()
+      class Effect {
+        readonly postPortInData$ = createEffect(() =>
+          this.actions$.pipe(
+            ofType<PostPortInData>(OrderEntityActionTypes.postPortInData),
+            switchMap(() => of(new PostPortInDataSuccess())),
+          ),
+        )
+
+        constructor(private readonly actions$: Actions) {}
+      }
+    `,
   ],
   invalid: [
     fromFixture(stripIndent`
@@ -198,6 +231,40 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(
           private actions$: Actions,
         ) {}
+      }
+    `),
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
+    fromFixture(stripIndent`
+      import { Injectable } from '@angular/core';
+      import { Actions, createEffect, ofType } from '@ngrx/effects';
+      import { Action } from '@ngrx/store';
+      import { of } from 'rxjs';
+      import { switchMap } from 'rxjs/operators';
+
+      enum OrderEntityActionTypes {
+        postPortInData = '[Order Entity] Post PortIn Data',
+        postPortInDataSuccess = '[Order Entity] Post PortIn Data Success',
+      }
+
+      class PostPortInData implements Action {
+        readonly type = OrderEntityActionTypes.postPortInData
+      }
+
+      class PostPortInDataSuccess implements Action {
+        readonly type = OrderEntityActionTypes.postPortInDataSuccess
+      }
+
+      @Injectable()
+      class Effect {
+        readonly postPortInData$ = createEffect(() =>
+          this.actions$.pipe(
+          ~~~~~~~~~~~~~~~~~~ [${messageId}]
+            ofType<PostPortInData>(OrderEntityActionTypes.postPortInData),
+            switchMap(() => of(new PostPortInData())),
+          ),
+        )
+
+        constructor(private readonly actions$: Actions) {}
       }
     `),
   ],

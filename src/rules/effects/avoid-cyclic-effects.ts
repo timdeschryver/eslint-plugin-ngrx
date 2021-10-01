@@ -95,6 +95,26 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       }
     }
 
+    function getActionType(symbol: ts.Symbol): ts.Type | null {
+      const { valueDeclaration } = symbol
+
+      if (!valueDeclaration) {
+        return null
+      }
+
+      if (valueDeclaration.kind === ts.SyntaxKind.PropertyDeclaration) {
+        const { parent } = symbol as typeof symbol & { parent: ts.Symbol }
+        return parent.valueDeclaration
+          ? typeChecker.getTypeOfSymbolAtLocation(
+              parent,
+              parent.valueDeclaration,
+            )
+          : null
+      }
+
+      return typeChecker.getTypeOfSymbolAtLocation(symbol, valueDeclaration)
+    }
+
     function getActionTypes(type: ts.Type): string[] {
       if (type.isUnion()) {
         const memberActionTypes: string[] = []
@@ -103,14 +123,18 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         }
         return memberActionTypes
       }
+
       const symbol = typeChecker.getPropertyOfType(type, 'type')
-      if (!symbol?.valueDeclaration) {
+
+      if (!symbol) {
         return []
       }
-      const actionType = typeChecker.getTypeOfSymbolAtLocation(
-        symbol,
-        symbol.valueDeclaration,
-      )
+
+      const actionType = getActionType(symbol)
+
+      if (!actionType) {
+        return []
+      }
 
       // TODO: support "dynamic" types
       // e.g. const genericFoo = createAction(`${subject} FOO`); (resolves to 'string')
