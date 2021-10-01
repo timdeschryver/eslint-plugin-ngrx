@@ -10,11 +10,11 @@ import { ruleTester } from '../utils'
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
-      import { Store } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        readonly test$ = somethingOutside();
-      }`,
+    import { Store } from '@ngrx/store'
+    @Component()
+    export class FixtureComponent {
+      readonly test$ = somethingOutside();
+    }`,
     `
     import { Store } from '@ngrx/store'
     @Injectable()
@@ -30,19 +30,21 @@ ruleTester().run(path.parse(__filename).name, rule, {
     import { Store } from '@ngrx/store'
     @Injectable()
     export class FixtureEffects {
-      effectOK1 = createEffect(
-        () =>
-          this.actions.pipe(
-            ofType(customerActions.remove),
-            tap(() => {
-              customObject.dispatch({ somethingElse: true })
-              return customerActions.removeSuccess()
-            }),
-          ),
-        { dispatch: false },
-      )
+      readonly effectOK1: Observable<unknown>
 
-      constructor(private actions: Actions, private store$: Store) {}
+      constructor(private actions: Actions, private store$: Store) {
+         this.effectOK1 = createEffect(
+          () => ({ scheduler = asyncScheduler } = {}) =>
+            this.actions.pipe(
+              ofType(customerActions.remove),
+              tap(() => {
+                customObject.dispatch({ somethingElse: true })
+                return customerActions.removeSuccess()
+              }),
+            ),
+          { dispatch: false },
+        )
+      }
     }`,
   ],
   invalid: [
@@ -93,13 +95,13 @@ ruleTester().run(path.parse(__filename).name, rule, {
       import { Store } from '@ngrx/store'
       @Injectable()
       export class FixtureEffects {
-        effectNOK1 = createEffect(() => this.actions.pipe(
+        effectNOK1 = createEffect(() => condition ? this.actions.pipe(
           ofType(userActions.add),
           tap(() => {
             return this.store.dispatch(userActions.addSuccess)
                    ~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
           })
-        ))
+        ) : this.actions.pipe())
 
         constructor(private actions: Actions, private store: Store) {}
       }`,
@@ -111,12 +113,12 @@ ruleTester().run(path.parse(__filename).name, rule, {
             import { Store } from '@ngrx/store'
             @Injectable()
             export class FixtureEffects {
-              effectNOK1 = createEffect(() => this.actions.pipe(
+              effectNOK1 = createEffect(() => condition ? this.actions.pipe(
                 ofType(userActions.add),
                 tap(() => {
                   return (userActions.addSuccess)
                 })
-              ))
+              ) : this.actions.pipe())
 
               constructor(private actions: Actions, private store: Store) {}
             }`,
@@ -130,7 +132,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       @Injectable()
       export class FixtureEffects {
         effectNOK2 = createEffect(
-          () =>
+          () => ({ debounce = 200 } = {}) =>
             this.actions.pipe(
               ofType(actions.ping),
               tap(() => {
@@ -151,7 +153,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
             @Injectable()
             export class FixtureEffects {
               effectNOK2 = createEffect(
-                () =>
+                () => ({ debounce = 200 } = {}) =>
                   this.actions.pipe(
                     ofType(actions.ping),
                     tap(() => {
@@ -171,20 +173,22 @@ ruleTester().run(path.parse(__filename).name, rule, {
       import { Store } from '@ngrx/store'
       @Injectable()
       export class FixtureEffects {
-        effectNOK3 = createEffect(
-          () =>
-            this.actions.pipe(
-              ofType(bookActions.load),
-              map(() => {
-                this.store$.dispatch(bookActions.loadSuccess());// you shouldn't do this
-                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
-                return somethingElse()
-              }),
-            ),
-          { dispatch: true, useEffectsErrorHandler: false, ...options },
-        )
+        readonly effectNOK3: Observable<unknown>
 
-        constructor(private actions: Actions, private readonly store$: Store) {}
+        constructor(private actions: Actions, private readonly store$: Store) {
+          this.effectNOK3 = createEffect(
+            () =>
+              this.actions.pipe(
+                ofType(bookActions.load),
+                map(() => {
+                  this.store$.dispatch(bookActions.loadSuccess());// you shouldn't do this
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
+                  return somethingElse()
+                }),
+              ),
+            { dispatch: true, useEffectsErrorHandler: false, ...options },
+          )
+        }
       }`,
       {
         suggestions: [
@@ -194,19 +198,21 @@ ruleTester().run(path.parse(__filename).name, rule, {
             import { Store } from '@ngrx/store'
             @Injectable()
             export class FixtureEffects {
-              effectNOK3 = createEffect(
-                () =>
-                  this.actions.pipe(
-                    ofType(bookActions.load),
-                    map(() => {
-                      ;// you shouldn't do this
-                      return somethingElse()
-                    }),
-                  ),
-                { dispatch: true, useEffectsErrorHandler: false, ...options },
-              )
+              readonly effectNOK3: Observable<unknown>
 
-              constructor(private actions: Actions, private readonly store$: Store) {}
+              constructor(private actions: Actions, private readonly store$: Store) {
+                this.effectNOK3 = createEffect(
+                  () =>
+                    this.actions.pipe(
+                      ofType(bookActions.load),
+                      map(() => {
+                        ;// you shouldn't do this
+                        return somethingElse()
+                      }),
+                    ),
+                  { dispatch: true, useEffectsErrorHandler: false, ...options },
+                )
+              }
             }`,
           },
         ],

@@ -86,8 +86,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
             super({movies: []});
           }
 
-          readonly addMovie = this.updater<Movie>((state, movie) => ({ movies: [...state.movies, movie] }));
-                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
+          readonly addMovie = this.updater<Movie | null>((state, movie) => movie ? ({ movies: [...state.movies, movie] }) : ({ movies }));
+                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
         }
       `,
     ),
