@@ -1,7 +1,5 @@
 export const effectCreator = `ClassProperty[value.callee.name='createEffect']`
-export const createEffectExpression = `ClassProperty > CallExpression[callee.name='createEffect']`
-export const createEffectFunction =
-  `${createEffectExpression} > ArrowFunctionExpression` as const
+export const createEffectExpression = `CallExpression[callee.name='createEffect']`
 
 export const effectDecorator = `Decorator[expression.callee.name='Effect']`
 export const classPropertyWithEffectDecorator =
