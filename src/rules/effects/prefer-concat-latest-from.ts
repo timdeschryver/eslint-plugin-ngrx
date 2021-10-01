@@ -6,6 +6,7 @@ import {
   docsUrl,
   getImportAddFix,
   MODULE_PATHS,
+  ngrxEffectsVersionSatisfies,
 } from '../../utils'
 
 export const messageId = 'preferConcatLatestFrom'
@@ -13,6 +14,8 @@ export const messageIdSuggest = 'preferConcatLatestFromSuggest'
 export type MessageIds = typeof messageId | typeof messageIdSuggest
 
 type Options = []
+
+const ruleEnabled = ngrxEffectsVersionSatisfies('>=12.0.0')
 
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: path.parse(__filename).name,
@@ -33,6 +36,10 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
+    if (!ruleEnabled) {
+      return {}
+    }
+
     return {
       [`${createEffectExpression} > [body] > [arguments] > CallExpression > Identifier[name='withLatestFrom']`](
         node: TSESTree.Identifier,
