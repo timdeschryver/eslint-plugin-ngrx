@@ -1,23 +1,55 @@
-import * as semver from 'semver'
+import semver from 'semver'
 
-let ngrxEffectsVersion: string | undefined
-function getNgrxEffectsVersion(): string {
-  if (ngrxEffectsVersion) return ngrxEffectsVersion
+const noopVersion = '0.0.0'
+const versionsCache: Map<string, string> = new Map()
+const satisfiesCache: Map<string, boolean> = new Map()
 
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const effects = require('@ngrx/effects/schematics-core') as {
-      platformVersion: string
-    }
-    // version in file is ^x.x.x, but this isn't valid for semver
-    ngrxEffectsVersion = effects.platformVersion?.substr(1)
-  } catch (err) {
-    ngrxEffectsVersion = '0.0.0'
+function getNgrxVersion(pkg: string): string {
+  if (!versionsCache.has(pkg)) {
+    const version = readPlatformVersion(pkg)
+    versionsCache.set(pkg, version ?? noopVersion)
   }
 
-  return ngrxEffectsVersion ?? '0.0.0'
+  return versionsCache.get(pkg) as string
 }
 
-export function ngrxEffectsVersionSatisfies(version: string) {
-  return semver.satisfies(getNgrxEffectsVersion(), version)
+function readPlatformVersion(pkg: string) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const ngrxVersion = require(`${pkg}/schematics-core`) as {
+      platformVersion?: string
+    }
+    const version = ngrxVersion.platformVersion
+      ?.split('')
+      .filter((c) => (c >= '0' && c <= '9') || c === '.')
+      .join('')
+    return version
+  } catch {
+    return null
+  }
+}
+
+// @internal for testing purposes
+export function setNgrxVersion(pkg: string, version: string): void {
+  versionsCache.set(pkg, version)
+}
+
+// @internal for testing purposes
+export function clearCache() {
+  versionsCache.clear()
+  satisfiesCache.clear()
+}
+
+function versionSatisfies(pkg: string, version: string) {
+  const key = `${pkg}@${version}`
+
+  if (!satisfiesCache.has(key)) {
+    satisfiesCache.set(key, semver.satisfies(getNgrxVersion(pkg), version))
+  }
+
+  return satisfiesCache.get(key) as boolean
+}
+
+export function ngrxVersionSatisfies(pkg: string, version: string): boolean {
+  return versionSatisfies(pkg, version)
 }
