@@ -45,7 +45,8 @@
     "prettier:all": "prettier --write .",
     "g:config": "ts-node ./scripts/generate-config.ts",
     "g:readme": "ts-node ./scripts/generate-readme.ts",
-    "g:all": "npm run g:config && npm run g:readme",
+    "g:docs": "ts-node ./scripts/generate-docs.ts",
+    "g:all": "npm run g:config && npm run g:readme && npm run g:docs",
     "pre-commit": "npm run g:all && git add ./src/configs/**.ts && git add ./README.md && lint-staged",
     "prepare": "husky install"
   },

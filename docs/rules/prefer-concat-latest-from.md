@@ -1,6 +1,14 @@
-# Prefer concatLatestFrom
+---
+Fixable: no
+NgRx Version: >=12.0.0
+---
 
-> Use `concatLatestFrom` instead of `withLatestFrom` to prevent the selector from firing until the correct action is dispatched.
+# prefer-concat-latest-from
+
+> Use `concatLatestFrom` instead of `withLatestFrom` to prevent the selector from firing until the correct `Action` is dispatched.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 Using `concatLatestFrom` (a lazy version of `withLatestFrom`) ensures that the selector is only invoked when the effect receives the action.
 In contrast to `withLatestFrom` that immediately subscribes whether the action is dispatched yet or not. If that state used by the selector is not initialized yet, you could get an error that you're not expecting.
