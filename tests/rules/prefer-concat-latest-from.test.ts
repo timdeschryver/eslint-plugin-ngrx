@@ -4,6 +4,7 @@ import rule, {
   messageId,
   messageIdSuggest,
 } from '../../src/rules/effects/prefer-concat-latest-from'
+import { MODULE_PATHS } from '../../src/utils'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {
@@ -118,3 +119,26 @@ ruleTester().run(path.parse(__filename).name, rule, {
     },
   ],
 })
+
+ruleTester({ package: MODULE_PATHS.effects, version: '11.0.0' }).run(
+  path.parse(__filename).name,
+  rule,
+  {
+    valid: [
+      `
+      export class Effect {
+        effect$ = createEffect(
+          () =>
+            this.actions$.pipe(
+              ofType(CollectionApiActions.addBookSuccess),
+              withLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
+              switchMap(([action, bookCollection]) => {
+                return {}
+              }),
+            ),
+        );
+      }`,
+    ],
+    invalid: [],
+  },
+)
