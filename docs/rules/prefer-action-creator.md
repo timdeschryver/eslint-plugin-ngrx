@@ -26,4 +26,8 @@ export const loadUser = createAction('[User Page] Load User')
 class Test {
   type = '[Customer Page] Load Customer'
 }
+
+class Test implements Action {
+  member = '[Customer Page] Load Customer'
+}
 ```

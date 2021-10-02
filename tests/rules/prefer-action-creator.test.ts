@@ -12,6 +12,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
       type = '[Customer Page] Load Customer'
     }`,
     `
+    class Test implements Action {
+      member = '[Customer Page] Load Customer'
+    }`,
+    `
     class Test {
       readonly type = ActionTypes.success
 

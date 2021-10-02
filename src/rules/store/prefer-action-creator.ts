@@ -27,7 +27,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [`ClassDeclaration:has(TSClassImplements:matches([expression.name='Action'], [expression.property.name='Action']))`](
+      [`ClassDeclaration:has(TSClassImplements:matches([expression.name='Action'], [expression.property.name='Action'])):has(ClassProperty[key.name='type'])`](
         node: TSESTree.ClassDeclaration,
       ) {
         context.report({
