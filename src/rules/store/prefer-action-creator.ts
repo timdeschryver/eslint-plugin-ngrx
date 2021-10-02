@@ -11,7 +11,7 @@ type Options = []
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'problem',
+    type: 'suggestion',
     docs: {
       category: 'Best Practices',
       description:
