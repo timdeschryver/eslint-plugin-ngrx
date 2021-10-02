@@ -3,7 +3,7 @@ import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import { docsUrl } from '../../utils'
 
-export const messageId = 'useActionCreatorInOfType'
+export const messageId = 'preferActionCreatorInOfType'
 export type MessageIds = typeof messageId
 
 type Options = []

@@ -1,4 +1,4 @@
-# Use Action Creator In Of Type
+# Prefer Action Creator In Of Type
 
 > Using an `action creator` in `ofType` is preferred over `string`.
 
