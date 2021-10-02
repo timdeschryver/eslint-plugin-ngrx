@@ -18,14 +18,21 @@ ruleTester().run(path.parse(__filename).name, rule, {
     `
     @Injectable()
     class Test {
-      effectOK = createEffect(() => this.actions$.pipe(ofType(method())))
+      effectOK1 = createEffect(() => this.actions$.pipe(ofType(userActions.ping.type)))
 
       constructor(private readonly actions$: Actions) {}
     }`,
     `
     @Injectable()
     class Test {
-      effectOK = createEffect(() => this.actions$.pipe(ofType(condition ? methodA() : bookActions.load)))
+      effectOK2 = createEffect(() => this.actions$.pipe(ofType(method())))
+
+      constructor(private readonly actions$: Actions) {}
+    }`,
+    `
+    @Injectable()
+    class Test {
+      effectOK3 = createEffect(() => this.actions$.pipe(ofType(condition ? methodA() : bookActions.load)))
 
       constructor(private readonly actions$: Actions) {}
     }`,
