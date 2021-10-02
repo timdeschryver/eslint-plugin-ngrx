@@ -3,7 +3,7 @@ import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
   messageId,
-} from '../../src/rules/store/use-action-creator-in-dispatch'
+} from '../../src/rules/store/prefer-action-creator-in-dispatch'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {

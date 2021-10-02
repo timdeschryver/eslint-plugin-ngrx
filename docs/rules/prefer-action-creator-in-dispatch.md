@@ -1,4 +1,4 @@
-# Use Action Creator In Dispatch
+# Prefer Action Creator In Dispatch
 
 > Using an `action creator` in `dispatch` is preferred over `object` or old `Action`.
 

@@ -3,7 +3,7 @@ import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import { docsUrl, findNgRxStoreName, storeDispatch } from '../../utils'
 
-export const messageId = 'useActionCreatorInDispatch'
+export const messageId = 'preferActionCreatorInDispatch'
 export type MessageIds = typeof messageId
 
 type Options = []
