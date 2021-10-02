@@ -29,18 +29,14 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [typedStore]({
-        typeParameters,
-      }: TSESTree.TSTypeReference & {
-        typeParameters: TSESTree.TSTypeParameterInstantiation
-      }) {
+      [typedStore](node: TSESTree.TSTypeParameterInstantiation) {
         context.report({
-          node: typeParameters,
+          node,
           messageId: noTypedStore,
           suggest: [
             {
               messageId: noTypedStoreSuggest,
-              fix: (fixer) => fixer.remove(typeParameters),
+              fix: (fixer) => fixer.remove(node),
             },
           ],
         })

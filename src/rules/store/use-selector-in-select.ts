@@ -23,13 +23,13 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     docs: {
       category: 'Best Practices',
       description:
-        'Using a selector in a select method is preferred in favor of strings or props drilling.',
+        'Using a selector in a `select` method is preferred over `string` or `props drilling`.',
       recommended: 'warn',
     },
     schema: [],
     messages: {
       [messageId]:
-        'Using string or props drilling is not preferred, use a selector instead.',
+        'Using `string` or `props drilling` is not preferred, use a selector instead.',
     },
   },
   defaultOptions: [],

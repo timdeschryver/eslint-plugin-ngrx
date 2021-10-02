@@ -40,22 +40,22 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     return {
       [`:matches(${storeActionReducerMap}, ${actionReducerMap}) > ${metadataProperty(
         /reducer/i,
-      )}`]({ key }: TSESTree.Property) {
+      )} > .key`](node: TSESTree.Property['key']) {
         context.report({
-          node: key,
+          node,
           messageId: noReducerInKeyNames,
           suggest: [
             {
               messageId: noReducerInKeyNamesSuggest,
               fix: (fixer) => {
-                const keyName = getRawText(key)
+                const keyName = getRawText(node)
 
                 if (!keyName) {
                   return null
                 }
 
                 return fixer.replaceText(
-                  key,
+                  node,
                   keyName.replace(new RegExp(reducerKeyword, 'i'), ''),
                 )
               },

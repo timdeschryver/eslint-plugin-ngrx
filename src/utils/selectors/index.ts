@@ -8,7 +8,8 @@ export const classPropertyWithEffectDecorator =
 export const actionCreator = `CallExpression[callee.name='createAction']`
 export const actionCreatorWithLiteral =
   `${actionCreator}[arguments.0.type='Literal'][arguments.0.raw=/^'/]` as const
-export const actionCreatorProps = `${actionCreator} CallExpression` as const
+export const actionCreatorProps =
+  `${actionCreator} > CallExpression[callee.name='props']` as const
 export const actionCreatorPropsComputed =
   `${actionCreatorProps} > TSTypeParameterInstantiation > :matches(TSTypeReference[typeName.name!='Readonly'], [type=/^TS(.*)(Keyword|Type)$/])` as const
 
@@ -23,7 +24,7 @@ export function metadataProperty(key: RegExp | string): string {
 }
 
 export const injectedStore = `MethodDefinition[kind='constructor'] Identifier[typeAnnotation.typeAnnotation.typeName.name='Store']`
-export const typedStore = `MethodDefinition[kind='constructor'] Identifier > TSTypeAnnotation > TSTypeReference[typeName.name='Store'][typeParameters.params]`
+export const typedStore = `MethodDefinition[kind='constructor'] Identifier > TSTypeAnnotation > TSTypeReference[typeName.name='Store'] > .typeParameters[params]`
 
 export const ngModuleDecorator = `ClassDeclaration > Decorator > CallExpression[callee.name='NgModule']`
 
