@@ -17,9 +17,5 @@ effectNOK1 = createEffect(() =>
 Examples of **correct** code for this rule:
 
 ```ts
-effectOK = createEffect(() => this.actions$.pipe(ofType(userActions.ping)))
-
-effectOK1 = createEffect(() =>
-  this.actions$.pipe(ofType(userActions.ping.type)),
-)
+effectOK = createEffect(() => this.actions$.pipe(ofType(userActions.ping.type)))
 ```
