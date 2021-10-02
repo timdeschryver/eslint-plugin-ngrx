@@ -16,6 +16,7 @@ export = {
     'ngrx/no-multiple-actions-in-effects': 'warn',
     'ngrx/prefer-concat-latest-from': 'warn',
     'ngrx/prefer-effect-callback-in-block-statement': 'warn',
+    'ngrx/use-action-creator-in-of-type': 'warn',
     'ngrx/use-effects-lifecycle-interface': 'warn',
     'ngrx/avoid-combining-selectors': 'warn',
     'ngrx/avoid-dispatching-multiple-actions-sequentially': 'warn',
