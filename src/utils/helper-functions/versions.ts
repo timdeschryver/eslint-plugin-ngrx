@@ -1,8 +1,8 @@
 import semver from 'semver'
 
 const noopVersion = '0.0.0'
-const versionsCache: Map<string, string> = new Map()
-const satisfiesCache: Map<string, boolean> = new Map()
+const versionsCache = new Map<string, string>()
+const satisfiesCache = new Map<string, boolean>()
 
 function getNgrxVersion(pkg: string): string {
   if (!versionsCache.has(pkg)) {
@@ -19,11 +19,7 @@ function readPlatformVersion(pkg: string) {
     const ngrxVersion = require(`${pkg}/schematics-core`) as {
       platformVersion?: string
     }
-    const version = ngrxVersion.platformVersion
-      ?.split('')
-      .filter((c) => (c >= '0' && c <= '9') || c === '.')
-      .join('')
-    return version
+    return ngrxVersion.platformVersion?.replace(/[^\d\.]/g, '')
   } catch {
     return null
   }

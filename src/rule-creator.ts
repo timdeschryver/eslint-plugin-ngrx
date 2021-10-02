@@ -1,11 +1,11 @@
 import type { TSESLint } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import type { NGRX_MODULE } from './utils'
-import { docsUrl, MODULE_PATHS, ngrxVersionSatisfies } from './utils'
+import { docsUrl, ngrxVersionSatisfies, NGRX_MODULE_PATHS } from './utils'
 
 export type NgRxRuleModule<TMessageIds extends string = string> =
   TSESLint.RuleModule<TMessageIds, unknown[]> & {
-    meta: { module: NGRX_MODULE; version?: string }
+    meta: { ngrxModule: NGRX_MODULE; version?: string }
   }
 
 type CreateRuleMetaDocs = Omit<TSESLint.RuleMetaDataDocs, 'url'>
@@ -36,7 +36,7 @@ export function createRule<
       if (
         config.meta.version !== undefined &&
         !ngrxVersionSatisfies(
-          MODULE_PATHS[config.meta.module],
+          NGRX_MODULE_PATHS[config.meta.ngrxModule],
           config.meta.version,
         )
       ) {

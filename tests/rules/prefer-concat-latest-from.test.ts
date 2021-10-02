@@ -4,12 +4,13 @@ import rule, {
   messageId,
   messageIdSuggest,
 } from '../../src/rules/effects/prefer-concat-latest-from'
-import { MODULE_PATHS } from '../../src/utils'
+import { NGRX_MODULE_PATHS } from '../../src/utils'
 import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
+      import { of } from 'rxjs';
       export class Effect {
         effect$ = createEffect(
           () =>
@@ -17,12 +18,13 @@ ruleTester().run(path.parse(__filename).name, rule, {
               ofType(CollectionApiActions.addBookSuccess),
               concatLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
               switchMap(([action, bookCollection]) => {
-                return {}
+                return of({type:'noop'})
               })
             ),
         );
       }`,
     `
+      import { of } from 'rxjs';
       class Effect {
         detail$ = createEffect(() => {
           return this.actions.pipe(
@@ -39,6 +41,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
   invalid: [
     {
       code: stripIndent`
+        import { of } from 'rxjs';
         export class Effect {
           effect$ = createEffect(
             () =>
@@ -46,7 +49,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
                 ofType(CollectionApiActions.addBookSuccess),
                 withLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
                 switchMap(([action, bookCollection]) => {
-                  return {}
+                  return of({type:'noop'})
                 }),
               ),
           );
@@ -59,6 +62,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
               messageId: messageIdSuggest,
               output: stripIndent`
               import { concatLatestFrom } from '@ngrx/effects';
+              import { of } from 'rxjs';
               export class Effect {
                 effect$ = createEffect(
                   () =>
@@ -66,7 +70,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
                       ofType(CollectionApiActions.addBookSuccess),
                       concatLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
                       switchMap(([action, bookCollection]) => {
-                        return {}
+                        return of({type:'noop'})
                       }),
                     ),
                 );
@@ -78,6 +82,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     },
     {
       code: stripIndent`
+        import { of } from 'rxjs';
         import type { OnRunEffects } from '@ngrx/effects'
         export class Effect {
           effect$ = createEffect(
@@ -86,7 +91,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
                 ofType(CollectionApiActions.addBookSuccess),
                 withLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
                 switchMap(([action, bookCollection]) => {
-                  return {}
+                  return of({type:'noop'})
                 }),
               ),
           );
@@ -99,6 +104,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
               messageId: messageIdSuggest,
               output: stripIndent`
               import { concatLatestFrom } from '@ngrx/effects';
+              import { of } from 'rxjs';
               import type { OnRunEffects } from '@ngrx/effects'
               export class Effect {
                 effect$ = createEffect(
@@ -107,7 +113,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
                       ofType(CollectionApiActions.addBookSuccess),
                       concatLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
                       switchMap(([action, bookCollection]) => {
-                        return {}
+                        return of({type:'noop'})
                       }),
                     ),
                 );
@@ -120,12 +126,13 @@ ruleTester().run(path.parse(__filename).name, rule, {
   ],
 })
 
-ruleTester({ package: MODULE_PATHS.effects, version: '11.0.0' }).run(
+ruleTester({ ngrxModule: NGRX_MODULE_PATHS.effects, version: '^11.0.0' }).run(
   path.parse(__filename).name,
   rule,
   {
     valid: [
       `
+      import { of } from 'rxjs';
       export class Effect {
         effect$ = createEffect(
           () =>
@@ -133,7 +140,7 @@ ruleTester({ package: MODULE_PATHS.effects, version: '11.0.0' }).run(
               ofType(CollectionApiActions.addBookSuccess),
               withLatestFrom(action => this.store.select(fromBooks.getCollectionBookIds)),
               switchMap(([action, bookCollection]) => {
-                return {}
+                return of({type:'noop'})
               }),
             ),
         );

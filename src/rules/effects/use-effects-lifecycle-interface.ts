@@ -6,7 +6,7 @@ import {
   getImplementsSchemaFixer,
   getImportAddFix,
   getInterface,
-  MODULE_PATHS,
+  NGRX_MODULE_PATHS,
 } from '../../utils'
 
 export const messageId = 'useEffectsLifecycleInterface'
@@ -71,7 +71,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
                 compatibleWithTypeOnlyImport: true,
                 fixer,
                 importName: interfaceName,
-                moduleName: MODULE_PATHS.effects,
+                moduleName: NGRX_MODULE_PATHS.effects,
                 node: classDeclaration,
               }),
             )

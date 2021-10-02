@@ -9,7 +9,7 @@ import {
   getDecoratorArguments,
   getImportDeclarations,
   getImportRemoveFix,
-  MODULE_PATHS,
+  NGRX_MODULE_PATHS,
 } from '../../utils'
 
 export const noEffectDecoratorAndCreator = 'noEffectDecoratorAndCreator'
@@ -90,7 +90,7 @@ function getFixes(
   decorator: TSESTree.Decorator,
 ): TSESLint.RuleFix[] {
   const importDeclarations =
-    getImportDeclarations(node, MODULE_PATHS.effects) ?? []
+    getImportDeclarations(node, NGRX_MODULE_PATHS.effects) ?? []
   const text = sourceCode.getText()
   const totalEffectDecoratorOccurrences = getEffectDecoratorOccurrences(text)
   const importRemoveFix =

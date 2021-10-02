@@ -20,7 +20,7 @@ export const rules = Array.from(traverseFolder(rulesDir))
   .filter((rule) => !excludedFiles.includes(rule.file))
   .reduce<Record<string, NgRxRuleModule>>((allRules, rule) => {
     const ruleModule = importDefault(rule.path) as NgRxRuleModule
-    ruleModule.meta.module = path.basename(
+    ruleModule.meta.ngrxModule = path.basename(
       path.dirname(rule.path),
     ) as NGRX_MODULE
     return {

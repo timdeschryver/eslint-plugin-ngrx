@@ -50,7 +50,7 @@ writeConfig('strict', {
 writeConfig(
   'store',
   {
-    ...getRules((rule) => rule.meta.module === 'store'),
+    ...getRules((rule) => rule.meta.ngrxModule === 'store'),
   },
   ['ngrx'],
 )
@@ -58,7 +58,7 @@ writeConfig(
 writeConfig(
   'effects',
   {
-    ...getRules((rule) => rule.meta.module === 'effects'),
+    ...getRules((rule) => rule.meta.ngrxModule === 'effects'),
   },
   ['ngrx'],
 )
@@ -66,7 +66,7 @@ writeConfig(
 writeConfig(
   'component-store',
   {
-    ...getRules((rule) => rule.meta.module === 'component-store'),
+    ...getRules((rule) => rule.meta.ngrxModule === 'component-store'),
   },
   ['ngrx'],
 )

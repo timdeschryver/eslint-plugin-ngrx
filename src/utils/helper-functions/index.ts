@@ -1,6 +1,6 @@
 export * from './docs'
 export * from './folder'
 export * from './guards'
-export * from './modules'
+export * from './ngrx-modules'
 export * from './utils'
 export * from './versions'

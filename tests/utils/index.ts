@@ -2,11 +2,14 @@ import { TSESLint } from '@typescript-eslint/experimental-utils'
 import { resolve } from 'path'
 import { clearCache, setNgrxVersion } from '../../src/utils'
 
-export function ruleTester(environment?: { package: string; version: string }) {
+export function ruleTester(environment?: {
+  ngrxModule: string
+  version: string
+}) {
   clearCache()
 
   if (environment) {
-    setNgrxVersion(environment.package, environment.version)
+    setNgrxVersion(environment.ngrxModule, environment.version)
   }
 
   return new TSESLint.RuleTester({

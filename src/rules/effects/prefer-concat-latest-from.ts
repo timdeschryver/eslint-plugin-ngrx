@@ -4,7 +4,7 @@ import { createRule } from '../../rule-creator'
 import {
   createEffectExpression,
   getImportAddFix,
-  MODULE_PATHS,
+  NGRX_MODULE_PATHS,
 } from '../../utils'
 
 export const messageId = 'preferConcatLatestFrom'
@@ -17,7 +17,7 @@ export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
-    module: 'effects',
+    ngrxModule: 'effects',
     version: '>=12.0.0',
     docs: {
       category: 'Possible Errors',
@@ -49,7 +49,7 @@ export default createRule<Options, MessageIds>({
                   getImportAddFix({
                     fixer,
                     importName: 'concatLatestFrom',
-                    moduleName: MODULE_PATHS.effects,
+                    moduleName: NGRX_MODULE_PATHS.effects,
                     node,
                   }),
                 )

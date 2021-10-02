@@ -7,7 +7,7 @@ import {
   getDecoratorArguments,
   getImportAddFix,
   isIdentifier,
-  MODULE_PATHS,
+  NGRX_MODULE_PATHS,
 } from '../../utils'
 
 export const noEffectDecorator = 'noEffectDecorator'
@@ -114,7 +114,7 @@ function getFixes(
     getImportAddFix({
       fixer,
       importName: createEffect,
-      moduleName: MODULE_PATHS.effects,
+      moduleName: NGRX_MODULE_PATHS.effects,
       node: classDeclaration,
     }),
   )
