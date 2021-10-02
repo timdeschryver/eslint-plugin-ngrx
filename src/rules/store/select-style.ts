@@ -10,7 +10,7 @@ import {
   isCallExpression,
   isClassDeclaration,
   isMemberExpression,
-  MODULE_PATHS,
+  NGRX_MODULE_PATHS,
   pipeableSelect,
   storeSelect,
 } from '../../utils'
@@ -90,7 +90,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       [`Program:has(${pipeableSelect(
         storeName,
       )}) ImportDeclaration[source.value='${
-        MODULE_PATHS.store
+        NGRX_MODULE_PATHS.store
       }'] > ImportSpecifier[imported.name='select']`](
         node: TSESTree.ImportSpecifier & {
           parent: TSESTree.ImportDeclaration
@@ -135,7 +135,7 @@ function getMethodToOperatorFixes(
     getImportAddFix({
       fixer,
       importName: 'select',
-      moduleName: MODULE_PATHS.store,
+      moduleName: NGRX_MODULE_PATHS.store,
       node: classDeclaration,
     }),
   )

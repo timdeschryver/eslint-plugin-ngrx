@@ -18,12 +18,7 @@ import {
   isTSTypeAnnotation,
   isTSTypeReference,
 } from './guards'
-
-export const MODULE_PATHS = {
-  componentStore: '@ngrx/component-store',
-  effects: '@ngrx/effects',
-  store: '@ngrx/store',
-} as const
+import { NGRX_MODULE_PATHS } from './ngrx-modules'
 
 export function getNearestUpperNodeFrom<T extends TSESTree.Node>(
   { parent }: TSESTree.Node,
@@ -345,7 +340,7 @@ function findCorrespondingNameBy(
 export function findNgRxStoreName(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
 ): string | undefined {
-  return findCorrespondingNameBy(context, MODULE_PATHS.store, 'Store')
+  return findCorrespondingNameBy(context, NGRX_MODULE_PATHS.store, 'Store')
 }
 
 export function findNgRxComponentStoreName(
@@ -353,7 +348,7 @@ export function findNgRxComponentStoreName(
 ): string | undefined {
   return findCorrespondingNameBy(
     context,
-    MODULE_PATHS.componentStore,
+    NGRX_MODULE_PATHS['component-store'],
     'ComponentStore',
   )
 }
@@ -361,5 +356,5 @@ export function findNgRxComponentStoreName(
 export function findNgRxEffectActionsName(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
 ): string | undefined {
-  return findCorrespondingNameBy(context, MODULE_PATHS.effects, 'Actions')
+  return findCorrespondingNameBy(context, NGRX_MODULE_PATHS.effects, 'Actions')
 }

@@ -1,11 +1,10 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
+import { createRule } from '../../rule-creator'
 import {
   createEffectExpression,
-  docsUrl,
   getImportAddFix,
-  MODULE_PATHS,
+  NGRX_MODULE_PATHS,
 } from '../../utils'
 
 export const messageId = 'preferConcatLatestFrom'
@@ -14,10 +13,12 @@ export type MessageIds = typeof messageId | typeof messageIdSuggest
 
 type Options = []
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'effects',
+    version: '>=12.0.0',
     docs: {
       category: 'Possible Errors',
       description:
@@ -48,7 +49,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
                   getImportAddFix({
                     fixer,
                     importName: 'concatLatestFrom',
-                    moduleName: MODULE_PATHS.effects,
+                    moduleName: NGRX_MODULE_PATHS.effects,
                     node,
                   }),
                 )

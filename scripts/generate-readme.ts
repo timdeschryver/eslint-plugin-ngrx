@@ -6,7 +6,7 @@ import { rules } from '../src/rules'
 const prettierConfig = resolveConfig.sync(__dirname)
 const moduleRules = Object.entries(rules).reduce<Record<string, string[][]>>(
   (all, [ruleName, { meta }]) => {
-    all[meta.module] = (all[meta.module] ?? []).concat([
+    all[meta.ngrxModule] = (all[meta.ngrxModule] ?? []).concat([
       [
         `[ngrx/${ruleName}](${meta.docs?.url})`,
         meta.docs?.description ?? 'TODO',
@@ -53,11 +53,11 @@ moduleRules['effects'] = moduleRules['effects'].concat([
 const tableHeader = `| Name | Description | Recommended | Category | Fixable | Has suggestions | Configurable | Requires type information
 | --- | --- | --- | --- | --- | --- | --- | --- |`
 
-const config = Object.entries(moduleRules).map(([module, pluginRules]) => {
+const config = Object.entries(moduleRules).map(([ngrxModule, pluginRules]) => {
   const tableBody = pluginRules.map((rule) => `|${rule.join('|')}|`).join(EOL)
   const table = [tableHeader, tableBody].join(EOL)
 
-  return [`### ${module}`, table].join(EOL)
+  return [`### ${ngrxModule}`, table].join(EOL)
 })
 
 const readme = readFileSync('README.md', 'utf-8')

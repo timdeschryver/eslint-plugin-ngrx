@@ -1,8 +1,8 @@
 import { writeFileSync } from 'fs'
 import { join } from 'path'
 import { format, resolveConfig } from 'prettier'
+import type { NgRxRuleModule } from '../src/rule-creator'
 import { rules } from '../src/rules'
-import type { RuleModule } from '../src/utils/types'
 
 const prettierConfig = resolveConfig.sync(__dirname)
 
@@ -10,8 +10,8 @@ const RULE_NAME_PREFIX = 'ngrx/'
 const CONFIG_DIRECTORY = './src/configs/'
 
 const getRules = (
-  predicate: (rule: RuleModule) => boolean,
-  setting = (rule: RuleModule) => rule.meta.docs?.recommended || 'warn',
+  predicate: (rule: NgRxRuleModule) => boolean,
+  setting = (rule: NgRxRuleModule) => rule.meta.docs?.recommended || 'warn',
 ) =>
   Object.entries(rules).reduce<Record<string, string>>(
     (rules, [ruleName, rule]) => {
@@ -50,7 +50,7 @@ writeConfig('strict', {
 writeConfig(
   'store',
   {
-    ...getRules((rule) => rule.meta.module === 'store'),
+    ...getRules((rule) => rule.meta.ngrxModule === 'store'),
   },
   ['ngrx'],
 )
@@ -58,7 +58,7 @@ writeConfig(
 writeConfig(
   'effects',
   {
-    ...getRules((rule) => rule.meta.module === 'effects'),
+    ...getRules((rule) => rule.meta.ngrxModule === 'effects'),
   },
   ['ngrx'],
 )
@@ -66,7 +66,7 @@ writeConfig(
 writeConfig(
   'component-store',
   {
-    ...getRules((rule) => rule.meta.module === 'component-store'),
+    ...getRules((rule) => rule.meta.ngrxModule === 'component-store'),
   },
   ['ngrx'],
 )
