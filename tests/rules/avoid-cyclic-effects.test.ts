@@ -107,16 +107,18 @@ ruleTester().run(path.parse(__filename).name, rule, {
     `
       ${setup}
       class Effect {
-        foo$ = createEffect(() =>
-          this.actions$.pipe(
-            ofType(genericFoo),
-            map(() => genericBar()),
-          ),
-        )
+        foo$: Observable<unknown>
 
         constructor(
           private actions$: Actions,
-        ) {}
+        ) {
+          this.foo$ = createEffect(() =>
+            this.actions$.pipe(
+              ofType(genericFoo),
+              map(() => genericBar()),
+            ),
+          )
+        }
       }
     `,
     // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
@@ -205,32 +207,36 @@ ruleTester().run(path.parse(__filename).name, rule, {
     fromFixture(stripIndent`
       ${setup}
       class Effect {
-        foo$ = createEffect(() =>
-          this.actions$.pipe(
-          ~~~~~~~~~~~~~~~~~~ [${messageId}]
-            ofType(fromFoo.foo),
-            tap(() => alert('hi'))
-          ),
+        foo$ = createEffect(
+          () =>
+            ({ debounce = 100 } = {}) =>
+              debounce
+                ? this.actions$.pipe(
+                  ~~~~~~~~~~~~~~~~~~ [${messageId}]
+                    ofType(fromFoo.foo),
+                    tap(() => alert('hi')),
+                  )
+                : this.actions$.pipe(),
         )
 
-        constructor(
-          private actions$: Actions,
-        ) {}
+        constructor(private actions$: Actions) {}
       }
     `),
     fromFixture(stripIndent`
       ${setup}
       class Effect {
-        foo$ = createEffect(() =>
-          this.actions$.pipe(
-          ~~~~~~~~~~~~~~~~~~ [${messageId}]
-            ofType(genericFoo),
-          ),
-        )
+        foo$: Observable<unknown>
 
         constructor(
           private actions$: Actions,
-        ) {}
+        ) {
+          this.foo$ = createEffect(() =>
+            this.actions$.pipe(
+            ~~~~~~~~~~~~~~~~~~ [${messageId}]
+              ofType(genericFoo),
+            ),
+          )
+        }
       }
     `),
     // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223

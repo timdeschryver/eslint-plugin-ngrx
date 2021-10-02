@@ -28,7 +28,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       const action = () => foo()
       @Injectable()
       export class Effects {
-        effectOK2$ = createEffect(() =>
+        effectOK2$ = createEffect(() => ({ debounce = 700 } = {}) =>
           this.actions$.pipe(mapTo(action()))
         )
       }`,
@@ -44,18 +44,23 @@ ruleTester().run(path.parse(__filename).name, rule, {
         )
       }`,
     `
+      const foo = {type: 'foo'}
       @Injectable()
       export class Effects {
-        effectOK4$ = createEffect(() =>
-          this.actions$.pipe(
-            exhaustMap(() => {
-              return of({}).pipe(
-                map(response => foo()),
-                catchError(() => of(bar()))
-              );
-            })
+        effectOK4$: Observable<unknown>
+
+        constructor() {
+          this.effectOK4$ = createEffect(() =>
+            this.actions$.pipe(
+              exhaustMap(() => {
+                return of({}).pipe(
+                  map(response => foo()),
+                  catchError(() => of(bar()))
+                );
+              })
+            )
           )
-        )
+        }
       }`,
   ],
   invalid: [
@@ -115,17 +120,19 @@ ruleTester().run(path.parse(__filename).name, rule, {
       stripIndent`
         const actions = () => [foo(), bar()]
         @Injectable()
-          export class Effects {
+        export class Effects {
           effectNOK5$ = createEffect(() =>
-            this.actions$.pipe(
-              exhaustMap(() => {
-                return of({}).pipe(
-                  switchMap(() => actions()),
-                                  ~~~~~~~~~  [${messageId}]
-                  catchError(() => of(bar()))
-                );
-              })
-            )
+            condition
+              ? this.actions$.pipe(
+                  exhaustMap(() => {
+                    return of({}).pipe(
+                      switchMap(() => actions()),
+                                      ~~~~~~~~~  [${messageId}]
+                      catchError(() => of(bar())),
+                    )
+                  }),
+                )
+              : this.actions.pipe(),
           )
         }`,
     ),
@@ -149,13 +156,17 @@ ruleTester().run(path.parse(__filename).name, rule, {
         import { of } from 'rxjs'
         @Injectable()
         export class Effects {
-          effectNOK7$ = createEffect(() => ({ debounce = 300 } = {}) =>
-            this.actions$.pipe(switchMap(() => {
-              let actions: Action[] | null;
-              return actions ?? of(foo());
-                     ~~~~~~~~~~~~~~~~~~~~  [${messageId}]
-            }))
-          )
+          readonly effectNOK7$: Observable<unknown>
+
+          constructor() {
+            effectNOK7$ = createEffect(() => ({ debounce = 300 } = {}) =>
+              this.actions$.pipe(switchMap(() => {
+                let actions: Action[] | null;
+                return actions ?? of(foo());
+                       ~~~~~~~~~~~~~~~~~~~~  [${messageId}]
+              }))
+            )
+          }
         }`,
     ),
   ],
