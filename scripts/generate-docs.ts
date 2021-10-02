@@ -14,7 +14,7 @@ for (const [ruleName, { meta }] of Object.entries(rules)) {
   const docContent = doc.substr(doc.indexOf(placeholder) + placeholder.length)
   const frontMatter = [
     `Fixable: ${meta.fixable ? 'yes' : 'no'}`,
-    meta.version ? `NgRx Version: ${meta.version}` : '',
+    meta.version ? `Required NgRx Version Range: ${meta.version}` : '',
   ]
   const newDoc = format(
     `---

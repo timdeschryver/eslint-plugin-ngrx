@@ -1,6 +1,6 @@
 ---
 Fixable: no
-NgRx Version: >=12.0.0
+Required NgRx Version Range: >=12.0.0
 ---
 
 # prefer-concat-latest-from
