@@ -14,7 +14,6 @@ ruleTester({ ngrxModule: NGRX_MODULE_PATHS.effects, version: '12.1.0' }).run(
     valid: [
       {
         code: `
-import { Actions } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
 @Injectable()
 class Test {
@@ -28,8 +27,6 @@ class Test {
         })
       ),
   );
-
-  constructor(private readonly actions$: Actions) {}
 }`,
         options: [{ strict: true }],
       },
@@ -173,7 +170,6 @@ class Test {
       ),
       fromFixture(
         stripIndent`
-import { Actions } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
 @Injectable()
 class Test {
@@ -187,13 +183,11 @@ class Test {
       mergeMapTo(of({ type: 'noop' })),
     )
   }, { dispatch: false })
-
-  constructor(private readonly actions$: Actions) {}
 }`,
         {
           options: [{ strict: true }],
           output: stripIndent`
-import { Actions, concatLatestFrom } from '@ngrx/effects'
+import { concatLatestFrom } from '@ngrx/effects';
 import { of, withLatestFrom } from 'rxjs'
 @Injectable()
 class Test {
@@ -206,14 +200,12 @@ class Test {
       mergeMapTo(of({ type: 'noop' })),
     )
   }, { dispatch: false })
-
-  constructor(private readonly actions$: Actions) {}
 }`,
         },
       ),
       fromFixture(
         stripIndent`
-import { Actions, concatLatestFrom } from '@ngrx/effects'
+import { concatLatestFrom } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
 @Injectable()
 class Test {
@@ -231,13 +223,11 @@ class Test {
         )
       : this.actions$.pipe()
   })
-
-  constructor(private readonly actions$: Actions) {}
 }`,
         {
           options: [{ strict: true }],
           output: stripIndent`
-import { Actions, concatLatestFrom } from '@ngrx/effects'
+import { concatLatestFrom } from '@ngrx/effects'
 import { of, withLatestFrom, map } from 'rxjs'
 @Injectable()
 class Test {
@@ -254,8 +244,6 @@ class Test {
         )
       : this.actions$.pipe()
   })
-
-  constructor(private readonly actions$: Actions) {}
 }`,
         },
       ),
@@ -282,8 +270,6 @@ class Test {
         }),
       ),
   );
-
-  constructor(private readonly actions$: Actions) {}
 }`,
     ],
     invalid: [],

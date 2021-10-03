@@ -52,15 +52,18 @@ export default createRule<Options, MessageIds>({
   },
   defaultOptions: [defaultOptions],
   create: (context, [{ strict }]) => {
-    const actionsName = findNgRxEffectActionsName(context)
-    if (!actionsName) return {}
-
+    let actionsName: string | undefined
     const sourceCode = context.getSourceCode()
     const selector = strict
       ? (`${createEffectExpression} CallExpression > Identifier[name='withLatestFrom']` as const)
-      : (`${createEffectExpression} ${storeExpression(
+      : (actionsName = findNgRxEffectActionsName(context)) &&
+        (`${createEffectExpression} ${storeExpression(
           actionsName,
         )} > CallExpression[arguments.length=1] > Identifier[name='${withLatestFromKeyword}']` as const)
+
+    if (!selector) {
+      return {}
+    }
 
     return {
       [selector](node: WithLatestFromIdentifier) {
