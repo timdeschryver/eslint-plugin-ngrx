@@ -47,7 +47,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       const foo = {type: 'foo'}
       @Injectable()
       export class Effects {
-        effectOK4$: Observable<unknown>
+        effectOK4$: CreateEffectMetadata
 
         constructor() {
           this.effectOK4$ = createEffect(() =>
@@ -156,7 +156,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         import { of } from 'rxjs'
         @Injectable()
         export class Effects {
-          readonly effectNOK7$: Observable<unknown>
+          readonly effectNOK7$: CreateEffectMetadata
 
           constructor() {
             effectNOK7$ = createEffect(() => ({ debounce = 300 } = {}) =>

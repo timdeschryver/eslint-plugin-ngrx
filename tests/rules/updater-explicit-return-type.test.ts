@@ -53,7 +53,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     `${setup}
 
     export class MoviesStore {
-      readonly addMovie: Observable<unknown>
+      readonly addMovie: CreateEffectMetadata
 
       constructor(customStore: ComponentStore<MoviesState>) {
         this.addMovie = customStore.updater<Movie>((state, movie): MoviesState => ({
@@ -108,7 +108,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ${setup}
 
         export class MoviesStore {
-          readonly addMovie: Observable<unknown>
+          readonly addMovie: CreateEffectMetadata
 
           constructor(customStore: ComponentStore<MoviesState>) {
             this.addMovie = customStore.updater<Movie>((state, movie) => ({ movies: [...state.movies, movie] }));

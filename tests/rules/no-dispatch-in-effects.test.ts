@@ -30,7 +30,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     import { Store } from '@ngrx/store'
     @Injectable()
     export class FixtureEffects {
-      readonly effectOK1: Observable<unknown>
+      readonly effectOK1: CreateEffectMetadata
 
       constructor(private actions: Actions, private store$: Store) {
          this.effectOK1 = createEffect(
@@ -173,7 +173,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       import { Store } from '@ngrx/store'
       @Injectable()
       export class FixtureEffects {
-        readonly effectNOK3: Observable<unknown>
+        readonly effectNOK3: CreateEffectMetadata
 
         constructor(private actions: Actions, private readonly store$: Store) {
           this.effectNOK3 = createEffect(
@@ -198,7 +198,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
             import { Store } from '@ngrx/store'
             @Injectable()
             export class FixtureEffects {
-              readonly effectNOK3: Observable<unknown>
+              readonly effectNOK3: CreateEffectMetadata
 
               constructor(private actions: Actions, private readonly store$: Store) {
                 this.effectNOK3 = createEffect(
