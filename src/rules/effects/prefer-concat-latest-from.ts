@@ -78,11 +78,14 @@ function getSelector(
   }
 
   const actionsName = findNgRxEffectActionsName(context)
-  return actionsName
-    ? (`${createEffectExpression} ${storeExpression(
-        actionsName,
-      )} > CallExpression[arguments.length=1] > Identifier[name='${withLatestFromKeyword}']` as const)
-    : null
+
+  if (!actionsName) {
+    return null
+  }
+
+  return `${createEffectExpression} ${storeExpression(
+    actionsName,
+  )} > CallExpression[arguments.length=1] > Identifier[name='${withLatestFromKeyword}']` as const
 }
 
 function getFixes(
