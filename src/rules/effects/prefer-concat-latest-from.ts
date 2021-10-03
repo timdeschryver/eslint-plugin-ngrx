@@ -51,31 +51,39 @@ export default createRule<Options, MessageIds>({
     },
   },
   defaultOptions: [defaultOptions],
-  create: (context, [{ strict }]) => {
-    let actionsName: string | undefined
+  create: (context, [options]) => {
     const sourceCode = context.getSourceCode()
-    const selector = strict
-      ? (`${createEffectExpression} CallExpression > Identifier[name='withLatestFrom']` as const)
-      : (actionsName = findNgRxEffectActionsName(context)) &&
-        (`${createEffectExpression} ${storeExpression(
-          actionsName,
-        )} > CallExpression[arguments.length=1] > Identifier[name='${withLatestFromKeyword}']` as const)
-
-    if (!selector) {
-      return {}
-    }
+    const selector = getSelector(context, options)
 
     return {
-      [selector](node: WithLatestFromIdentifier) {
-        context.report({
-          node,
-          messageId,
-          fix: (fixer) => getFixes(sourceCode, fixer, node),
-        })
-      },
+      ...(selector && {
+        [selector](node: WithLatestFromIdentifier) {
+          context.report({
+            node,
+            messageId,
+            fix: (fixer) => getFixes(sourceCode, fixer, node),
+          })
+        },
+      }),
     }
   },
 })
+
+function getSelector(
+  context: Readonly<TSESLint.RuleContext<MessageIds, Options>>,
+  { strict }: Options[number],
+) {
+  if (strict) {
+    return `${createEffectExpression} CallExpression > Identifier[name='withLatestFrom']` as const
+  }
+
+  const actionsName = findNgRxEffectActionsName(context)
+  return actionsName
+    ? (`${createEffectExpression} ${storeExpression(
+        actionsName,
+      )} > CallExpression[arguments.length=1] > Identifier[name='${withLatestFromKeyword}']` as const)
+    : null
+}
 
 function getFixes(
   sourceCode: Readonly<TSESLint.SourceCode>,
