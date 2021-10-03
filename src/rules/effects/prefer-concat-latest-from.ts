@@ -4,19 +4,23 @@ import path from 'path'
 import { createRule } from '../../rule-creator'
 import {
   createEffectExpression,
+  findNgRxEffectActionsName,
   getImportAddFix,
   NGRX_MODULE_PATHS,
+  storeExpression,
 } from '../../utils'
 
 export const messageId = 'preferConcatLatestFrom'
 export type MessageIds = typeof messageId
 
 type Options = [{ readonly strict: boolean }]
-const defaultOptions: Options[number] = { strict: false }
-
 type WithLatestFromIdentifier = TSESTree.Identifier & {
   parent: TSESTree.CallExpression
 }
+
+const defaultOptions: Options[number] = { strict: false }
+const concatLatestFromKeyword = 'concatLatestFrom'
+const withLatestFromKeyword = 'withLatestFrom'
 
 export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
@@ -26,8 +30,7 @@ export default createRule<Options, MessageIds>({
     version: '>=12.0.0',
     docs: {
       category: 'Possible Errors',
-      description:
-        'Use `concatLatestFrom` instead of `withLatestFrom` to prevent the selector from firing until the correct `Action` is dispatched.',
+      description: `Use \`${concatLatestFromKeyword}\` instead of \`${withLatestFromKeyword}\` to prevent the selector from firing until the correct \`Action\` is dispatched.`,
       recommended: 'warn',
     },
     fixable: 'code',
@@ -44,15 +47,20 @@ export default createRule<Options, MessageIds>({
       },
     ],
     messages: {
-      [messageId]: 'Use `concatLatestFrom` instead of `withLatestFrom`.',
+      [messageId]: `Use \`${concatLatestFromKeyword}\` instead of \`${withLatestFromKeyword}\`.`,
     },
   },
   defaultOptions: [defaultOptions],
   create: (context, [{ strict }]) => {
+    const actionsName = findNgRxEffectActionsName(context)
+    if (!actionsName) return {}
+
     const sourceCode = context.getSourceCode()
     const selector = strict
       ? (`${createEffectExpression} CallExpression > Identifier[name='withLatestFrom']` as const)
-      : (`${createEffectExpression} > [body] > [arguments] > CallExpression[arguments.length=1] > Identifier[name='withLatestFrom']` as const)
+      : (`${createEffectExpression} ${storeExpression(
+          actionsName,
+        )} > CallExpression[arguments.length=1] > Identifier[name='${withLatestFromKeyword}']` as const)
 
     return {
       [selector](node: WithLatestFromIdentifier) {
@@ -78,14 +86,14 @@ function getFixes(
     isUsingDeprecatedProjectorArgument &&
     sourceCode.getTokenAfter(firstArgument)
   return [
-    fixer.replaceText(node, 'concatLatestFrom'),
+    fixer.replaceText(node, concatLatestFromKeyword),
     ...(isArrowFunctionExpression(firstArgument)
       ? []
       : [fixer.insertTextBefore(firstArgument, '() => ')]),
   ].concat(
     getImportAddFix({
       fixer,
-      importName: 'concatLatestFrom',
+      importName: concatLatestFromKeyword,
       moduleName: NGRX_MODULE_PATHS.effects,
       node,
     }),

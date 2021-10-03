@@ -1,5 +1,5 @@
 ---
-Fixable: no
+Fixable: yes
 Required NgRx Version Range: >=12.0.0
 ---
 
