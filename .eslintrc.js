@@ -12,7 +12,7 @@ module.exports = {
     project: './tsconfig.eslint.json',
     extraFileExtensions: ['.json'],
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['.eslintrc.js', 'coverage'],
   rules: {
     '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
