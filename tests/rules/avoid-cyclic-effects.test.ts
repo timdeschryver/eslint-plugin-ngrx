@@ -107,7 +107,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     `
       ${setup}
       class Effect {
-        foo$: Observable<unknown>
+        foo$: CreateEffectMetadata
 
         constructor(
           private actions$: Actions,
@@ -225,7 +225,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     fromFixture(stripIndent`
       ${setup}
       class Effect {
-        foo$: Observable<unknown>
+        foo$: CreateEffectMetadata
 
         constructor(
           private actions$: Actions,
