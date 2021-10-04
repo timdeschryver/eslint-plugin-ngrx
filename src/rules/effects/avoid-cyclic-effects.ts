@@ -10,11 +10,12 @@ import {
   isCallExpression,
   isIdentifier,
   isTypeReference,
+  storePipe,
 } from '../../utils'
 
 export const messageId = 'avoidCyclicEffects'
-export type MessageIds = typeof messageId
 
+type MessageIds = typeof messageId
 type Options = []
 
 // This rule is a modified version (to support dispatch: false) from the eslint-plugin-rxjs plugin.
@@ -24,7 +25,7 @@ type Options = []
 export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'suggestion',
+    type: 'problem',
     docs: {
       category: 'Possible Errors',
       description: 'Avoid effects that re-emit filtered actions.',
@@ -81,8 +82,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         return
       }
 
-      const operatorActionTypes = getActionTypes(operatorElementType)
-      const pipeActionTypes = getActionTypes(pipeElementType)
+      const operatorActionTypes = getPossibleTypes(operatorElementType, 'type')
+      const pipeActionTypes = getPossibleTypes(pipeElementType, 'type')
 
       for (const actionType of operatorActionTypes) {
         if (pipeActionTypes.includes(actionType)) {
@@ -95,7 +96,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       }
     }
 
-    function getActionType(symbol: ts.Symbol): ts.Type | null {
+    function getTypeOfSymbol(symbol: ts.Symbol): ts.Type | null {
       const { valueDeclaration } = symbol
 
       if (!valueDeclaration) {
@@ -115,38 +116,67 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       return typeChecker.getTypeOfSymbolAtLocation(symbol, valueDeclaration)
     }
 
-    function getActionTypes(type: ts.Type): string[] {
+    function getPossibleTypes(
+      type: ts.Type,
+      propertyName: string,
+    ): readonly string[] {
       if (type.isUnion()) {
-        const memberActionTypes: string[] = []
-        for (const memberType of type.types) {
-          memberActionTypes.push(...getActionTypes(memberType))
-        }
-        return memberActionTypes
+        return type.types.reduce<readonly string[]>(
+          (accumulator, memberType) => {
+            return accumulator.concat(
+              getPossibleTypes(memberType, propertyName),
+            )
+          },
+          [],
+        )
       }
 
-      const symbol = typeChecker.getPropertyOfType(type, 'type')
+      const symbol = typeChecker.getPropertyOfType(type, propertyName)
 
       if (!symbol) {
         return []
       }
 
-      const actionType = getActionType(symbol)
+      const symbolType = getTypeOfSymbol(symbol)
 
-      if (!actionType) {
+      if (!symbolType) {
         return []
       }
 
-      // TODO: support "dynamic" types
-      // e.g. const genericFoo = createAction(`${subject} FOO`); (resolves to 'string')
-      if (typeChecker.typeToString(actionType) === 'string') {
-        return []
-      }
-      return [typeChecker.typeToString(actionType)]
+      return [typeChecker.typeToString(symbolType)]
     }
 
+    let hasDispatchFalse = false
+    const pipeNodes = new Set<TSESTree.CallExpression>()
+
     return {
-      [`${createEffectExpression}:not([arguments.1]:has(Property[key.name='dispatch'][value.value=false])) CallExpression[callee.property.name='pipe'][callee.object.property.name='${actionsName}']`]:
-        checkNode,
+      [createEffectExpression]({
+        arguments: [, effectConfig],
+      }: TSESTree.CallExpression) {
+        if (!effectConfig) {
+          return (hasDispatchFalse = false)
+        }
+
+        const effectConfigType = getType(effectConfig)
+        hasDispatchFalse = getPossibleTypes(effectConfigType, 'dispatch').some(
+          (type) => type === 'false',
+        )
+      },
+      [`${createEffectExpression} ${storePipe(actionsName)}`](
+        node: TSESTree.CallExpression,
+      ) {
+        pipeNodes.add(node)
+      },
+      [`${createEffectExpression}:exit`]() {
+        if (!hasDispatchFalse) {
+          for (const pipeNode of pipeNodes) {
+            checkNode(pipeNode)
+          }
+        }
+
+        hasDispatchFalse = false
+        pipeNodes.clear()
+      },
     }
   },
 })

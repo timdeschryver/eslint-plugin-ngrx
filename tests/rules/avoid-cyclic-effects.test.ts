@@ -5,115 +5,153 @@ import rule, { messageId } from '../../src/rules/effects/avoid-cyclic-effects'
 import { ruleTester } from '../utils'
 
 const setup = `
+  import { Injectable } from '@angular/core'
   import type { OnRunEffects } from '@ngrx/effects'
-  import { EffectConfig } from '@ngrx/effects'
-  import { Actions, createEffect, ofType } from '@ngrx/effects'
-  import { createAction } from '@ngrx/store'
-  import { map, tap } from 'rxjs/operators'
+  import { Actions, createEffect, CreateEffectMetadata, EffectConfig, ofType } from '@ngrx/effects'
+  import { Action, createAction } from '@ngrx/store'
+  import { of } from 'rxjs'
+  import { exhaustMap, map, mergeMapTo, switchMap, switchMapTo, tap } from 'rxjs/operators'
 
   const foo = createAction('FOO')
   const bar = createAction('BAR')
+  const subject = 'SUBJECT'
+  const genericFoo = createAction(\`\${subject} FOO\`)
+  const genericBar = createAction(\`\${subject} BAR\`)
+  const fromFoo = { foo, bar }
+  const EMPTY_OBJECT = {}
+  const UNDEFINED = undefined
+  let shouldDispatch: boolean
+  const dispatchAny = { dispatch: false } as any
+  const dispatchNullable = { dispatch: true } as { dispatch: true } | null
+  const configDispatchTrue = { dispatch: true } as const
+  const dispatch = false
+  const dispatchKey = 'dispatch'
 
-  const fromFoo = {
-    foo,
-    bar
+  function getEffectConfig() {
+    return { dispatch } as const
   }
-`.concat(
-  [
-    "const subject = 'SUBJECT'",
-    'const genericFoo = createAction(`${subject} FOO`);',
-    'const genericBar = createAction(`${subject} BAR`);',
-  ].join('\n'),
-)
+`
 
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
       ${setup}
+      @Injectable()
+      class Effect {
+        foo$ = createEffect(() => {
+          return this.layoutObserver.screenType$.pipe(
+            map((screenType) => LayoutActions.setScreenType({ screenType })),
+          )
+        })
+
+        constructor(private layoutObserver: LayoutObserver) {}
+      }
+    `,
+    `
+      ${setup}
+      @Injectable()
       class Effect {
         foo$ = createEffect(() =>
           this.actions$.pipe(
             ofType(foo),
-            map(() => bar()),
+            switchMap(() => of(bar())),
           ),
         )
 
-        constructor(
-          private actions$: Actions,
-        ) {}
+        constructor(private actions$: Actions) {}
       }
     `,
     `
       ${setup}
+      @Injectable()
       class Effect {
         foo$ = createEffect(() => {
           return this.actions$.pipe(
             ofType(foo),
-            map(() => bar()),
+            exhaustMap(() => [bar(), genericBar()]),
           )
         })
 
-        constructor(
-          private actions$: Actions,
-        ) {}
+        constructor(private actions$: Actions) {}
       }
     `,
     `
       ${setup}
+      @Injectable()
       class Effect {
+        bar$ = createEffect(() =>
+          this.actions$.pipe(
+            ofType(genericFoo),
+            switchMapTo(genericBar()),
+          ),
+        )
         foo$ = createEffect(() => {
           return this.actions$.pipe(
             ofType(fromFoo.foo),
-            map(() => fromFoo.bar()),
+            mergeMapTo([fromFoo.bar()]),
           )
         })
 
-        constructor(
-          private actions$: Actions,
-        ) {}
+        constructor(private actions$: Actions) {}
       }
     `,
     `
       ${setup}
+      @Injectable()
       class Effect {
         foo$ = createEffect(() => {
           return this.actions.pipe(
             ofType(foo),
             mapTo(bar()),
           )
-        })
+        }, { dispatch: true })
 
-        constructor(
-          private actions: Actions,
-        ) {}
+        constructor(private actions: Actions) {}
       }
     `,
-    `
-      ${setup}
-      class Effect {
-        foo$ = createEffect(() => {
-          return this.actions$.pipe(
-            ofType(foo),
-            tap(() => alert('hi'))
-          )
-          }, { dispatch: false }
-        )
+    ...(
+      [
+        '{ dispatch }',
+        '{ dispatch: dispatch }',
+        '{ dispatch: false, useEffectsErrorHandler: false }',
+        '{ "dispatch": false }',
+        '{ ["dispatch"]: false }',
+        '{ [`dispatch`]: false }',
+        '{ [dispatchKey]: false }',
+        '{ ...configDispatchTrue, dispatch: false }',
+        'getEffectConfig()',
+        'shouldDispatch ? { dispatch: true } : { dispatch }',
+        'dispatchNullable ?? { dispatch: false }',
+      ] as const
+    ).map(
+      (effectConfig) =>
+        `
+          ${setup}
+          @Injectable()
+          class Effect {
+            foo$ = createEffect(
+              () => {
+                return this.actions$.pipe(
+                  ofType(foo),
+                  tap(() => alert('hi')),
+                )
+              },
+              ${effectConfig},
+            )
 
-        constructor(
-          private actions$: Actions,
-        ) {}
-      }
-    `,
+            constructor(private actions$: Actions) {}
+          }
+        `,
+    ),
     `
       ${setup}
+      @Injectable()
       class Effect {
         foo$: Observable<unknown>
 
-        constructor(
-          private actions$: Actions,
-        ) {
+        constructor(actions$: Actions) {
           this.foo$ = createEffect(() =>
-            this.actions$.pipe(
+            actions$.pipe(
               ofType(genericFoo),
               map(() => genericBar()),
             ),
@@ -123,12 +161,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
     `,
     // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
     `
-      import { Injectable } from '@angular/core';
-      import { Actions, createEffect, ofType } from '@ngrx/effects';
-      import { Action } from '@ngrx/store';
-      import { of } from 'rxjs';
-      import { switchMap } from 'rxjs/operators';
-
+      ${setup}
       enum OrderEntityActionTypes {
         postPortInData = '[Order Entity] Post PortIn Data',
         postPortInDataSuccess = '[Order Entity] Post PortIn Data Success',
@@ -158,6 +191,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
   invalid: [
     fromFixture(stripIndent`
       ${setup}
+      @Injectable()
       class Effect {
         foo$ = createEffect(() =>
           this.actions$.pipe(
@@ -167,13 +201,12 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ),
         )
 
-        constructor(
-          private actions$: Actions,
-        ) {}
+        constructor(private actions$: Actions) {}
       }
     `),
     fromFixture(stripIndent`
       ${setup}
+      @Injectable()
       class Effect {
         foo$ = createEffect(() => {
           return this.actions$.pipe(
@@ -181,15 +214,14 @@ ruleTester().run(path.parse(__filename).name, rule, {
             ofType(foo),
             tap(() => alert('hi'))
           )
-        })
+        }, dispatchAny)
 
-        constructor(
-          private actions$: Actions,
-        ) {}
+        constructor(private actions$: Actions) {}
       }
     `),
     fromFixture(stripIndent`
       ${setup}
+      @Injectable()
       class Effect {
         foo$ = createEffect(() => {
           return this.actions$.pipe(
@@ -197,26 +229,12 @@ ruleTester().run(path.parse(__filename).name, rule, {
             ofType(foo),
             tap(() => alert('hi'))
           )
-        }, { dispatch: true })
-
-        constructor(
-          private actions$: Actions,
-        ) {}
-      }
-    `),
-    fromFixture(stripIndent`
-      ${setup}
-      class Effect {
-        foo$ = createEffect(
-          () =>
-            ({ debounce = 100 } = {}) =>
-              debounce
-                ? this.actions$.pipe(
-                  ~~~~~~~~~~~~~~~~~~ [${messageId}]
-                    ofType(fromFoo.foo),
-                    tap(() => alert('hi')),
-                  )
-                : this.actions$.pipe(),
+        }, EMPTY_OBJECT)
+        bar$ = createEffect(() =>
+          this.actions$.pipe(
+            ofType(genericFoo),
+            map(() => genericBar()),
+          ),
         )
 
         constructor(private actions$: Actions) {}
@@ -224,29 +242,109 @@ ruleTester().run(path.parse(__filename).name, rule, {
     `),
     fromFixture(stripIndent`
       ${setup}
+      @Injectable()
       class Effect {
-        foo$: Observable<unknown>
+        foo$ = createEffect(() => {
+          return shouldDispatch
+            ? this.actions$.pipe(
+              ~~~~~~~~~~~~~~~~~~ [${messageId}]
+                ofType(fromFoo.foo),
+                tap(() => console.log('hello')),
+              )
+            : this.actions$.pipe(
+              ~~~~~~~~~~~~~~~~~~ [${messageId}]
+                ofType(fromFoo.foo),
+                switchMap(() => [foo(), bar()]),
+              )
+        })
 
-        constructor(
-          private actions$: Actions,
-        ) {
+        constructor(private actions$: Actions) {}
+      }
+    `),
+    fromFixture(stripIndent`
+      ${setup}
+      @Injectable()
+      class Effect {
+        foo$ = createEffect(() => {
+          return ({ debounce = 100 } = {}) => {
+            return (
+              debounce
+                ? this.actions$.pipe(
+                  ~~~~~~~~~~~~~~~~~~ [${messageId}]
+                    ofType(fromFoo.foo),
+                    tap(() => alert('hi')),
+                  )
+                : this.actions$.pipe(),
+              UNDEFINED
+            )
+          }
+        })
+
+        constructor(private actions$: Actions) {}
+      }
+    `),
+    fromFixture(stripIndent`
+      ${setup}
+      @Injectable()
+      class Effect {
+        foo$: CreateEffectMetadata
+
+        constructor(private actions$: Actions) {
           this.foo$ = createEffect(() =>
             this.actions$.pipe(
             ~~~~~~~~~~~~~~~~~~ [${messageId}]
               ofType(genericFoo),
+              mergeMapTo(of(genericFoo()))
             ),
+            configDispatchTrue
+          )
+        }
+      }
+    `),
+    fromFixture(stripIndent`
+      ${setup}
+      @Injectable()
+      class Effect {
+        readonly bar$ = createEffect(() =>
+          this.actions$.pipe(
+            ofType(genericFoo),
+            map(() => genericBar()),
+          ),
+        )
+        readonly foo$ = createEffect(
+          () =>
+            this.actions$.pipe(
+            ~~~~~~~~~~~~~~~~~~ [${messageId}]
+              ofType(genericFoo, genericBar),
+              tap((action) => console.log(action))
+            ),
+            { ...configDispatchTrue }
+        )
+
+        constructor(private readonly actions$: Actions) {}
+      }
+    `),
+    fromFixture(stripIndent`
+      ${setup}
+      @Injectable()
+      class Effect {
+        foo$: CreateEffectMetadata
+
+        constructor(customActions$: Actions) {
+          this.foo$ = createEffect(() =>
+            customActions$.pipe(
+            ~~~~~~~~~~~~~~~~~~~ [${messageId}]
+              ofType(genericFoo),
+              switchMapTo([genericBar(), genericFoo()]),
+            ),
+            { useEffectsErrorHandler: true }
           )
         }
       }
     `),
     // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
     fromFixture(stripIndent`
-      import { Injectable } from '@angular/core';
-      import { Actions, createEffect, ofType } from '@ngrx/effects';
-      import { Action } from '@ngrx/store';
-      import { of } from 'rxjs';
-      import { switchMap } from 'rxjs/operators';
-
+      ${setup}
       enum OrderEntityActionTypes {
         postPortInData = '[Order Entity] Post PortIn Data',
         postPortInDataSuccess = '[Order Entity] Post PortIn Data Success',
