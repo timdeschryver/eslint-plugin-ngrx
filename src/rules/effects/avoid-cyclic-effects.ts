@@ -154,7 +154,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         arguments: [, effectConfig],
       }: TSESTree.CallExpression) {
         if (!effectConfig) {
-          return (hasDispatchFalse = false)
+          hasDispatchFalse = false
+          return
         }
 
         const effectConfigType = getType(effectConfig)
