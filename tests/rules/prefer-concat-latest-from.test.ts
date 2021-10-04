@@ -227,8 +227,9 @@ class Test {
         {
           options: [{ strict: true }],
           output: stripIndent`
+import { map } from 'rxjs/operators';
 import { concatLatestFrom } from '@ngrx/effects'
-import { of, withLatestFrom, map } from 'rxjs'
+import { of, withLatestFrom } from 'rxjs'
 @Injectable()
 class Test {
   effectNOK3 = createEffect(() => {

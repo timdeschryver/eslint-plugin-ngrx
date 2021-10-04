@@ -116,7 +116,7 @@ function getFixes(
           getImportAddFix({
             fixer,
             importName: 'map',
-            moduleName: 'rxjs',
+            moduleName: 'rxjs/operators',
             node,
           }),
           fixer.insertTextAfterRange(nextToken.range, '), map('),
