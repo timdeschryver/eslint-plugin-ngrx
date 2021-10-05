@@ -1,10 +1,12 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, { messageId } from '../../src/rules/effects/avoid-cyclic-effects'
 import { ruleTester } from '../utils'
 
-const setup = `
+test(__filename, () => {
+  const setup = `
   import type { OnRunEffects } from '@ngrx/effects'
   import { EffectConfig } from '@ngrx/effects'
   import { Actions, createEffect, ofType } from '@ngrx/effects'
@@ -19,16 +21,16 @@ const setup = `
     bar
   }
 `.concat(
-  [
-    "const subject = 'SUBJECT'",
-    'const genericFoo = createAction(`${subject} FOO`);',
-    'const genericBar = createAction(`${subject} BAR`);',
-  ].join('\n'),
-)
+    [
+      "const subject = 'SUBJECT'",
+      'const genericFoo = createAction(`${subject} FOO`);',
+      'const genericBar = createAction(`${subject} BAR`);',
+    ].join('\n'),
+  )
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+  ruleTester().run(path.parse(__filename).name, rule, {
+    valid: [
+      `
       ${setup}
       class Effect {
         foo$ = createEffect(() =>
@@ -43,7 +45,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ) {}
       }
     `,
-    `
+      `
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -58,7 +60,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ) {}
       }
     `,
-    `
+      `
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -73,7 +75,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ) {}
       }
     `,
-    `
+      `
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -88,7 +90,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ) {}
       }
     `,
-    `
+      `
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -104,7 +106,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ) {}
       }
     `,
-    `
+      `
       ${setup}
       class Effect {
         foo$: CreateEffectMetadata
@@ -121,8 +123,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }
       }
     `,
-    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
-    `
+      // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
+      `
       import { Injectable } from '@angular/core';
       import { Actions, createEffect, ofType } from '@ngrx/effects';
       import { Action } from '@ngrx/store';
@@ -154,14 +156,14 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private readonly actions$: Actions) {}
       }
     `,
-  ],
-  invalid: [
-    fromFixture(stripIndent`
+    ],
+    invalid: [
+      fromFixture(stripIndent`
       ${setup}
       class Effect {
         foo$ = createEffect(() =>
           this.actions$.pipe(
-          ~~~~~~~~~~~~~~~~~~ [${messageId}]
+          ~~~~~~~~~~~~~~~~~~~ [${messageId}]
             ofType(foo),
             tap(() => alert('hi'))
           ),
@@ -172,7 +174,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ) {}
       }
     `),
-    fromFixture(stripIndent`
+      fromFixture(stripIndent`
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -188,7 +190,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ) {}
       }
     `),
-    fromFixture(stripIndent`
+      fromFixture(stripIndent`
       ${setup}
       class Effect {
         foo$ = createEffect(() => {
@@ -204,7 +206,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ) {}
       }
     `),
-    fromFixture(stripIndent`
+      fromFixture(stripIndent`
       ${setup}
       class Effect {
         foo$ = createEffect(
@@ -222,7 +224,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private actions$: Actions) {}
       }
     `),
-    fromFixture(stripIndent`
+      fromFixture(stripIndent`
       ${setup}
       class Effect {
         foo$: CreateEffectMetadata
@@ -239,8 +241,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }
       }
     `),
-    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
-    fromFixture(stripIndent`
+      // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/223
+      fromFixture(stripIndent`
       import { Injectable } from '@angular/core';
       import { Actions, createEffect, ofType } from '@ngrx/effects';
       import { Action } from '@ngrx/store';
@@ -273,5 +275,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private readonly actions$: Actions) {}
       }
     `),
-  ],
+    ],
+  })
 })
+
+test.run()
