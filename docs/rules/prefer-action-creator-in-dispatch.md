@@ -9,6 +9,8 @@ Examples of **incorrect** code for this rule:
 ```ts
 store$.dispatch(new CustomAction())
 
+this.store$.dispatch(new AuthActions.Login({ type }))
+
 this.store$.dispatch({ type: 'custom' })
 ```
 
@@ -17,5 +19,7 @@ Examples of **correct** code for this rule:
 ```ts
 store$.dispatch(action)
 
-this.store$.dispatch(bookActions.load())
+this.store$.dispatch(BookActions.load())
+
+this.store$.dispatch(AuthActions.Login({ payload }))
 ```

@@ -28,7 +28,18 @@ ruleTester().run(path.parse(__filename).name, rule, {
     @Component()
     class Test {
       constructor(private readonly store$: Store) {
-        this.store$.dispatch(bookActions.load())
+        this.store$.dispatch(BookActions.load())
+      }
+    }`,
+    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/255
+    `
+    import { Store } from '@ngrx/store';
+    @Component()
+    class Test {
+      constructor(private readonly store: Store) {
+        this.store.dispatch(login({ payload }));
+        this.store.dispatch(AuthActions.dispatch({ type: 'SUCCESS' }));
+        nonStore.dispatch(AuthActions.dispatch({ type: 'FAIL' }));
       }
     }`,
   ],
@@ -52,6 +63,20 @@ ruleTester().run(path.parse(__filename).name, rule, {
         constructor(private readonly store$: Store) {
           this.store$.dispatch({ type: 'custom' })
                                ~~~~~~~~~~~~~~~~~~ [${messageId}]
+        }
+      }`,
+    ),
+    fromFixture(
+      stripIndent`
+      import { Store } from '@ngrx/store';
+      @Injectable()
+      class Test {
+        constructor(private readonly store$: Store) {
+          this.store$.dispatch(new Login({ payload }));
+                               ~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+          this.store$.dispatch(new AuthActions.dispatch({ type: 'SUCCESS' }));
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+          nonStore.dispatch(new AuthActions.dispatch({ type: 'FAIL' }));
         }
       }`,
     ),

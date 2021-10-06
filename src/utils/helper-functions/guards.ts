@@ -37,6 +37,7 @@ export const isTemplateElement = isNodeOfType(AST_NODE_TYPES.TemplateElement)
 export const isTemplateLiteral = isNodeOfType(AST_NODE_TYPES.TemplateLiteral)
 export const isMemberExpression = isNodeOfType(AST_NODE_TYPES.MemberExpression)
 export const isProgram = isNodeOfType(AST_NODE_TYPES.Program)
+export const isThisExpression = isNodeOfType(AST_NODE_TYPES.ThisExpression)
 export const isTSParameterProperty = isNodeOfType(
   AST_NODE_TYPES.TSParameterProperty,
 )
@@ -53,4 +54,22 @@ export function isIdentifierOrMemberExpression(
 
 export function isTypeReference(type: ts.Type): type is ts.TypeReference {
   return type.hasOwnProperty('target')
+}
+
+export function isCallExpressionWith(
+  node: TSESTree.CallExpression,
+  objectName: string,
+  propertyName: string,
+) {
+  return (
+    isMemberExpression(node.callee) &&
+    !node.callee.computed &&
+    node.callee.property.name === propertyName &&
+    ((isIdentifier(node.callee.object) &&
+      node.callee.object.name === objectName) ||
+      (isMemberExpression(node.callee.object) &&
+        isThisExpression(node.callee.object.object) &&
+        isIdentifier(node.callee.object.property) &&
+        node.callee.object.property.name === objectName))
+  )
 }
