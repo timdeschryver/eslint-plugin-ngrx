@@ -1,4 +1,3 @@
-import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
@@ -15,9 +14,9 @@ ruleTester({ ngrxModule: NGRX_MODULE_PATHS.effects, version: '12.1.0' }).run(
       {
         code: `
 import { of, withLatestFrom } from 'rxjs'
-@Injectable()
-class Test {
-  effectOK = createEffect(
+
+class Ok {
+  effect = createEffect(
     () =>
       this.actions$.pipe(
         ofType(CollectionApiActions.addBookSuccess),
@@ -33,12 +32,12 @@ class Test {
       `
 import { Actions } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
-@Injectable()
-class Test {
-readonly effectOK1: CreateEffectMetadata
+
+class Ok1 {
+readonly effect: CreateEffectMetadata
 
 constructor(actions$: Actions) {
-  this.effectOK1 = createEffect(() => ({ scheduler = asyncScheduler } = {}) => {
+  this.effect = createEffect(() => ({ scheduler = asyncScheduler } = {}) => {
     return actions$.pipe(
       ofType(ProductDetailPage.loaded),
       concatMap((action) =>
@@ -52,35 +51,35 @@ constructor(actions$: Actions) {
       `
 import { Actions } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
-@Injectable()
-export class Test {
-effectOK2 = createEffect(() =>
-  condition
-    ? this.actions$.pipe(
-        ofType(ProductDetailPage.loaded),
-        concatMap((action) =>
-          of(action).pipe(
-            withLatestFrom(this.store.select$(something), (one, other) =>
-              somethingElse(),
+
+class Ok2 {
+  effect = createEffect(() =>
+    condition
+      ? this.actions$.pipe(
+          ofType(ProductDetailPage.loaded),
+          concatMap((action) =>
+            of(action).pipe(
+              withLatestFrom(this.store.select$(something), (one, other) =>
+                somethingElse(),
+              ),
             ),
           ),
-        ),
-        mergeMap(([action, products]) => of(products)),
-      )
-    : this.actions$.pipe(),
-)
+          mergeMap(([action, products]) => of(products)),
+        )
+      : this.actions$.pipe(),
+  )
 
-constructor(private readonly actions$: Actions) {}
+  constructor(private readonly actions$: Actions) {}
 }`,
     ],
     invalid: [
       fromFixture(
-        stripIndent`
+        `
 import { Actions } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
-@Injectable()
-class Test {
-  effectNOK = createEffect(() =>
+
+class NotOk {
+  effect = createEffect(() =>
     this.actions$.pipe(
       ofType(CollectionApiActions.addBookSuccess),
       withLatestFrom((action) =>
@@ -96,12 +95,12 @@ class Test {
   constructor(private readonly actions$: Actions) {}
 }`,
         {
-          output: stripIndent`
+          output: `
 import { Actions, concatLatestFrom } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
-@Injectable()
-class Test {
-  effectNOK = createEffect(() =>
+
+class NotOk {
+  effect = createEffect(() =>
     this.actions$.pipe(
       ofType(CollectionApiActions.addBookSuccess),
       concatLatestFrom((action) =>
@@ -118,15 +117,15 @@ class Test {
         },
       ),
       fromFixture(
-        stripIndent`
+        `
 import { Actions } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
-@Injectable()
-class Test {
-  readonly effectNOK1: CreateEffectMetadata
+
+class NotOk1 {
+  readonly effect: CreateEffectMetadata
 
   constructor(actions$: Actions) {
-    this.effectNOK1 = createEffect(
+    this.effect = createEffect(
       () =>
         ({ debounce = 300 } = {}) =>
           condition
@@ -143,15 +142,15 @@ class Test {
   }
 }`,
         {
-          output: stripIndent`
+          output: `
 import { Actions, concatLatestFrom } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
-@Injectable()
-class Test {
-  readonly effectNOK1: CreateEffectMetadata
+
+class NotOk1 {
+  readonly effect: CreateEffectMetadata
 
   constructor(actions$: Actions) {
-    this.effectNOK1 = createEffect(
+    this.effect = createEffect(
       () =>
         ({ debounce = 300 } = {}) =>
           condition
@@ -169,11 +168,11 @@ class Test {
         },
       ),
       fromFixture(
-        stripIndent`
+        `
 import { of, withLatestFrom } from 'rxjs'
-@Injectable()
-class Test {
-  effectNOK2 = createEffect(() => ({ debounce = 700 } = {}) => {
+
+class NotOk2 {
+  effect = createEffect(() => ({ debounce = 700 } = {}) => {
     return this.actions$.pipe(
       ofType(ProductDetailPage.loaded),
       concatMap((action) =>
@@ -186,12 +185,11 @@ class Test {
 }`,
         {
           options: [{ strict: true }],
-          output: stripIndent`
-import { concatLatestFrom } from '@ngrx/effects';
+          output: `import { concatLatestFrom } from '@ngrx/effects';\n
 import { of, withLatestFrom } from 'rxjs'
-@Injectable()
-class Test {
-  effectNOK2 = createEffect(() => ({ debounce = 700 } = {}) => {
+
+class NotOk2 {
+  effect = createEffect(() => ({ debounce = 700 } = {}) => {
     return this.actions$.pipe(
       ofType(ProductDetailPage.loaded),
       concatMap((action) =>
@@ -204,12 +202,12 @@ class Test {
         },
       ),
       fromFixture(
-        stripIndent`
+        `
 import { concatLatestFrom } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
-@Injectable()
-class Test {
-  effectNOK3 = createEffect(() => {
+
+class NotOk3 {
+  effect = createEffect(() => {
     return condition
       ? this.actions$.pipe(
           ofType(ProductDetailPage.loaded),
@@ -226,13 +224,12 @@ class Test {
 }`,
         {
           options: [{ strict: true }],
-          output: stripIndent`
-import { map } from 'rxjs/operators';
+          output: `import { map } from 'rxjs/operators';\n
 import { concatLatestFrom } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
-@Injectable()
-class Test {
-  effectNOK3 = createEffect(() => {
+
+class NotOk3 {
+  effect = createEffect(() => {
     return condition
       ? this.actions$.pipe(
           ofType(ProductDetailPage.loaded),
@@ -259,9 +256,9 @@ ruleTester({ ngrxModule: NGRX_MODULE_PATHS.effects, version: '^11.0.0' }).run(
     valid: [
       `
 import { of, withLatestFrom } from 'rxjs';
-@Injectable()
-class Test {
-  effectOK = createEffect(
+
+class Ok {
+  effect = createEffect(
     () =>
       this.actions$.pipe(
         ofType(CollectionApiActions.addBookSuccess),

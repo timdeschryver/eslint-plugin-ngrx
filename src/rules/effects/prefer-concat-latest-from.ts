@@ -3,11 +3,12 @@ import { isArrowFunctionExpression } from 'eslint-etc'
 import path from 'path'
 import { createRule } from '../../rule-creator'
 import {
+  asPattern,
   createEffectExpression,
-  findNgRxEffectActionsName,
   getImportAddFix,
+  getNgRxEffectActions,
+  namedExpression,
   NGRX_MODULE_PATHS,
-  storeExpression,
 } from '../../utils'
 
 export const messageId = 'preferConcatLatestFrom'
@@ -52,8 +53,7 @@ export default createRule<Options, MessageIds>({
   },
   defaultOptions: [defaultOptions],
   create: (context, [options]) => {
-    const sourceCode = context.getSourceCode()
-    const selector = getSelector(context, options)
+    const { selector, sourceCode } = getSelectorWithSourceCode(context, options)
 
     return {
       ...(selector && {
@@ -69,23 +69,30 @@ export default createRule<Options, MessageIds>({
   },
 })
 
-function getSelector(
+function getSelectorWithSourceCode(
   context: Readonly<TSESLint.RuleContext<MessageIds, Options>>,
   { strict }: Options[number],
 ) {
   if (strict) {
-    return `${createEffectExpression} CallExpression > Identifier[name='withLatestFrom']` as const
+    return {
+      selector: `${createEffectExpression} CallExpression > Identifier[name='withLatestFrom']`,
+      sourceCode: context.getSourceCode(),
+    } as const
   }
 
-  const actionsName = findNgRxEffectActionsName(context)
+  const { identifiers, sourceCode } = getNgRxEffectActions(context)
+  const actionsNames = identifiers?.length ? asPattern(identifiers) : null
 
-  if (!actionsName) {
-    return null
+  if (!actionsNames) {
+    return { sourceCode }
   }
 
-  return `${createEffectExpression} ${storeExpression(
-    actionsName,
-  )} > CallExpression[arguments.length=1] > Identifier[name='${withLatestFromKeyword}']` as const
+  return {
+    selector: `${createEffectExpression} ${namedExpression(
+      actionsNames,
+    )} > CallExpression[arguments.length=1] > Identifier[name='${withLatestFromKeyword}']`,
+    sourceCode,
+  } as const
 }
 
 function getFixes(
