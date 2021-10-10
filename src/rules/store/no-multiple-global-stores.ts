@@ -2,10 +2,9 @@ import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
-  constructorExit,
   docsUrl,
+  getNgRxStores,
   getNodeToCommaRemoveFix,
-  injectedStore,
   isTSParameterProperty,
 } from '../../utils'
 
@@ -35,37 +34,38 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const sourceCode = context.getSourceCode()
-    const collectedStores = new Set<TSESTree.Identifier>()
-
     return {
-      [injectedStore](node: TSESTree.Identifier) {
-        collectedStores.add(node)
-      },
-      [constructorExit]() {
-        const stores = [...collectedStores]
-        collectedStores.clear()
+      Program() {
+        const { identifiers = [], sourceCode } = getNgRxStores(context)
+        const flattenedIdentifiers = groupBy(identifiers).values()
 
-        if (stores.length <= 1) {
-          return
-        }
+        for (const identifiers of flattenedIdentifiers) {
+          if (identifiers.length <= 1) {
+            continue
+          }
 
-        for (const node of stores) {
-          context.report({
-            node,
-            messageId: noMultipleGlobalStores,
-            suggest: [
-              {
-                messageId: noMultipleGlobalStoresSuggest,
-                fix: (fixer) => getFixes(sourceCode, fixer, node),
-              },
-            ],
-          })
+          for (const node of identifiers) {
+            const nodeToReport = getNodeToReport(node)
+            context.report({
+              node: nodeToReport,
+              messageId: noMultipleGlobalStores,
+              suggest: [
+                {
+                  messageId: noMultipleGlobalStoresSuggest,
+                  fix: (fixer) => getFixes(sourceCode, fixer, nodeToReport),
+                },
+              ],
+            })
+          }
         }
       },
     }
   },
 })
+
+function getNodeToReport(node: TSESTree.Node) {
+  return node.parent && isTSParameterProperty(node.parent) ? node.parent : node
+}
 
 function getFixes(
   sourceCode: Readonly<TSESLint.SourceCode>,
@@ -75,4 +75,22 @@ function getFixes(
   const { parent } = node
   const nodeToRemove = parent && isTSParameterProperty(parent) ? parent : node
   return getNodeToCommaRemoveFix(sourceCode, fixer, nodeToRemove)
+}
+
+type Identifiers = NonNullable<ReturnType<typeof getNgRxStores>['identifiers']>
+
+function groupBy(identifiers: Identifiers): Map<TSESTree.Node, Identifiers> {
+  return identifiers.reduce<Map<TSESTree.Node, Identifiers>>(
+    (accumulator, identifier) => {
+      const parent = isTSParameterProperty(identifier.parent)
+        ? identifier.parent.parent
+        : identifier.parent
+      const collectedIdentifiers = accumulator.get(parent)
+      return accumulator.set(parent, [
+        ...(collectedIdentifiers ?? []),
+        identifier,
+      ])
+    },
+    new Map(),
+  )
 }
