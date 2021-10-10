@@ -1,4 +1,4 @@
-import { stripIndents } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
   useConsistentGlobalStoreName,
@@ -8,95 +8,138 @@ import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
+    `
+class Ok {}`,
+    `
+import { Store } from '@ngrx/store'
+
+class Ok1 {
+  constructor(store: Store) {}
+}`,
     {
       code: `
-      import { Store } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        constructor(private store: Store) {}
-      }
-      `,
-    },
-    {
-      code: `
-      import { Store } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        constructor(private customName: Store) {}
-      }
-      `,
+import { Store } from '@ngrx/store'
+
+class Ok2 {
+  constructor(private customName: Store) {}
+}`,
       options: ['customName'],
     },
   ],
   invalid: [
-    {
-      code: stripIndents`
-      import { Store } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        constructor(private readonly somethingElse$: Store) {}
-      }
-      `,
-      errors: [
-        {
-          column: 30,
-          endColumn: 44,
-          line: 4,
-          messageId: useConsistentGlobalStoreName,
-          data: {
-            storeName: 'store',
-          },
-          suggestions: [
-            {
-              messageId: useConsistentGlobalStoreNameSuggest,
-              data: {
-                storeName: 'store',
-              },
-              output: stripIndents`
-              import { Store } from '@ngrx/store'
-              @Component()
-              export class FixtureComponent {
-                constructor(private readonly store: Store) {}
-              }`,
+    fromFixture(
+      `
+import { Store } from '@ngrx/store'
+
+class NotOk {
+  constructor(private readonly somethingElse$: Store) {}
+                               ~~~~~~~~~~~~~~ [${useConsistentGlobalStoreName} { "storeName": "store" }]
+}`,
+      {
+        suggestions: [
+          {
+            messageId: useConsistentGlobalStoreNameSuggest,
+            data: {
+              storeName: 'store',
             },
-          ],
-        },
-      ],
-    },
-    {
-      code: stripIndents`
-      import { Store } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        constructor(private store: Store) {}
-      }
-      `,
-      options: ['customName'],
-      errors: [
-        {
-          column: 21,
-          endColumn: 26,
-          line: 4,
-          messageId: useConsistentGlobalStoreName,
-          data: {
-            storeName: 'customName',
+            output: `
+import { Store } from '@ngrx/store'
+
+class NotOk {
+  constructor(private readonly store: Store) {}
+}`,
           },
-          suggestions: [
-            {
-              messageId: useConsistentGlobalStoreNameSuggest,
-              data: {
-                storeName: 'customName',
-              },
-              output: stripIndents`
-              import { Store } from '@ngrx/store'
-              @Component()
-              export class FixtureComponent {
-                constructor(private customName: Store) {}
-              }`,
+        ],
+      },
+    ),
+    fromFixture(
+      `
+import { Store } from '@ngrx/store'
+
+class NotOk1 {
+  constructor(private readonly store1: Store, private readonly store: Store) {}
+                               ~~~~~~ [${useConsistentGlobalStoreName} { "storeName": "store" }]
+}`,
+      {
+        suggestions: [
+          {
+            messageId: useConsistentGlobalStoreNameSuggest,
+            data: {
+              storeName: 'store',
             },
-          ],
-        },
-      ],
-    },
+            output: `
+import { Store } from '@ngrx/store'
+
+class NotOk1 {
+  constructor(private readonly store: Store, private readonly store: Store) {}
+}`,
+          },
+        ],
+      },
+    ),
+    fromFixture(
+      `
+import { Store } from '@ngrx/store'
+
+class NotOk2 {
+  constructor(private readonly store1: Store, private readonly store2: Store) {}
+                               ~~~~~~ [${useConsistentGlobalStoreName} { "storeName": "store" } suggest 0]
+                                                               ~~~~~~ [${useConsistentGlobalStoreName} { "storeName": "store" } suggest 1]
+}`,
+      {
+        suggestions: [
+          {
+            messageId: useConsistentGlobalStoreNameSuggest,
+            data: {
+              storeName: 'store',
+            },
+            output: `
+import { Store } from '@ngrx/store'
+
+class NotOk2 {
+  constructor(private readonly store: Store, private readonly store2: Store) {}
+}`,
+          },
+          {
+            messageId: useConsistentGlobalStoreNameSuggest,
+            data: {
+              storeName: 'store',
+            },
+            output: `
+import { Store } from '@ngrx/store'
+
+class NotOk2 {
+  constructor(private readonly store1: Store, private readonly store: Store) {}
+}`,
+          },
+        ],
+      },
+    ),
+    fromFixture(
+      `
+import { Store } from '@ngrx/store'
+
+class NotOk3 {
+  constructor(private store: Store) {}
+                      ~~~~~ [${useConsistentGlobalStoreName} { "storeName": "customName" }]
+}`,
+      {
+        options: ['customName'],
+        suggestions: [
+          {
+            messageId: useConsistentGlobalStoreNameSuggest,
+            data: {
+              storeName: 'customName',
+            },
+            output: `
+import { Store } from '@ngrx/store'
+
+class NotOk3 {
+  constructor(private customName: Store) {}
+}`,
+          },
+        ],
+      },
+    ),
   ],
 })
