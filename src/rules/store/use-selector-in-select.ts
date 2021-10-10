@@ -2,13 +2,14 @@ import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
+  asPattern,
   docsUrl,
-  findNgRxStoreName,
+  getNgRxStores,
   isArrowFunctionExpression,
   isFunctionExpression,
   isLiteral,
   pipeableSelect,
-  storeSelect,
+  selectExpression,
 } from '../../utils'
 
 export const messageId = 'useSelectorInSelect'
@@ -34,24 +35,28 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const storeName = findNgRxStoreName(context)
-    if (!storeName) return {}
+    const { identifiers = [] } = getNgRxStores(context)
+    const storeNames = identifiers.length > 0 ? asPattern(identifiers) : null
+
+    if (!storeNames) {
+      return {}
+    }
 
     return {
-      [`${pipeableSelect(storeName)}, ${storeSelect(storeName)}`](
+      [`${pipeableSelect(storeNames)}, ${selectExpression(storeNames)}`](
         node: TSESTree.CallExpression,
       ) {
-        for (const arg of node.arguments) {
+        for (const argument of node.arguments) {
           if (
-            !isLiteral(arg) &&
-            !isArrowFunctionExpression(arg) &&
-            !isFunctionExpression(arg)
+            !isLiteral(argument) &&
+            !isArrowFunctionExpression(argument) &&
+            !isFunctionExpression(argument)
           ) {
             break
           }
 
           context.report({
-            node: arg,
+            node: argument,
             messageId,
           })
         }
