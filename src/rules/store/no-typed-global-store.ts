@@ -1,7 +1,6 @@
-import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { docsUrl, typedStore } from '../../utils'
+import { docsUrl, getNgRxStores, isTSTypeReference } from '../../utils'
 
 export const noTypedStore = 'noTypedStore'
 export const noTypedStoreSuggest = 'noTypedStoreSuggest'
@@ -29,17 +28,32 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [typedStore](node: TSESTree.TSTypeParameterInstantiation) {
-        context.report({
-          node,
-          messageId: noTypedStore,
-          suggest: [
-            {
-              messageId: noTypedStoreSuggest,
-              fix: (fixer) => fixer.remove(node),
-            },
-          ],
-        })
+      Program() {
+        const { identifiers = [] } = getNgRxStores(context)
+
+        for (const {
+          typeAnnotation: { typeAnnotation },
+        } of identifiers) {
+          if (
+            !isTSTypeReference(typeAnnotation) ||
+            !typeAnnotation.typeParameters
+          ) {
+            continue
+          }
+
+          const { typeParameters } = typeAnnotation
+
+          context.report({
+            node: typeParameters,
+            messageId: noTypedStore,
+            suggest: [
+              {
+                messageId: noTypedStoreSuggest,
+                fix: (fixer) => fixer.remove(typeParameters),
+              },
+            ],
+          })
+        }
       },
     }
   },
