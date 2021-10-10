@@ -2,12 +2,13 @@ import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
+  asPattern,
+  dispatchExpression,
   docsUrl,
-  findNgRxStoreName,
   getNearestUpperNodeFrom,
+  getNgRxStores,
   isCallExpression,
   isCallExpressionWith,
-  storeDispatch,
 } from '../../utils'
 
 export const messageId = 'preferActionCreatorInDispatch'
@@ -33,12 +34,16 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const storeName = findNgRxStoreName(context)
-    if (!storeName) return {}
+    const { identifiers = [] } = getNgRxStores(context)
+    const storeNames = identifiers.length > 0 ? asPattern(identifiers) : null
+
+    if (!storeNames) {
+      return {}
+    }
 
     return {
-      [`${storeDispatch(
-        storeName,
+      [`${dispatchExpression(
+        storeNames,
       )} :matches(NewExpression, :not(NewExpression) > ObjectExpression)`](
         node: TSESTree.NewExpression | TSESTree.ObjectExpression,
       ) {
@@ -50,7 +55,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           nearestUpperCallExpression !== undefined &&
           isCallExpressionWith(
             nearestUpperCallExpression,
-            storeName,
+            storeNames,
             'dispatch',
           )
 
