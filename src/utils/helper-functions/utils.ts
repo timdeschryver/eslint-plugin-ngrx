@@ -20,6 +20,23 @@ import {
 } from './guards'
 import { NGRX_MODULE_PATHS } from './ngrx-modules'
 
+type ConstructorFunctionExpression = TSESTree.FunctionExpression & {
+  parent: TSESTree.MethodDefinition & { kind: 'constructor' }
+}
+type InjectedParameter =
+  | TSESTree.Identifier & {
+      typeAnnotation: TSESTree.TSTypeAnnotation
+      parent:
+        | ConstructorFunctionExpression
+        | (TSESTree.TSParameterProperty & {
+            parent: ConstructorFunctionExpression
+          })
+    }
+type InjectedParameterWithSourceCode = Readonly<{
+  identifiers?: readonly InjectedParameter[]
+  sourceCode: Readonly<TSESLint.SourceCode>
+}>
+
 export function getNearestUpperNodeFrom<T extends TSESTree.Node>(
   { parent }: TSESTree.Node,
   predicate: (parent: TSESTree.Node) => parent is T,
@@ -67,10 +84,9 @@ export function getImportDeclarations(
     parentNode = parentNode.parent
   }
 
-  return parentNode?.body.filter(
-    (node): node is TSESTree.ImportDeclaration =>
-      isImportDeclaration(node) && node.source.value === moduleName,
-  )
+  return parentNode?.body.filter((node): node is TSESTree.ImportDeclaration => {
+    return isImportDeclaration(node) && node.source.value === moduleName
+  })
 }
 
 function getCorrespondentImportClause(
@@ -302,59 +318,78 @@ export function capitalize<T extends string>(text: T): Capitalize<T> {
   return `${text[0].toUpperCase()}${text.slice(1)}` as Capitalize<T>
 }
 
-function findCorrespondingNameBy(
+function getInjectedParametersWithSourceCode(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
   moduleName: string,
   importName: string,
-): string | undefined {
-  const { ast } = context.getSourceCode()
-  const importDeclarations = getImportDeclarations(ast, moduleName) ?? []
+): InjectedParameterWithSourceCode {
+  const sourceCode = context.getSourceCode()
+  const importDeclarations =
+    getImportDeclarations(sourceCode.ast, moduleName) ?? []
   const { importSpecifier } =
     getImportDeclarationSpecifier(importDeclarations, importName) ?? {}
 
   if (!importSpecifier) {
-    return undefined
+    return { sourceCode }
   }
 
   const variables = context.getDeclaredVariables(importSpecifier)
   const typedVariable = variables.find(({ name }) => name === importName)
+  const identifiers = typedVariable?.references?.reduce<
+    readonly InjectedParameter[]
+  >((identifiers, { identifier: { parent } }) => {
+    if (
+      parent &&
+      isTSTypeReference(parent) &&
+      parent.parent &&
+      isTSTypeAnnotation(parent.parent) &&
+      parent.parent.parent &&
+      isIdentifier(parent.parent.parent)
+    ) {
+      return identifiers.concat(parent.parent.parent as InjectedParameter)
+    }
 
-  return typedVariable?.references
-    .map(({ identifier: { parent } }) => {
-      if (
-        parent &&
-        isTSTypeReference(parent) &&
-        parent.parent &&
-        isTSTypeAnnotation(parent.parent) &&
-        parent.parent.parent &&
-        isIdentifier(parent.parent.parent)
-      ) {
-        return parent.parent.parent.name
-      }
-
-      return undefined
-    })
-    .find(Boolean)
+    return identifiers
+  }, [])
+  return { identifiers, sourceCode }
 }
 
-export function findNgRxStoreName(
+export function getNgRxEffectActions(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
-): string | undefined {
-  return findCorrespondingNameBy(context, NGRX_MODULE_PATHS.store, 'Store')
+): InjectedParameterWithSourceCode {
+  return getInjectedParametersWithSourceCode(
+    context,
+    NGRX_MODULE_PATHS.effects,
+    'Actions',
+  )
 }
 
-export function findNgRxComponentStoreName(
+export function getNgRxComponentStores(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
-): string | undefined {
-  return findCorrespondingNameBy(
+): InjectedParameterWithSourceCode {
+  return getInjectedParametersWithSourceCode(
     context,
     NGRX_MODULE_PATHS['component-store'],
     'ComponentStore',
   )
 }
 
-export function findNgRxEffectActionsName(
+export function getNgRxStores(
   context: TSESLint.RuleContext<string, readonly unknown[]>,
-): string | undefined {
-  return findCorrespondingNameBy(context, NGRX_MODULE_PATHS.effects, 'Actions')
+): InjectedParameterWithSourceCode {
+  return getInjectedParametersWithSourceCode(
+    context,
+    NGRX_MODULE_PATHS.store,
+    'Store',
+  )
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
+export function escapeText(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+export function asPattern(identifiers: readonly InjectedParameter[]): RegExp {
+  const escapedNames = identifiers.map(({ name }) => escapeText(name))
+  return new RegExp(`^(${escapedNames.join('|')})$`)
 }

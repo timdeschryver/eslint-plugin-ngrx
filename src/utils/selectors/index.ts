@@ -13,7 +13,7 @@ export const actionCreatorProps =
 export const actionCreatorPropsComputed =
   `${actionCreatorProps} > TSTypeParameterInstantiation > :matches(TSTypeReference[typeName.name!='Readonly'], [type=/^TS(.*)(Keyword|Type)$/])` as const
 
-export const constructorExit = `MethodDefinition[kind='constructor']:exit`
+export const constructorDefinition = `MethodDefinition[kind='constructor']`
 
 export function metadataProperty(key: RegExp): string
 export function metadataProperty<TKey extends string>(
@@ -22,9 +22,6 @@ export function metadataProperty<TKey extends string>(
 export function metadataProperty(key: RegExp | string): string {
   return `Property:matches([key.name=${key}][computed=false], [key.value=${key}], [key.quasis.0.value.raw=${key}])`
 }
-
-export const injectedStore = `MethodDefinition[kind='constructor'] Identifier[typeAnnotation.typeAnnotation.typeName.name='Store']`
-export const typedStore = `MethodDefinition[kind='constructor'] Identifier > TSTypeAnnotation > TSTypeReference[typeName.name='Store'] > .typeParameters[params]`
 
 export const ngModuleDecorator = `ClassDeclaration > Decorator > CallExpression[callee.name='NgModule']`
 
@@ -44,28 +41,30 @@ export const effectsInNgModuleImports =
 export const effectsInNgModuleProviders =
   `${ngModuleProviders} Identifier` as const
 
-export const storeExpression = (storeName: string) =>
-  `CallExpression:matches([callee.object.name='${storeName}'], [callee.object.object.type='ThisExpression'][callee.object.property.name='${storeName}'])` as const
+export const namedExpression = (name: RegExp | string) =>
+  `:matches(${constructorDefinition} CallExpression[callee.object.name=${name}], CallExpression[callee.object.object.type='ThisExpression'][callee.object.property.name=${name}])` as const
 
-export const storeExpressionCallable = (storeName: string) =>
-  `CallExpression:matches([callee.object.callee.object.name='${storeName}'], [callee.object.callee.object.object.type='ThisExpression'][callee.object.callee.object.property.name='${storeName}'])` as const
+export const namedCallableExpression = (name: RegExp | string) =>
+  `:matches(${namedExpression(
+    name,
+  )}, ${constructorDefinition} CallExpression[callee.object.callee.object.name=${name}], CallExpression[callee.object.callee.object.object.type='ThisExpression'][callee.object.callee.object.property.name=${name}])` as const
 
-export const storePipe = (storeName: string) =>
-  `${storeExpression(storeName)}[callee.property.name='pipe']` as const
+export const pipeExpression = (name: RegExp | string) =>
+  `${namedExpression(name)}[callee.property.name='pipe']` as const
 
-export const pipeableSelect = (storeName: string) =>
-  `${storePipe(storeName)} CallExpression[callee.name='select']` as const
+export const pipeableSelect = (name: RegExp | string) =>
+  `${pipeExpression(name)} CallExpression[callee.name='select']` as const
 
-export const storeSelect = (storeName: string) =>
-  `${storeExpression(storeName)}[callee.property.name='select']` as const
+export const selectExpression = (name: RegExp | string) =>
+  `${namedExpression(name)}[callee.property.name='select']` as const
 
-export const storeDispatch = (storeName: string) =>
-  `${storeExpression(storeName)}[callee.property.name='dispatch']` as const
+export const dispatchExpression = (name: RegExp | string) =>
+  `${namedExpression(name)}[callee.property.name='dispatch']` as const
 
-export const dispatchInEffects = (storeName: string) =>
-  `${createEffectExpression} ${storeDispatch(
-    storeName,
-  )} > MemberExpression:has(Identifier[name='${storeName}'])` as const
+export const dispatchInEffects = (name: RegExp | string) =>
+  `${createEffectExpression} ${dispatchExpression(
+    name,
+  )} > MemberExpression:has(Identifier[name=${name}])` as const
 
 export const createReducer = `CallExpression[callee.name='createReducer']`
 
