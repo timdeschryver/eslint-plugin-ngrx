@@ -2,9 +2,10 @@ import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
+  asPattern,
   docsUrl,
-  findNgRxStoreName,
-  storeExpressionCallable,
+  getNgRxStores,
+  namedCallableExpression,
 } from '../../utils'
 
 export const messageId = 'noStoreSubscription'
@@ -30,12 +31,16 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const storeName = findNgRxStoreName(context)
-    if (!storeName) return {}
+    const { identifiers = [] } = getNgRxStores(context)
+    const storeNames = identifiers.length > 0 ? asPattern(identifiers) : null
+
+    if (!storeNames) {
+      return {}
+    }
 
     return {
-      [`${storeExpressionCallable(
-        storeName,
+      [`${namedCallableExpression(
+        storeNames,
       )} > MemberExpression > Identifier[name='subscribe']`](
         node: TSESTree.Identifier,
       ) {
