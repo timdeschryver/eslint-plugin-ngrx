@@ -1,8 +1,15 @@
-# Prefix Selectors With Select
+---
+Fixable: no
+---
 
-> The selector should start with "select", for example "selectThing"
+# prefix-selectors-with-select
 
-It's recommended prefixing selector function names with the word `select` combined with a description of the value being selected.
+> The selector should start with "select", for example "selectThing".
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
+
+It's recommended prefixing selector function names with the word "select" combined with a description of the value being selected.
 
 ## Rule Details
 

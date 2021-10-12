@@ -1,6 +1,13 @@
-# Prefer Effect Callback In BlockStatement
+---
+Fixable: yes
+---
 
-> A block statement is easier to troubleshoot
+# prefer-effect-callback-in-block-statement
+
+> A block statement is easier to troubleshoot.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

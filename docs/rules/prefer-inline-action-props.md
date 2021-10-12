@@ -1,6 +1,13 @@
-# Prefer Inline Action Props
+---
+Fixable: no
+---
 
-> This rule enforces using inline props when creating actions with the `createAction` function instead of named interfaces/types.
+# prefer-inline-action-props
+
+> Prefer using inline types instead of interfaces, types or classes.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

@@ -1,6 +1,13 @@
-# Avoid Duplicate Actions In Reducer
+---
+Fixable: no
+---
 
-> A reducer should handle an action once.
+# avoid-duplicate-actions-in-reducer
+
+> A `Reducer` should handle an `Action` once.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

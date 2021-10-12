@@ -9,10 +9,6 @@ const placeholder = '<!-- MANUAL-DOC:START -->'
 for (const [ruleName, { meta }] of Object.entries(rules)) {
   const docPath = path.join('docs', 'rules', `${ruleName}.md`)
   const doc = readFileSync(docPath, 'utf-8')
-  if (doc.indexOf(placeholder) === -1) {
-    continue
-  }
-
   const docContent = doc.substr(doc.indexOf(placeholder) + placeholder.length)
   const frontMatter = [
     `Fixable: ${meta.fixable ? 'yes' : 'no'}`,

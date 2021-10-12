@@ -1,10 +1,17 @@
-# No Effect Decorator And Creator
+---
+Fixable: yes
+---
 
-> This rule disallows using the `@Effect` decorator and the `createEffect` function simultaneously.
+# no-effect-decorator-and-creator
+
+> `Effect` should use either the `createEffect` or the `@Effect` decorator, but not both.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 
-There are two ways we can register an Effect in NgRx. One is using the `@Effect` decorator (this is currently deprecated), the other is with the help of the `createEffect` function. Using both simultaneously will result in the Effect being registered twice, and the side-effect will be performed twice every time the corresponding action is dispatched.
+There are two ways we can register an Effect in NgRx. One is using the `@Effect` decorator (this is currently deprecated), the other is with the help of the `createEffect`. Using both simultaneously will result in the Effect being registered twice, and the side-effect will be performed twice every time the corresponding action is dispatched.
 
 Examples of **incorrect** code for this rule:
 

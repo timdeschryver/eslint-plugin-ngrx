@@ -1,6 +1,13 @@
-# No Effects In Providers
+---
+Fixable: yes
+---
 
-> An effect should not be listed as a provider if it is added to the EffectsModule.
+# no-effects-in-providers
+
+> `Effect` should not be listed as a provider if it is added to the `EffectsModule`.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

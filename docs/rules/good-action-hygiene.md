@@ -1,6 +1,13 @@
-# Good Action Hygiene
+---
+Fixable: no
+---
 
-> This rule promotes good action hygiene.
+# good-action-hygiene
+
+> Ensures the use of good action hygiene.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

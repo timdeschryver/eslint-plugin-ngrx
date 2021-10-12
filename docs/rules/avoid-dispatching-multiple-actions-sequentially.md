@@ -1,6 +1,13 @@
-# Avoid Dispatching Multiple Actions Sequentially
+---
+Fixable: no
+---
 
-> This rule disallows dispatching multiple actions one after another.
+# avoid-dispatching-multiple-actions-sequentially
+
+> It is recommended to only dispatch one `Action` at a time.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

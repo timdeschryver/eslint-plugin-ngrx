@@ -1,6 +1,13 @@
-# Use Effects Lifecycle Interface
+---
+Fixable: yes
+---
+
+# use-effects-lifecycle-interface
 
 > Ensures classes implement lifecycle interfaces corresponding to the declared lifecycle methods.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

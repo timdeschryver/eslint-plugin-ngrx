@@ -1,6 +1,13 @@
-# No Multiple Actions In Effects
+---
+Fixable: no
+---
 
-> This rule disallows mapping to multiple actions in a single Effect.
+# no-multiple-actions-in-effects
+
+> `Effect` should not return multiple actions.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

@@ -1,6 +1,13 @@
-# Use Consistent Global Store Name
+---
+Fixable: no
+---
+
+# use-consistent-global-store-name
 
 > Use a consistent name for the global store.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 
