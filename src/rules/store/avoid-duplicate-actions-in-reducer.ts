@@ -1,24 +1,25 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { createReducer, docsUrl, getNodeToCommaRemoveFix } from '../../utils'
+import { createRule } from '../../rule-creator'
+import { createReducer, getNodeToCommaRemoveFix } from '../../utils'
 
 export const avoidDuplicateActionsInReducer = 'avoidDuplicateActionsInReducer'
 export const avoidDuplicateActionsInReducerSuggest =
   'avoidDuplicateActionsInReducerSuggest'
-export type MessageIds =
+
+type MessageIds =
   | typeof avoidDuplicateActionsInReducer
   | typeof avoidDuplicateActionsInReducerSuggest
-
-type Options = []
+type Options = readonly []
 type Action = TSESTree.Identifier & { parent: TSESTree.CallExpression }
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'problem',
+    ngrxModule: 'store',
     docs: {
-      category: 'Best Practices',
+      category: 'Possible Errors',
       description: 'A `Reducer` should handle an `Action` once.',
       recommended: 'warn',
       suggestion: true,
@@ -37,7 +38,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
 
     return {
       [`${createReducer} > CallExpression[callee.name='on'][arguments.0.type='Identifier']`]({
-        arguments: { 0: action },
+        arguments: [action],
       }: TSESTree.CallExpression & {
         arguments: Action[]
       }) {

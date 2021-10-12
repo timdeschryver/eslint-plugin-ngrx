@@ -1,9 +1,8 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
+import { createRule } from '../../rule-creator'
 import {
   asPattern,
-  docsUrl,
   getNgRxStores,
   isArrowFunctionExpression,
   isFunctionExpression,
@@ -13,24 +12,25 @@ import {
 } from '../../utils'
 
 export const messageId = 'useSelectorInSelect'
-export type MessageIds = typeof messageId
 
-type Options = []
+type MessageIds = typeof messageId
+type Options = readonly []
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
       description:
-        'Using a selector in a `select` method is preferred over `string` or `props drilling`.',
+        'Using a selector in the `select` is preferred over `string` or `props drilling`.',
       recommended: 'warn',
     },
     schema: [],
     messages: {
       [messageId]:
-        'Using `string` or `props drilling` is not preferred, use a selector instead.',
+        'Using `string` or `props drilling` is forbidden. Use a selector instead.',
     },
   },
   defaultOptions: [],

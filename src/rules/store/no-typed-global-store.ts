@@ -1,17 +1,18 @@
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { docsUrl, getNgRxStores, isTSTypeReference } from '../../utils'
+import { createRule } from '../../rule-creator'
+import { getNgRxStores, isTSTypeReference } from '../../utils'
 
 export const noTypedStore = 'noTypedStore'
 export const noTypedStoreSuggest = 'noTypedStoreSuggest'
-export type MessageIds = typeof noTypedStore | typeof noTypedStoreSuggest
 
-type Options = []
+type MessageIds = typeof noTypedStore | typeof noTypedStoreSuggest
+type Options = readonly []
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
       description: 'The global store should not be typed.',
@@ -21,7 +22,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     schema: [],
     messages: {
       [noTypedStore]:
-        'Store should not be typed, use `Store` (without generic) instead.',
+        '`Store` should not be typed, use `Store` (without generic) instead.',
       [noTypedStoreSuggest]: 'Remove generic from `Store`.',
     },
   },

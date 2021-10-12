@@ -12,9 +12,9 @@ import {
 } from '../../utils'
 
 export const messageId = 'preferConcatLatestFrom'
-export type MessageIds = typeof messageId
 
-type Options = [{ readonly strict: boolean }]
+type MessageIds = typeof messageId
+type Options = readonly [{ readonly strict: boolean }]
 type WithLatestFromIdentifier = TSESTree.Identifier & {
   parent: TSESTree.CallExpression
 }
@@ -26,7 +26,7 @@ const withLatestFromKeyword = 'withLatestFrom'
 export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'suggestion',
+    type: 'problem',
     ngrxModule: 'effects',
     version: '>=12.0.0',
     docs: {
@@ -80,8 +80,8 @@ function getSelectorWithSourceCode(
     } as const
   }
 
-  const { identifiers, sourceCode } = getNgRxEffectActions(context)
-  const actionsNames = identifiers?.length ? asPattern(identifiers) : null
+  const { identifiers = [], sourceCode } = getNgRxEffectActions(context)
+  const actionsNames = identifiers.length > 0 ? asPattern(identifiers) : null
 
   if (!actionsNames) {
     return { sourceCode }

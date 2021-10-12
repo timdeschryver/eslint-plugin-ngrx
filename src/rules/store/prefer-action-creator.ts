@@ -1,27 +1,26 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { docsUrl } from '../../utils'
+import { createRule } from '../../rule-creator'
 
 export const messageId = 'preferActionCreator'
-export type MessageIds = typeof messageId
 
-type Options = []
+type MessageIds = typeof messageId
+type Options = readonly []
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
-      description:
-        'Using an `action creator` is preferred over `Action class`.',
+      description: 'Using `action creator` is preferred over `Action class`.',
       recommended: 'warn',
     },
     schema: [],
     messages: {
       [messageId]:
-        'Using `Action class` is not preferred, use an `action creator` instead.',
+        'Using `Action class` is forbidden. Use `action creator` instead.',
     },
   },
   defaultOptions: [],

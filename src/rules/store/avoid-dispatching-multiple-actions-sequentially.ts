@@ -1,22 +1,18 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import {
-  asPattern,
-  dispatchExpression,
-  docsUrl,
-  getNgRxStores,
-} from '../../utils'
+import { createRule } from '../../rule-creator'
+import { asPattern, dispatchExpression, getNgRxStores } from '../../utils'
 
 export const messageId = 'avoidDispatchingMultipleActionsSequentially'
-export type MessageIds = typeof messageId
 
-type Options = []
+type MessageIds = typeof messageId
+type Options = readonly []
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'problem',
+    type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
       description: 'It is recommended to only dispatch one `Action` at a time.',

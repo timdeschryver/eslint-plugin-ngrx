@@ -1,32 +1,28 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import {
-  asPattern,
-  docsUrl,
-  getNgRxStores,
-  namedCallableExpression,
-} from '../../utils'
+import { createRule } from '../../rule-creator'
+import { asPattern, getNgRxStores, namedCallableExpression } from '../../utils'
 
 export const messageId = 'noStoreSubscription'
-export type MessageIds = typeof messageId
 
-type Options = []
+type MessageIds = typeof messageId
+type Options = readonly []
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
       description:
-        "Don't create a store subscription, prefer to use the async pipe.",
+        'Using the `async` pipe is preferred over `store` subscription.',
       recommended: 'warn',
     },
     schema: [],
     messages: {
       [messageId]:
-        "Don't create a store subscription, prefer to use the async pipe.",
+        '`Store` subscription is forbidden. Use the `async` pipe instead.',
     },
   },
   defaultOptions: [],

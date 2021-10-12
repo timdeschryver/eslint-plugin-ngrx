@@ -1,22 +1,22 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { docsUrl } from '../../utils'
+import { createRule } from '../../rule-creator'
 
 export const preferOneGenericInCreateForFeatureSelector =
   'preferOneGenericInCreateForFeatureSelector'
 export const preferOneGenericInCreateForFeatureSelectorSuggest =
   'preferOneGenericInCreateForFeatureSelectorSuggest'
-export type MessageIds =
+
+type MessageIds =
   | typeof preferOneGenericInCreateForFeatureSelector
   | typeof preferOneGenericInCreateForFeatureSelectorSuggest
+type Options = readonly []
 
-type Options = []
-
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
       description: 'Prefer using a single generic to define the feature state.',
@@ -26,9 +26,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     schema: [],
     messages: {
       [preferOneGenericInCreateForFeatureSelector]:
-        'Prefer using a single generic to define the feature state.',
+        'Use a single generic to define the feature state.',
       [preferOneGenericInCreateForFeatureSelectorSuggest]:
-        'Remove global state generic.',
+        'Remove the global state generic.',
     },
   },
   defaultOptions: [],

@@ -1,21 +1,22 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { capitalize, docsUrl } from '../../utils'
+import { createRule } from '../../rule-creator'
+import { capitalize } from '../../utils'
 
 export const prefixSelectorsWithSelect = 'prefixSelectorsWithSelect'
 export const prefixSelectorsWithSelectSuggest =
   'prefixSelectorsWithSelectSuggest'
-export type MessageIds =
+
+type MessageIds =
   | typeof prefixSelectorsWithSelect
   | typeof prefixSelectorsWithSelectSuggest
+type Options = readonly []
 
-type Options = []
-
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
       description:
@@ -27,7 +28,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     messages: {
       [prefixSelectorsWithSelect]: 'The selector should start with "select".',
       [prefixSelectorsWithSelectSuggest]:
-        'Prefix the selector with "select": `{{name}}`.',
+        'Prefix the selector with "select": `{{ name }}`.',
     },
   },
   defaultOptions: [],

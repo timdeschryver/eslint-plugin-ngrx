@@ -1,8 +1,7 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
+import { createRule } from '../../rule-creator'
 import {
-  docsUrl,
   effectCreator,
   effectDecorator,
   getDecorator,
@@ -15,20 +14,21 @@ import {
 export const noEffectDecoratorAndCreator = 'noEffectDecoratorAndCreator'
 export const noEffectDecoratorAndCreatorSuggest =
   'noEffectDecoratorAndCreatorSuggest'
-export type MessageIds =
+
+type MessageIds =
   | typeof noEffectDecoratorAndCreator
   | typeof noEffectDecoratorAndCreatorSuggest
+type Options = readonly []
 
-type Options = []
-
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'problem',
+    ngrxModule: 'effects',
     docs: {
       category: 'Possible Errors',
       description:
-        'An `Effect` should only use the effect creator (`createEffect`) or the effect decorator (`@Effect`), but not both simultaneously.',
+        '`Effect` should use either the `createEffect` or the `@Effect` decorator, but not both.',
       recommended: 'error',
       suggestion: true,
     },
@@ -36,7 +36,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     schema: [],
     messages: {
       [noEffectDecoratorAndCreator]:
-        'Remove the `@Effect` decorator or the `createEffect` creator function.',
+        'Using the `createEffect` and the `@Effect` decorator simultaneously is forbidden.',
       [noEffectDecoratorAndCreatorSuggest]: 'Remove the `@Effect` decorator.',
     },
   },
@@ -88,7 +88,7 @@ function getFixes(
   sourceCode: Readonly<TSESLint.SourceCode>,
   fixer: TSESLint.RuleFixer,
   decorator: TSESTree.Decorator,
-): TSESLint.RuleFix[] {
+): readonly TSESLint.RuleFix[] {
   const importDeclarations =
     getImportDeclarations(node, NGRX_MODULE_PATHS.effects) ?? []
   const text = sourceCode.getText()

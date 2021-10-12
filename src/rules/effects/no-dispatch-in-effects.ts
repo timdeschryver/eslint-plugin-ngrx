@@ -1,10 +1,9 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
+import { createRule } from '../../rule-creator'
 import {
   asPattern,
   dispatchInEffects,
-  docsUrl,
   getNgRxStores,
   isArrowFunctionExpression,
   isReturnStatement,
@@ -12,29 +11,28 @@ import {
 
 export const noDispatchInEffects = 'noDispatchInEffects'
 export const noDispatchInEffectsSuggest = 'noDispatchInEffectsSuggest'
-export type MessageIds =
-  | typeof noDispatchInEffects
-  | typeof noDispatchInEffectsSuggest
 
-type Options = []
+type MessageIds = typeof noDispatchInEffects | typeof noDispatchInEffectsSuggest
+type Options = readonly []
 type MemberExpressionWithinCallExpression = TSESTree.MemberExpression & {
   parent: TSESTree.CallExpression
 }
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'suggestion',
+    type: 'problem',
+    ngrxModule: 'effects',
     docs: {
       category: 'Possible Errors',
-      description: 'An `Effect` should not call `store.dispatch`.',
+      description: '`Effect` should not call `store.dispatch`.',
       recommended: 'warn',
       suggestion: true,
     },
     schema: [],
     messages: {
       [noDispatchInEffects]:
-        'Calling `store.dispatch` in an `Effect` is forbidden.',
+        'Calling `store.dispatch` in `Effect` is forbidden.',
       [noDispatchInEffectsSuggest]: 'Remove `store.dispatch`.',
     },
   },

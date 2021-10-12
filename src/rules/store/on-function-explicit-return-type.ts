@@ -1,31 +1,33 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
-import { ASTUtils, ESLintUtils } from '@typescript-eslint/experimental-utils'
+import { ASTUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { docsUrl, getLast, onFunctionWithoutType } from '../../utils'
+import { createRule } from '../../rule-creator'
+import { getLast, onFunctionWithoutType } from '../../utils'
 
 export const onFunctionExplicitReturnType = 'onFunctionExplicitReturnType'
 export const onFunctionExplicitReturnTypeSuggest =
   'onFunctionExplicitReturnTypeSuggest'
-export type MessageIds =
+
+type MessageIds =
   | typeof onFunctionExplicitReturnType
   | typeof onFunctionExplicitReturnTypeSuggest
+type Options = readonly []
 
-type Options = []
-
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'problem',
+    ngrxModule: 'store',
     docs: {
       category: 'Possible Errors',
-      description: 'On function should have an explicit return type.',
+      description: '`On` function should have an explicit return type.',
       recommended: 'warn',
       suggestion: true,
     },
     schema: [],
     messages: {
       [onFunctionExplicitReturnType]:
-        'On functions should have an explicit return type when using arrow functions: `on(action, (state): State => {}`.',
+        '`On` functions should have an explicit return type when using arrow functions: `on(action, (state): State => {}`.',
       [onFunctionExplicitReturnTypeSuggest]:
         'Add the explicit return type `State` (if the interface/type is named differently you need to manually correct the return type).',
     },

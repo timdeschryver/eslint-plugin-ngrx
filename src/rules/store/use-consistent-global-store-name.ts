@@ -1,20 +1,21 @@
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { docsUrl, getNgRxStores } from '../../utils'
+import { createRule } from '../../rule-creator'
+import { getNgRxStores } from '../../utils'
 
 export const useConsistentGlobalStoreName = 'useConsistentGlobalStoreName'
 export const useConsistentGlobalStoreNameSuggest =
   'useConsistentGlobalStoreNameSuggest'
-export type MessageIds =
+
+type MessageIds =
   | typeof useConsistentGlobalStoreName
   | typeof useConsistentGlobalStoreNameSuggest
+type Options = readonly [string]
 
-type Options = [string]
-
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
       description: 'Use a consistent name for the global store.',
@@ -29,8 +30,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     ],
     messages: {
       [useConsistentGlobalStoreName]:
-        'Global store should have the name `{{ storeName }}`.',
-      [useConsistentGlobalStoreNameSuggest]: 'Use `{{ storeName }}`.',
+        'Global store should be named as `{{ storeName }}`.',
+      [useConsistentGlobalStoreNameSuggest]: 'Rename it to `{{ storeName }}`.',
     },
   },
   defaultOptions: ['store'],
