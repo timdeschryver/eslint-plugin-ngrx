@@ -1,15 +1,15 @@
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, { messageId } from '../../src/rules/store/use-selector-in-select'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+const valid = [
+  `
 class Ok {
   readonly test$ = somethingOutside();
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok1 {
@@ -19,7 +19,7 @@ class Ok1 {
     this.view$ = store.pipe(select(selectCustomers))
   }
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok2 {
@@ -29,7 +29,7 @@ class Ok2 {
     this.view$ = store.select(selectCustomers)
   }
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok3 {
@@ -37,7 +37,7 @@ class Ok3 {
 
   constructor(private store: Store) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok4 {
@@ -45,8 +45,8 @@ class Ok4 {
 
   constructor(private readonly store: Store) {}
 }`,
-    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/41
-    `
+  // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/41
+  `
 import { Store } from '@ngrx/store'
 
 class Ok5 {
@@ -54,8 +54,8 @@ class Ok5 {
 
   constructor(private store: Store) {}
 }`,
-    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/135
-    `
+  // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/135
+  `
 import { Store } from '@ngrx/store'
 
 class Ok6 {
@@ -63,10 +63,11 @@ class Ok6 {
 
   constructor(private readonly store: Store) {}
 }`,
-  ],
-  invalid: [
-    fromFixture(
-      `
+]
+
+const invalid = [
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk {
@@ -77,9 +78,9 @@ class NotOk {
                                         ~~~~~~~~~~~  [${messageId}]
   }
 }`,
-    ),
-    fromFixture(
-      `
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
@@ -88,9 +89,9 @@ class NotOk1 {
 
   constructor(private store: Store) {}
 }`,
-    ),
-    fromFixture(
-      `
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
@@ -100,9 +101,9 @@ class NotOk2 {
 
   constructor(private readonly store: Store) {}
 }`,
-    ),
-    fromFixture(
-      `
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk3 {
@@ -112,9 +113,9 @@ class NotOk3 {
 
   constructor(private store: Store) {}
 }`,
-    ),
-    fromFixture(
-      `
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk4 {
@@ -123,9 +124,9 @@ class NotOk4 {
 
   constructor(private store: Store) {}
 }`,
-    ),
-    fromFixture(
-      `
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk5 {
@@ -134,9 +135,9 @@ class NotOk5 {
 
   constructor(readonly store: Store) {}
 }`,
-    ),
-    fromFixture(
-      `
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk6 {
@@ -145,9 +146,9 @@ class NotOk6 {
 
   constructor(private store$: Store) {}
 }`,
-    ),
-    fromFixture(
-      `
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk7 {
@@ -156,6 +157,10 @@ class NotOk7 {
 
   constructor(private readonly store$: Store) {}
 }`,
-    ),
-  ],
+  ),
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

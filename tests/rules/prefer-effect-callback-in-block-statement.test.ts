@@ -1,14 +1,14 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   messageId,
 } from '../../src/rules/effects/prefer-effect-callback-in-block-statement'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+const valid = [
+  `
       @Injectable()
       class Effect {
         effectOK = createEffect(() => {
@@ -19,7 +19,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         })
       }
     `,
-    `
+  `
       @Injectable()
       class Effect {
         effectOK1 = createEffect(() => {
@@ -30,7 +30,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }, {dispatch: false})
       }
     `,
-    `
+  `
       @Injectable()
       class Effect {
         effectOK2 = createEffect(() => ({ debounce = 200 } = {}) => {
@@ -38,7 +38,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         })
       }
     `,
-    `
+  `
       @Injectable()
       class Effect {
         readonly effectOK3: CreateEffectMetadata;
@@ -52,27 +52,28 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }
       }
     `,
-  ],
-  invalid: [
-    fromFixture(
-      stripIndent`
+]
+
+const invalid = [
+  fromFixture(
+    stripIndent`
         @Injectable()
         class Effect {
           effectNOK = createEffect(() => this.actions.pipe(ofType('PING'),map(() => ({ type: 'PONG' }))))
                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
         }
       `,
-      {
-        output: stripIndent`
+    {
+      output: stripIndent`
         @Injectable()
         class Effect {
           effectNOK = createEffect(() => { return this.actions.pipe(ofType('PING'),map(() => ({ type: 'PONG' }))) })
         }
       `,
-      },
-    ),
-    fromFixture(
-      stripIndent`
+    },
+  ),
+  fromFixture(
+    stripIndent`
         @Injectable()
         class Effect {
           effectNOK1 = createEffect(() =>
@@ -82,8 +83,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           )
         }
       `,
-      {
-        output: stripIndent`
+    {
+      output: stripIndent`
         @Injectable()
         class Effect {
           effectNOK1 = createEffect(() =>
@@ -92,10 +93,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
           )
         }
       `,
-      },
-    ),
-    fromFixture(
-      stripIndent`
+    },
+  ),
+  fromFixture(
+    stripIndent`
         @Injectable()
         class Effect {
           effectNOK2 = createEffect(
@@ -104,8 +105,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           )
         }
       `,
-      {
-        output: stripIndent`
+    {
+      output: stripIndent`
         @Injectable()
         class Effect {
           effectNOK2 = createEffect(
@@ -113,10 +114,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
           )
         }
       `,
-      },
-    ),
-    fromFixture(
-      stripIndent`
+    },
+  ),
+  fromFixture(
+    stripIndent`
         @Injectable()
         class Effect {
           effectNOK3 = createEffect(() => {
@@ -125,8 +126,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           })
         }
       `,
-      {
-        output: stripIndent`
+    {
+      output: stripIndent`
         @Injectable()
         class Effect {
           effectNOK3 = createEffect(() => {
@@ -134,10 +135,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
           })
         }
       `,
-      },
-    ),
-    fromFixture(
-      stripIndent`
+    },
+  ),
+  fromFixture(
+    stripIndent`
         @Injectable()
         class Effect {
           readonly effectNOK4: CreateEffectMetadata;
@@ -152,8 +153,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           }
         }
       `,
-      {
-        output: stripIndent`
+    {
+      output: stripIndent`
         @Injectable()
         class Effect {
           readonly effectNOK4: CreateEffectMetadata;
@@ -167,7 +168,11 @@ ruleTester().run(path.parse(__filename).name, rule, {
           }
         }
       `,
-      },
-    ),
-  ],
+    },
+  ),
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

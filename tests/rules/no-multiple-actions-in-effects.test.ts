@@ -1,21 +1,21 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   messageId,
 } from '../../src/rules/effects/no-multiple-actions-in-effects'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+const valid = [
+  `
       @Injectable()
       export class Effects {
         effectOK$ = createEffect(() =>
           this.actions$.pipe(map(() => foo()))
         )
       }`,
-    `
+  `
       @Injectable()
       export class Effects {
         effectOK1$ = createEffect(() =>
@@ -24,7 +24,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           }))
         )
       }`,
-    `
+  `
       const action = () => foo()
       @Injectable()
       export class Effects {
@@ -32,8 +32,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           this.actions$.pipe(mapTo(action()))
         )
       }`,
-    // This specific test ensures that we only care about built-in `rxjs` operators.
-    `
+  // This specific test ensures that we only care about built-in `rxjs` operators.
+  `
       @Injectable()
       export class Effects {
         effectOK3$ = createEffect(() =>
@@ -43,7 +43,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
           )
         )
       }`,
-    `
+  `
       const foo = {type: 'foo'}
       @Injectable()
       export class Effects {
@@ -62,10 +62,11 @@ ruleTester().run(path.parse(__filename).name, rule, {
           )
         }
       }`,
-  ],
-  invalid: [
-    fromFixture(
-      stripIndent`
+]
+
+const invalid = [
+  fromFixture(
+    stripIndent`
         @Injectable()
         export class Effects {
           effectNOK$ = createEffect(() =>
@@ -73,9 +74,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
                                             ~~~~~~~~~~~~~~  [${messageId}]
           )
       }`,
-    ),
-    fromFixture(
-      stripIndent`
+  ),
+  fromFixture(
+    stripIndent`
         @Injectable()
         export class Effects {
           effectNOK1$ = createEffect(() =>
@@ -83,9 +84,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
                                                       ~~~~~~~~~~~~~~  [${messageId}]
           )
         }`,
-    ),
-    fromFixture(
-      stripIndent`
+  ),
+  fromFixture(
+    stripIndent`
         @Injectable()
         export class Effects {
           effectNOK2$ = createEffect(() =>
@@ -93,9 +94,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
                                                               ~~~~~~~~~~~~~~  [${messageId}]
           )
         }`,
-    ),
-    fromFixture(
-      stripIndent`
+  ),
+  fromFixture(
+    stripIndent`
         import { of } from 'rxjs'
         @Injectable()
         export class Effects {
@@ -104,9 +105,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  [${messageId}]
           )
         }`,
-    ),
-    fromFixture(
-      stripIndent`
+  ),
+  fromFixture(
+    stripIndent`
         const actions = [foo(), bar()]
         @Injectable()
         export class Effects {
@@ -115,9 +116,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
                                            ~~~~~~~  [${messageId}]
           )
         }`,
-    ),
-    fromFixture(
-      stripIndent`
+  ),
+  fromFixture(
+    stripIndent`
         const actions = () => [foo(), bar()]
         @Injectable()
         export class Effects {
@@ -135,9 +136,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
               : this.actions.pipe(),
           )
         }`,
-    ),
-    fromFixture(
-      stripIndent`
+  ),
+  fromFixture(
+    stripIndent`
         import { Action } from '@ngrx/store'
         @Injectable()
         export class Effects {
@@ -149,9 +150,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
             }))
           )
         }`,
-    ),
-    fromFixture(
-      stripIndent`
+  ),
+  fromFixture(
+    stripIndent`
         import { Action } from '@ngrx/store'
         import { of } from 'rxjs'
         @Injectable()
@@ -168,6 +169,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
             )
           }
         }`,
-    ),
-  ],
+  ),
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

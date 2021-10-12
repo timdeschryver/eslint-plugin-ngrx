@@ -1,20 +1,20 @@
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   noDispatchInEffects,
   noDispatchInEffectsSuggest,
 } from '../../src/rules/effects/no-dispatch-in-effects'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+const valid = [
+  `
 import { Store } from '@ngrx/store'
 
 class Ok {
   readonly effect = somethingOutside();
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok1 {
@@ -25,7 +25,7 @@ class Ok1 {
 
   constructor(private actions: Actions, private store: Store) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok2 {
@@ -45,10 +45,11 @@ class Ok2 {
     )
   }
 }`,
-  ],
-  invalid: [
-    fromFixture(
-      `
+]
+
+const invalid = [
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk {
@@ -65,11 +66,11 @@ class NotOk {
 
   constructor(private actions: Actions, private store: Store) {}
 }`,
-      {
-        suggestions: [
-          {
-            messageId: noDispatchInEffectsSuggest,
-            output: `
+    {
+      suggestions: [
+        {
+          messageId: noDispatchInEffectsSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk {
@@ -85,12 +86,12 @@ class NotOk {
 
   constructor(private actions: Actions, private store: Store) {}
 }`,
-          },
-        ],
-      },
-    ),
-    fromFixture(
-      `
+        },
+      ],
+    },
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
@@ -104,11 +105,11 @@ class NotOk1 {
 
   constructor(private actions: Actions, private store: Store) {}
 }`,
-      {
-        suggestions: [
-          {
-            messageId: noDispatchInEffectsSuggest,
-            output: `
+    {
+      suggestions: [
+        {
+          messageId: noDispatchInEffectsSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
@@ -121,12 +122,12 @@ class NotOk1 {
 
   constructor(private actions: Actions, private store: Store) {}
 }`,
-          },
-        ],
-      },
-    ),
-    fromFixture(
-      `
+        },
+      ],
+    },
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
@@ -143,11 +144,11 @@ class NotOk2 {
 
   constructor(private actions: Actions, private customName: Store) {}
 }`,
-      {
-        suggestions: [
-          {
-            messageId: noDispatchInEffectsSuggest,
-            output: `
+    {
+      suggestions: [
+        {
+          messageId: noDispatchInEffectsSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
@@ -163,12 +164,12 @@ class NotOk2 {
 
   constructor(private actions: Actions, private customName: Store) {}
 }`,
-          },
-        ],
-      },
-    ),
-    fromFixture(
-      `
+        },
+      ],
+    },
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk3 {
@@ -202,11 +203,11 @@ class NotOk3 {
     store.dispatch()
   }
 }`,
-      {
-        suggestions: [
-          {
-            messageId: noDispatchInEffectsSuggest,
-            output: `
+    {
+      suggestions: [
+        {
+          messageId: noDispatchInEffectsSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk3 {
@@ -238,10 +239,10 @@ class NotOk3 {
     store.dispatch()
   }
 }`,
-          },
-          {
-            messageId: noDispatchInEffectsSuggest,
-            output: `
+        },
+        {
+          messageId: noDispatchInEffectsSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk3 {
@@ -273,9 +274,13 @@ class NotOk3 {
     store.dispatch()
   }
 }`,
-          },
-        ],
-      },
-    ),
-  ],
+        },
+      ],
+    },
+  ),
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

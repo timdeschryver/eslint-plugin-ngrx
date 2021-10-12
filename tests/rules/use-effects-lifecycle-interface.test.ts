@@ -1,24 +1,24 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   messageId,
 } from '../../src/rules/effects/use-effects-lifecycle-interface'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+const valid = [
+  `
       class Foo {}
     `,
-    `
+  `
       class UserEffects implements OnInitEffects {
         ngrxOnInitEffects(): Action {
           return { type: '[UserEffects]: Init' }
         }
       }
     `,
-    `
+  `
       export class UserEffects implements OnRunEffects {
         constructor(private actions$: Actions) {}
         updateUser$ = createEffect(() =>
@@ -41,7 +41,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }
       }
     `,
-    `
+  `
       class EffectWithIdentifier implements OnIdentifyEffects {
         constructor(private effectIdentifier: string) {}
         ngrxOnIdentifyEffects() {
@@ -49,7 +49,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }
       }
     `,
-    `
+  `
       class UserEffects implements ngrx.OnInitEffects, OnIdentifyEffects {
         ngrxOnInitEffects(): Action {
           return { type: '[UserEffects]: Init' }
@@ -59,79 +59,80 @@ ruleTester().run(path.parse(__filename).name, rule, {
         }
       }
     `,
-  ],
-  invalid: [
-    fromFixture(
-      stripIndent`
+]
+
+const invalid = [
+  fromFixture(
+    stripIndent`
         class UserEffects {
           ngrxOnInitEffects() {}
           ~~~~~~~~~~~~~~~~~ [${messageId} { "interfaceName": "OnInitEffects", "methodName": "ngrxOnInitEffects" }]
         }
       `,
-      {
-        output: stripIndent`
+    {
+      output: stripIndent`
           import { OnInitEffects } from '@ngrx/effects';
           class UserEffects implements OnInitEffects {
             ngrxOnInitEffects() {}
           }
         `,
-      },
-    ),
-    fromFixture(
-      stripIndent`
+    },
+  ),
+  fromFixture(
+    stripIndent`
         import Effects from '@ngrx/effects'
         class UserEffects {
           ngrxOnIdentifyEffects() {}
           ~~~~~~~~~~~~~~~~~~~~~ [${messageId} { "interfaceName": "OnIdentifyEffects", "methodName": "ngrxOnIdentifyEffects" }]
         }
       `,
-      {
-        output: stripIndent`
+    {
+      output: stripIndent`
           import Effects, { OnIdentifyEffects } from '@ngrx/effects'
           class UserEffects implements OnIdentifyEffects {
             ngrxOnIdentifyEffects() {}
           }
         `,
-      },
-    ),
-    fromFixture(
-      stripIndent`
+    },
+  ),
+  fromFixture(
+    stripIndent`
         import { Injectable } from '@angular/core'
         class UserEffects {
           ngrxOnRunEffects() {}
           ~~~~~~~~~~~~~~~~ [${messageId} { "interfaceName": "OnRunEffects", "methodName": "ngrxOnRunEffects" }]
         }
       `,
-      {
-        output: stripIndent`
+    {
+      output: stripIndent`
           import { OnRunEffects } from '@ngrx/effects';
           import { Injectable } from '@angular/core'
           class UserEffects implements OnRunEffects {
             ngrxOnRunEffects() {}
           }
         `,
-      },
-    ),
-    fromFixture(
-      stripIndent`
+    },
+  ),
+  fromFixture(
+    stripIndent`
         import * as ngrx from '@ngrx/effects'
         class UserEffects {
           ngrxOnInitEffects() {}
           ~~~~~~~~~~~~~~~~~ [${messageId} { "interfaceName": "OnInitEffects", "methodName": "ngrxOnInitEffects" }]
         }
       `,
-      {
-        output: stripIndent`
+    {
+      output: stripIndent`
           import { OnInitEffects } from '@ngrx/effects';
           import * as ngrx from '@ngrx/effects'
           class UserEffects implements OnInitEffects {
             ngrxOnInitEffects() {}
           }
         `,
-      },
-    ),
-    fromFixture(
-      stripIndent`
+    },
+  ),
+  fromFixture(
+    stripIndent`
         import type { OnInitEffects, OnRunEffects } from '@ngrx/effects'
         class UserEffects implements OnInitEffects, OnRunEffects {
           ngrxOnInitEffects() {}
@@ -142,8 +143,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ngrxOnRunEffects() {}
         }
       `,
-      {
-        output: stripIndent`
+    {
+      output: stripIndent`
           import type { OnInitEffects, OnRunEffects, OnIdentifyEffects } from '@ngrx/effects'
           class UserEffects implements OnInitEffects, OnRunEffects, OnIdentifyEffects {
             ngrxOnInitEffects() {}
@@ -153,7 +154,11 @@ ruleTester().run(path.parse(__filename).name, rule, {
             ngrxOnRunEffects() {}
           }
         `,
-      },
-    ),
-  ],
+    },
+  ),
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

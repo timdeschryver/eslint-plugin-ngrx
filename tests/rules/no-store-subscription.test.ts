@@ -1,18 +1,18 @@
 import {} from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, { messageId } from '../../src/rules/store/no-store-subscription'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+const valid = [
+  `
 import { Store } from '@ngrx/store'
 
 class Ok {
   readonly test$ = somethingOutside();
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok1 {
@@ -20,7 +20,7 @@ class Ok1 {
 
   constructor(private store: Store) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok2 {
@@ -28,8 +28,8 @@ class Ok2 {
 
   constructor(private store: Store) {}
 }`,
-    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/175
-    `
+  // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/175
+  `
 import { Store } from '@ngrx/store'
 
 class Ok3 {
@@ -41,7 +41,7 @@ class Ok3 {
 
   constructor(private store: Store) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok4 {
@@ -53,9 +53,10 @@ class Ok4 {
     this.metrics$ = store.select(selectMetrics)
   }
 }`,
-  ],
-  invalid: [
-    fromFixture(`
+]
+
+const invalid = [
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk {
@@ -64,7 +65,7 @@ class NotOk {
           ~~~~~~~~~ [${messageId}]
   }
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
@@ -73,7 +74,7 @@ class NotOk1 {
                                  ~~~~~~~~~ [${messageId}]
   }
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
@@ -82,7 +83,7 @@ class NotOk2 {
 
   constructor(private store: Store) {}
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk3 {
@@ -91,7 +92,7 @@ class NotOk3 {
 
   constructor(private store: Store) {}
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk4 {
@@ -100,7 +101,7 @@ class NotOk4 {
 
   constructor(private store: Store) {}
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk5 {
@@ -111,7 +112,7 @@ class NotOk5 {
                                    ~~~~~~~~~ [${messageId}]
   }
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk6 {
@@ -126,7 +127,7 @@ class NotOk6 {
     })
   }
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk6 {
@@ -137,7 +138,7 @@ class NotOk6 {
                                     ~~~~~~~~~ [${messageId}]
   }
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk7 {
@@ -150,5 +151,9 @@ class NotOk7 {
     })
   }
 }`),
-  ],
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

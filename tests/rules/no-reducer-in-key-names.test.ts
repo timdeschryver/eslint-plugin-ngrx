@@ -1,14 +1,16 @@
+import type { InvalidTestCase } from '@typescript-eslint/experimental-utils/dist/ts-eslint'
 import { stripIndent } from 'common-tags'
 import path from 'path'
+import { test } from 'uvu'
+import type { MessageIds } from '../../src/rules/store/no-reducer-in-key-names'
 import rule, {
   noReducerInKeyNames,
   noReducerInKeyNamesSuggest,
 } from '../../src/rules/store/no-reducer-in-key-names'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+const valid = [
+  `
     @NgModule({
       imports: [
         StoreModule.forRoot({
@@ -19,7 +21,7 @@ ruleTester().run(path.parse(__filename).name, rule, {
       ],
     })
     export class AppModule {}`,
-    `
+  `
     @NgModule({
       imports: [
         StoreModule.forFeature({
@@ -30,24 +32,25 @@ ruleTester().run(path.parse(__filename).name, rule, {
       ],
     })
     export class AppModule {}`,
-    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/91
-    `
+  // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/91
+  `
     @NgModule({
       imports: [
         StoreModule.forRoot(reducers, {metaReducers}),
       ],
     })
     export class AppModule {}`,
-    `
+  `
     export const reducers: ActionReducerMap<AppState> = {
       foo,
       persons: personsReducer,
       'people': peopleReducer,
     };`,
-  ],
-  invalid: [
-    {
-      code: stripIndent`
+]
+
+const invalid: InvalidTestCase<MessageIds, []>[] = [
+  {
+    code: stripIndent`
         @NgModule({
           imports: [
             StoreModule.forRoot({
@@ -56,16 +59,16 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ],
         })
         export class AppModule {}`,
-      errors: [
-        {
-          column: 7,
-          endColumn: 17,
-          line: 4,
-          messageId: noReducerInKeyNames,
-          suggestions: [
-            {
-              messageId: noReducerInKeyNamesSuggest,
-              output: stripIndent`
+    errors: [
+      {
+        column: 7,
+        endColumn: 17,
+        line: 4,
+        messageId: noReducerInKeyNames,
+        suggestions: [
+          {
+            messageId: noReducerInKeyNamesSuggest,
+            output: stripIndent`
                 @NgModule({
                   imports: [
                     StoreModule.forRoot({
@@ -74,13 +77,13 @@ ruleTester().run(path.parse(__filename).name, rule, {
                   ],
                 })
                 export class AppModule {}`,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+          },
+        ],
+      },
+    ],
+  },
+  {
+    code: stripIndent`
         @NgModule({
           imports: [
             StoreModule.forFeature({
@@ -90,16 +93,16 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ],
         })
         export class AppModule {}`,
-      errors: [
-        {
-          column: 7,
-          endColumn: 20,
-          line: 4,
-          messageId: noReducerInKeyNames,
-          suggestions: [
-            {
-              messageId: noReducerInKeyNamesSuggest,
-              output: stripIndent`
+    errors: [
+      {
+        column: 7,
+        endColumn: 20,
+        line: 4,
+        messageId: noReducerInKeyNames,
+        suggestions: [
+          {
+            messageId: noReducerInKeyNamesSuggest,
+            output: stripIndent`
                 @NgModule({
                   imports: [
                     StoreModule.forFeature({
@@ -109,18 +112,18 @@ ruleTester().run(path.parse(__filename).name, rule, {
                   ],
                 })
                 export class AppModule {}`,
-            },
-          ],
-        },
-        {
-          column: 7,
-          endColumn: 17,
-          line: 5,
-          messageId: noReducerInKeyNames,
-          suggestions: [
-            {
-              messageId: noReducerInKeyNamesSuggest,
-              output: stripIndent`
+          },
+        ],
+      },
+      {
+        column: 7,
+        endColumn: 17,
+        line: 5,
+        messageId: noReducerInKeyNames,
+        suggestions: [
+          {
+            messageId: noReducerInKeyNamesSuggest,
+            output: stripIndent`
                 @NgModule({
                   imports: [
                     StoreModule.forFeature({
@@ -130,93 +133,97 @@ ruleTester().run(path.parse(__filename).name, rule, {
                   ],
                 })
                 export class AppModule {}`,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: stripIndent`
+          },
+        ],
+      },
+    ],
+  },
+  {
+    code: stripIndent`
         export const reducers: ActionReducerMap<AppState> = {
           feeReducer,
           'fieReducer': fie,
           ['fooReducerName']: foo,
           [\`ReducerFoe\`]: FoeReducer,
         };`,
-      errors: [
-        {
-          column: 3,
-          endColumn: 13,
-          line: 2,
-          messageId: noReducerInKeyNames,
-          suggestions: [
-            {
-              messageId: noReducerInKeyNamesSuggest,
-              output: stripIndent`
+    errors: [
+      {
+        column: 3,
+        endColumn: 13,
+        line: 2,
+        messageId: noReducerInKeyNames,
+        suggestions: [
+          {
+            messageId: noReducerInKeyNamesSuggest,
+            output: stripIndent`
                 export const reducers: ActionReducerMap<AppState> = {
                   fee,
                   'fieReducer': fie,
                   ['fooReducerName']: foo,
                   [\`ReducerFoe\`]: FoeReducer,
                 };`,
-            },
-          ],
-        },
-        {
-          column: 3,
-          endColumn: 15,
-          line: 3,
-          messageId: noReducerInKeyNames,
-          suggestions: [
-            {
-              messageId: noReducerInKeyNamesSuggest,
-              output: stripIndent`
+          },
+        ],
+      },
+      {
+        column: 3,
+        endColumn: 15,
+        line: 3,
+        messageId: noReducerInKeyNames,
+        suggestions: [
+          {
+            messageId: noReducerInKeyNamesSuggest,
+            output: stripIndent`
                 export const reducers: ActionReducerMap<AppState> = {
                   feeReducer,
                   'fie': fie,
                   ['fooReducerName']: foo,
                   [\`ReducerFoe\`]: FoeReducer,
                 };`,
-            },
-          ],
-        },
-        {
-          column: 4,
-          endColumn: 20,
-          line: 4,
-          messageId: noReducerInKeyNames,
-          suggestions: [
-            {
-              messageId: noReducerInKeyNamesSuggest,
-              output: stripIndent`
+          },
+        ],
+      },
+      {
+        column: 4,
+        endColumn: 20,
+        line: 4,
+        messageId: noReducerInKeyNames,
+        suggestions: [
+          {
+            messageId: noReducerInKeyNamesSuggest,
+            output: stripIndent`
                 export const reducers: ActionReducerMap<AppState> = {
                   feeReducer,
                   'fieReducer': fie,
                   ['fooName']: foo,
                   [\`ReducerFoe\`]: FoeReducer,
                 };`,
-            },
-          ],
-        },
-        {
-          column: 4,
-          endColumn: 16,
-          line: 5,
-          messageId: noReducerInKeyNames,
-          suggestions: [
-            {
-              messageId: noReducerInKeyNamesSuggest,
-              output: stripIndent`
+          },
+        ],
+      },
+      {
+        column: 4,
+        endColumn: 16,
+        line: 5,
+        messageId: noReducerInKeyNames,
+        suggestions: [
+          {
+            messageId: noReducerInKeyNamesSuggest,
+            output: stripIndent`
                 export const reducers: ActionReducerMap<AppState> = {
                   feeReducer,
                   'fieReducer': fie,
                   ['fooReducerName']: foo,
                   [\`Foe\`]: FoeReducer,
                 };`,
-            },
-          ],
-        },
-      ],
-    },
-  ],
+          },
+        ],
+      },
+    ],
+  },
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

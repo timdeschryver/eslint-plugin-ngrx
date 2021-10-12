@@ -1,21 +1,21 @@
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, { messageId } from '../../src/rules/store/prefer-action-creator'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `const loadUser = createAction('[User Page] Load User')`,
-    `
+const valid = [
+  `const loadUser = createAction('[User Page] Load User')`,
+  `
     class Test {
       type = '[Customer Page] Load Customer'
     }`,
-    `
+  `
     class Test implements Action {
       member = '[Customer Page] Load Customer'
     }`,
-    `
+  `
     class Test {
       readonly type = ActionTypes.success
 
@@ -26,17 +26,22 @@ ruleTester().run(path.parse(__filename).name, rule, {
         options?: TransitionOptions
       ) {}
     }`,
-  ],
-  invalid: [
-    fromFixture(
-      stripIndent`
+]
+
+const invalid = [
+  fromFixture(
+    stripIndent`
       class Test implements Action { type = '[Customer Page] Load Customer' }
       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]`,
-    ),
-    fromFixture(
-      stripIndent`
+  ),
+  fromFixture(
+    stripIndent`
       class Test implements ngrx.Action { type = ActionTypes.success; constructor(readonly payload: Payload) {} }
       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]`,
-    ),
-  ],
+  ),
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

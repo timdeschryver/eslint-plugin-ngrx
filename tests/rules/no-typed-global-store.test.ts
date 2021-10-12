@@ -1,89 +1,90 @@
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   noTypedStore,
   noTypedStoreSuggest,
 } from '../../src/rules/store/no-typed-global-store'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+const valid = [
+  `
 import { Store } from '@ngrx/store'
 
 export class Ok {
   constructor(store: Store) {}
 }`,
-  ],
-  invalid: [
-    fromFixture(
-      `
+]
+
+const invalid = [
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk {
   constructor(store: Store<PersonsState>) {}
                           ~~~~~~~~~~~~~~ [${noTypedStore}]
 }`,
-      {
-        suggestions: [
-          {
-            messageId: noTypedStoreSuggest,
-            output: `
+    {
+      suggestions: [
+        {
+          messageId: noTypedStoreSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk {
   constructor(store: Store) {}
 }`,
-          },
-        ],
-      },
-    ),
-    fromFixture(
-      `
+        },
+      ],
+    },
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
   constructor(cdr: ChangeDetectorRef, private store: Store<CustomersState>) {}
                                                           ~~~~~~~~~~~~~~~~ [${noTypedStore}]
 }`,
-      {
-        suggestions: [
-          {
-            messageId: noTypedStoreSuggest,
-            output: `
+    {
+      suggestions: [
+        {
+          messageId: noTypedStoreSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
   constructor(cdr: ChangeDetectorRef, private store: Store) {}
 }`,
-          },
-        ],
-      },
-    ),
-    fromFixture(
-      `
+        },
+      ],
+    },
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
   constructor(private readonly store: Store<any>, private personsService: PersonsService) {}
                                            ~~~~~ [${noTypedStore}]
 }`,
-      {
-        suggestions: [
-          {
-            messageId: noTypedStoreSuggest,
-            output: `
+    {
+      suggestions: [
+        {
+          messageId: noTypedStoreSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
   constructor(private readonly store: Store, private personsService: PersonsService) {}
 }`,
-          },
-        ],
-      },
-    ),
-    fromFixture(
-      `
+        },
+      ],
+    },
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk3 {
@@ -91,28 +92,32 @@ class NotOk3 {
                           ~~~~ [${noTypedStore} suggest 0]
                                                           ~~~~~~~~ [${noTypedStore} suggest 1]
 }`,
-      {
-        suggestions: [
-          {
-            messageId: noTypedStoreSuggest,
-            output: `
+    {
+      suggestions: [
+        {
+          messageId: noTypedStoreSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk3 {
   constructor(store: Store, private customStore: Store<object>) {}
 }`,
-          },
-          {
-            messageId: noTypedStoreSuggest,
-            output: `
+        },
+        {
+          messageId: noTypedStoreSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk3 {
   constructor(store: Store<{}>, private customStore: Store) {}
 }`,
-          },
-        ],
-      },
-    ),
-  ],
+        },
+      ],
+    },
+  ),
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()
