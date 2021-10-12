@@ -1,4 +1,3 @@
-import {} from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, { messageId } from '../../src/rules/store/no-store-subscription'

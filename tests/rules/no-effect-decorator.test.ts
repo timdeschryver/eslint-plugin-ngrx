@@ -1,7 +1,6 @@
 import { stripIndents } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
-import type { MessageIds } from '../../src/rules/effects/no-effect-decorator'
 import rule, {
   noEffectDecorator,
   noEffectDecoratorSuggest,
@@ -11,194 +10,161 @@ import { ruleTester } from '../utils'
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
-    @Injectable()
-    export class FixtureEffects {
-      effectOK = createEffect(() => this.actions.pipe(
-        ofType('PING'),
-        map(() => ({ type: 'PONG' }))
-      ))
-      constructor(private actions: Actions) {}
-    }`,
+class Ok {
+  effect = createEffect(() => this.actions.pipe(
+    ofType('PING'),
+    map(() => ({ type: 'PONG' }))
+  ))
+}`,
   ],
   invalid: [
     fromFixture(
       stripIndents`
-      @Injectable()
-      export class FixtureEffects {
-        @Effect()
-        ~~~~~~~~~ [${noEffectDecorator}]
-        effect = this.actions.pipe(
-          ofType('PING'),
-          map(() => ({ type: 'PONG' }))
-        )
-        constructor(private actions: Actions) {}
-      }`,
+class NotOk {
+  @Effect()
+  ~~~~~~~~~ [${noEffectDecorator}]
+  effect = this.actions.pipe(
+    ofType('PING'),
+    map(() => ({ type: 'PONG' }))
+  )
+}`,
       {
-        output: stripIndents`
-        import { createEffect } from '@ngrx/effects';
-        @Injectable()
-        export class FixtureEffects {
+        output: stripIndents`import { createEffect } from '@ngrx/effects';
+class NotOk {
 
-          effect = createEffect(() => { return this.actions.pipe(
-            ofType('PING'),
-            map(() => ({ type: 'PONG' }))
-          )})
-          constructor(private actions: Actions) {}
-        }`,
+  effect = createEffect(() => { return this.actions.pipe(
+    ofType('PING'),
+    map(() => ({ type: 'PONG' }))
+  )})
+}`,
       },
     ),
     fromFixture(
       stripIndents`
-      @Injectable()
-      export class FixtureEffects {
-        @Effect({ dispatch: true })
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noEffectDecorator}]
-        effect = this.actions.pipe(
-          ofType('PING'),
-          map(() => ({ type: 'PONG' }))
-        )
-        constructor(private actions: Actions) {}
-      }`,
+class NotOk1 {
+  @Effect({ dispatch: true })
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noEffectDecorator}]
+  effect = this.actions.pipe(
+    ofType('PING'),
+    map(() => ({ type: 'PONG' }))
+  )
+}`,
       {
-        output: stripIndents`
-        import { createEffect } from '@ngrx/effects';
-        @Injectable()
-        export class FixtureEffects {
+        output: stripIndents`import { createEffect } from '@ngrx/effects';
+class NotOk1 {
 
-          effect = createEffect(() => { return this.actions.pipe(
-            ofType('PING'),
-            map(() => ({ type: 'PONG' }))
-          )}, { dispatch: true })
-          constructor(private actions: Actions) {}
-        }`,
+  effect = createEffect(() => { return this.actions.pipe(
+    ofType('PING'),
+    map(() => ({ type: 'PONG' }))
+  )}, { dispatch: true })
+}`,
       },
     ),
     fromFixture(
       stripIndents`
-      import { createEffect, Effect } from '@ngrx/effects'
-      @Injectable()
-      export class FixtureEffects {
-        @Effect({ dispatch: false })
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noEffectDecorator}]
-        effect = this.actions.pipe(
-          ofType('PING'),
-          mapTo(CustomActions.pong()),
-        )
-        constructor(private actions: Actions) {}
-      }`,
+import { createEffect, Effect } from '@ngrx/effects'
+
+class NotOk2 {
+  @Effect({ dispatch: false })
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noEffectDecorator}]
+  effect = this.actions.pipe(
+    ofType('PING'),
+    mapTo(CustomActions.pong()),
+  )
+}`,
       {
         output: stripIndents`
-        import { createEffect, Effect } from '@ngrx/effects'
-        @Injectable()
-        export class FixtureEffects {
+import { createEffect, Effect } from '@ngrx/effects'
 
-          effect = createEffect(() => { return this.actions.pipe(
-            ofType('PING'),
-            mapTo(CustomActions.pong()),
-          )}, { dispatch: false })
-          constructor(private actions: Actions) {}
-        }`,
+class NotOk2 {
+
+  effect = createEffect(() => { return this.actions.pipe(
+    ofType('PING'),
+    mapTo(CustomActions.pong()),
+  )}, { dispatch: false })
+}`,
       },
     ),
     fromFixture(
       stripIndents`
-      import { Injectable } from '@angular/core'
-      import { Effect } from '@ngrx/effects'
-      @Injectable()
-      export class FixtureEffects {
-        @Effect(config)
-        ~~~~~~~~~~~~~~~ [${noEffectDecorator}]
-        effect = this.actions.pipe(
-          ofType('PING'),
-          mapTo(CustomActions.pong()),
-        )
-        constructor(private actions: Actions) {}
-      }`,
+import { Effect } from '@ngrx/effects'
+
+class NotOk3 {
+  @Effect(config)
+  ~~~~~~~~~~~~~~~ [${noEffectDecorator}]
+  effect = this.actions.pipe(
+    ofType('PING'),
+    mapTo(CustomActions.pong()),
+  )
+}`,
       {
         output: stripIndents`
-        import { Injectable } from '@angular/core'
-        import { Effect, createEffect } from '@ngrx/effects'
-        @Injectable()
-        export class FixtureEffects {
+import { Effect, createEffect } from '@ngrx/effects'
 
-          effect = createEffect(() => { return this.actions.pipe(
-            ofType('PING'),
-            mapTo(CustomActions.pong()),
-          )}, config)
-          constructor(private actions: Actions) {}
-        }`,
+class NotOk3 {
+
+  effect = createEffect(() => { return this.actions.pipe(
+    ofType('PING'),
+    mapTo(CustomActions.pong()),
+  )}, config)
+}`,
       },
     ),
-    {
-      code: stripIndents`
-      import { Injectable } from '@angular/core'
-      import type { OnRunEffects } from '@ngrx/effects'
-      @Injectable()
-      export class FixtureEffects {
-        @Effect(config)
-        effect = this.actions.pipe(
-          ofType('PING'),
-          mapTo(CustomActions.pong()),
-        )
+    fromFixture(
+      stripIndents`
+import type { OnRunEffects } from '@ngrx/effects'
 
-        @Effect({ dispatch: false })
-        effect2 = createEffect(() => this.actions.pipe(
-          ofType('PING'),
-          mapTo(CustomActions.pong()),
-        ), config)
-        constructor(private actions: Actions) {}
-      }`,
-      output: stripIndents`
-      import { createEffect } from '@ngrx/effects';
-      import { Injectable } from '@angular/core'
-      import type { OnRunEffects } from '@ngrx/effects'
-      @Injectable()
-      export class FixtureEffects {
+class NotOk4 {
+  @Effect(config)
+  ~~~~~~~~~~~~~~~ [${noEffectDecorator}]
+  effect = this.actions.pipe(
+    ofType('PING'),
+    mapTo(CustomActions.pong()),
+  )
+}`,
+      {
+        output: stripIndents`
+import { createEffect } from '@ngrx/effects';
+import type { OnRunEffects } from '@ngrx/effects'
 
-        effect = createEffect(() => { return this.actions.pipe(
-          ofType('PING'),
-          mapTo(CustomActions.pong()),
-        )}, config)
+class NotOk4 {
 
-        @Effect({ dispatch: false })
-        effect2 = createEffect(() => this.actions.pipe(
-          ofType('PING'),
-          mapTo(CustomActions.pong()),
-        ), config)
-        constructor(private actions: Actions) {}
-      }`,
-      errors: [
-        { messageId: noEffectDecorator },
-        {
-          column: 1,
-          endColumn: 29,
-          line: 11,
-          messageId: noEffectDecorator,
-          suggestions: [
-            {
-              messageId: noEffectDecoratorSuggest as MessageIds,
-              output: stripIndents`
-              import { Injectable } from '@angular/core'
-              import type { OnRunEffects } from '@ngrx/effects'
-              @Injectable()
-              export class FixtureEffects {
-                @Effect(config)
-                effect = this.actions.pipe(
-                  ofType('PING'),
-                  mapTo(CustomActions.pong()),
-                )
+  effect = createEffect(() => { return this.actions.pipe(
+    ofType('PING'),
+    mapTo(CustomActions.pong()),
+  )}, config)
+}`,
+      },
+    ),
+    fromFixture(
+      stripIndents`
+import { createEffect } from '@ngrx/effects';
 
+class NotOk5 {
+  @Effect({ dispatch: false })
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noEffectDecorator}]
+  effect = createEffect(() => this.actions.pipe(
+    ofType('PING'),
+    mapTo(CustomActions.pong()),
+  ), config)
+}`,
+      {
+        suggestions: [
+          {
+            messageId: noEffectDecoratorSuggest,
+            output: stripIndents`
+import { createEffect } from '@ngrx/effects';
 
-                effect2 = createEffect(() => this.actions.pipe(
-                  ofType('PING'),
-                  mapTo(CustomActions.pong()),
-                ), config)
-                constructor(private actions: Actions) {}
-              }`,
-            },
-          ],
-        },
-      ],
-    },
+class NotOk5 {
+
+  effect = createEffect(() => this.actions.pipe(
+    ofType('PING'),
+    mapTo(CustomActions.pong()),
+  ), config)
+}`,
+          },
+        ],
+      },
+    ),
   ],
 })
