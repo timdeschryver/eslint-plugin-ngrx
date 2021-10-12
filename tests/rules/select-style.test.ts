@@ -1,4 +1,3 @@
-import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
@@ -11,243 +10,253 @@ import { ruleTester } from '../utils'
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
-      import { Store } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        readonly test$ = somethingOutside();
-      }`,
+import { Store } from '@ngrx/store'
+
+class Ok {
+  readonly test$ = somethingOutside();
+}`,
     `
-    import { Store } from '@ngrx/store'
-    @Component()
-    export class FixtureComponent {
-      constructor(private store: Store) {}
-    }
-    `,
+import { Store } from '@ngrx/store'
+
+class Ok1 {
+  constructor(private store: Store) {}
+}`,
     `
-    import { Store, select } from '@ngrx/store'
-    @Component()
-    export class FixtureComponent {
-      constructor(private store: Store) {}
-    }
-    `,
+import { Store, select } from '@ngrx/store'
+
+class Ok2 {
+  constructor(private store: Store) {}
+}`,
     `
-    import { Store, select } from '@ngrx/store'
-    @Component()
-    export class FixtureComponent {
-      foo$ = select(selector)
-      constructor(private store: Store) {}
-    }
-    `,
+import { Store, select } from '@ngrx/store'
+
+class Ok3 {
+  foo$ = select(selector)
+
+  constructor(private store: Store) {}
+}`,
     `
-    import { select } from '@my-org/framework'
-    import { Store } from '@ngrx/store'
-    @Component()
-    export class FixtureComponent {
-      foo$ = this.store.pipe(select(selector))
-      constructor(private store: Store) {}
-    }
-    `,
+import { select } from '@my-org/framework'
+import { Store } from '@ngrx/store'
+
+class Ok4 {
+  foo$ = this.store.pipe(select(selector))
+
+  constructor(private store: Store) {}
+}`,
     `
-    import { Store } from '@ngrx/store'
-    @Component()
-    export class FixtureComponent {
-      foo$ = this.store.select(selector)
-      constructor(private store: Store) {}
-    }
-    `,
+import { Store } from '@ngrx/store'
+
+class Ok5 {
+  foo$ = this.store.select(selector)
+
+  constructor(private store: Store) {}
+}`,
     `
-    import { Store } from '@ngrx/store'
-    @Component()
-    export class FixtureComponent {
-      foo$ = this.store.select(selector)
-      constructor(private store: Store) {}
-    }
-    `,
+import { Store } from '@ngrx/store'
+
+class Ok6 {
+  foo$ = this.store.select(selector)
+
+  constructor(private store: Store) {}
+}`,
     `
-    import { Store, select } from '@ngrx/store'
-    @Component()
-    export class FixtureComponent {
-      foo$ = this.customName.select(selector)
-      constructor(private customName: Store) {}
-    }
-    `,
+import { Store, select } from '@ngrx/store'
+
+class Ok7 {
+  foo$ = this.customName.select(selector)
+  constructor(private customName: Store) {}
+}`,
     {
       code: `
-      import { Store, select } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        foo$ = this.store.pipe(select(selector))
-        constructor(private store: Store) {}
-      }
-      `,
+import { Store, select } from '@ngrx/store'
+
+class Ok8 {
+  foo$ = this.store.pipe(select(selector))
+
+  constructor(private store: Store) {}
+}`,
       options: [SelectStyle.Operator],
     },
     {
       code: `
-      import { select, Store } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        foo$ = this.store.select(selector)
-        constructor(private store: Store) {}
-      }
-      `,
+import { select, Store } from '@ngrx/store'
+
+class Ok9 {
+  foo$ = this.store.select(selector)
+
+  constructor(private store: Store) {}
+}`,
       options: [SelectStyle.Method],
     },
   ],
   invalid: [
     fromFixture(
-      stripIndent`
-        import { select, Store } from '@ngrx/store'
-                 ~~~~~~ [${methodSelectMessageId}]
-        @Component()
-        export class FixtureComponent {
-          foo$ = this.store.pipe( select(selector), )
-                                  ~~~~~~ [${methodSelectMessageId}]
-          constructor(private store: Store) {}
-        }
-      `,
+      `
+import { select, Store } from '@ngrx/store'
+         ~~~~~~ [${methodSelectMessageId}]
+
+class NotOk {
+  foo$ = this.store.pipe( select(selector), )
+                          ~~~~~~ [${methodSelectMessageId}]
+
+  constructor(private store: Store) {}
+}`,
       {
-        output: stripIndent`
-          import {  Store } from '@ngrx/store'
-          @Component()
-          export class FixtureComponent {
-            foo$ = this.store. select((selector), )
-            constructor(private store: Store) {}
-          }
-        `,
+        output: `
+import {  Store } from '@ngrx/store'
+
+class NotOk {
+  foo$ = this.store. select((selector), )
+
+  constructor(private store: Store) {}
+}`,
       },
     ),
     fromFixture(
-      stripIndent`
-        import { Store, select } from '@ngrx/store'
-                        ~~~~~~ [${methodSelectMessageId}]
-        @Component()
-        export class FixtureComponent {
-          foo$ = this.store.pipe  (select
-                                   ~~~~~~ [${methodSelectMessageId}]
-            (selector, selector2), filter(Boolean))
+      `
+import { Store, select } from '@ngrx/store'
+                ~~~~~~ [${methodSelectMessageId}]
 
-          constructor(private store: Store) {}
-        }
-      `,
+class NotOk1 {
+  foo$ = this.store.pipe  (select
+                           ~~~~~~ [${methodSelectMessageId}]
+    (selector, selector2), filter(Boolean))
+
+  constructor(private store: Store) {}
+}`,
       {
         options: [SelectStyle.Method],
-        output: stripIndent`
-          import { Store } from '@ngrx/store'
-          @Component()
-          export class FixtureComponent {
-            foo$ = this.store.select
-              (selector, selector2).pipe  ( filter(Boolean))
+        output: `
+import { Store } from '@ngrx/store'
 
-            constructor(private store: Store) {}
-          }
-        `,
+class NotOk1 {
+  foo$ = this.store.select
+    (selector, selector2).pipe  ( filter(Boolean))
+
+  constructor(private store: Store) {}
+}`,
       },
     ),
     fromFixture(
-      stripIndent`
-        import { select, Store } from '@ngrx/store'
-        @Component()
-        export class FixtureComponent {
-          foo$
-          constructor(private store: Store) {
-            this.foo$ = store.select(
-                              ~~~~~~ [${operatorSelectMessageId}]
-              selector,
-            )
-          }
-        }
-      `,
+      `
+import { select, Store } from '@ngrx/store'
+
+class NotOk2 {
+  bar$: Observable<unknown>
+  foo$: Observable<unknown>
+
+  constructor(store: Store, private readonly customStore: Store) {
+    this.foo$ = store.select(
+                      ~~~~~~ [${operatorSelectMessageId}]
+      selector,
+    )
+  }
+
+  ngOnInit() {
+    this.bar$ = this.customStore.select(
+                                 ~~~~~~ [${operatorSelectMessageId}]
+      selector,
+    )
+  }
+}`,
       {
         options: [SelectStyle.Operator] as const,
-        output: stripIndent`
-          import { select, Store } from '@ngrx/store'
-          @Component()
-          export class FixtureComponent {
-            foo$
-            constructor(private store: Store) {
-              this.foo$ = store.pipe(select(
-                selector,
-              ))
-            }
-          }
-        `,
+        output: `
+import { select, Store } from '@ngrx/store'
+
+class NotOk2 {
+  bar$: Observable<unknown>
+  foo$: Observable<unknown>
+
+  constructor(store: Store, private readonly customStore: Store) {
+    this.foo$ = store.pipe(select(
+      selector,
+    ))
+  }
+
+  ngOnInit() {
+    this.bar$ = this.customStore.pipe(select(
+      selector,
+    ))
+  }
+}`,
       },
     ),
     fromFixture(
-      stripIndent`
-        import {
-          Store,
-          select,
-          ~~~~~~ [${methodSelectMessageId}]
-        } from '@ngrx/store'
-        @Component()
-        export class FixtureComponent {
-          foo$ = this.store.pipe(select(selector), map(toItem)).pipe()
-                                 ~~~~~~ [${methodSelectMessageId}]
-          bar$ = this.store.
-            select(selector).pipe()
-          baz$ = this.store.pipe(
-            select(({customers}) => customers), map(toItem),
-            ~~~~~~ [${methodSelectMessageId}]
-          ).pipe()
-          constructor(private store: Store) {}
-        }
+      `
+import {
+  Store,
+  select,
+  ~~~~~~ [${methodSelectMessageId}]
+} from '@ngrx/store'
 
-        @Component()
-        export class FixtureComponent2 {
-          foo$ = this.store.pipe(select(selector), map(toItem)).pipe()
-                                 ~~~~~~ [${methodSelectMessageId}]
-          constructor(private readonly store: Store) {}
-        }
-      `,
+class NotOk3 {
+  foo$ = this.store.pipe(select(selector), map(toItem)).pipe()
+                         ~~~~~~ [${methodSelectMessageId}]
+  bar$ = this.store.
+    select(selector).pipe()
+  baz$ = this.store.pipe(
+    select(({ customers }) => customers), map(toItem),
+    ~~~~~~ [${methodSelectMessageId}]
+  ).pipe()
+
+  constructor(private store: Store) {}
+}
+
+class NotOk4 {
+  foo$ = this.store.pipe(select(selector), map(toItem)).pipe()
+                         ~~~~~~ [${methodSelectMessageId}]
+
+  constructor(private readonly store: Store) {}
+}`,
       {
         options: [SelectStyle.Method],
-        output: stripIndent`
-          import {
-            Store,
-          } from '@ngrx/store'
-          @Component()
-          export class FixtureComponent {
-            foo$ = this.store.select(selector).pipe( map(toItem)).pipe()
-            bar$ = this.store.
-              select(selector).pipe()
-            baz$ = this.store.select(({customers}) => customers).pipe(
-               map(toItem),
-            ).pipe()
-            constructor(private store: Store) {}
-          }
+        output: `
+import {
+  Store,
+} from '@ngrx/store'
 
-          @Component()
-          export class FixtureComponent2 {
-            foo$ = this.store.select(selector).pipe( map(toItem)).pipe()
-            constructor(private readonly store: Store) {}
-          }
-        `,
+class NotOk3 {
+  foo$ = this.store.select(selector).pipe( map(toItem)).pipe()
+  bar$ = this.store.
+    select(selector).pipe()
+  baz$ = this.store.select(({ customers }) => customers).pipe(
+     map(toItem),
+  ).pipe()
+
+  constructor(private store: Store) {}
+}
+
+class NotOk4 {
+  foo$ = this.store.select(selector).pipe( map(toItem)).pipe()
+
+  constructor(private readonly store: Store) {}
+}`,
       },
     ),
     fromFixture(
-      stripIndent`
-        import type {Creator} from '@ngrx/store'
-        import { Store } from '@ngrx/store'
-        @Component()
-        export class FixtureComponent {
-          foo$ = this.store.select(selector)
-                            ~~~~~~ [${operatorSelectMessageId}]
-          constructor(private store: Store) {}
-        }
-      `,
+      `
+import type {Creator} from '@ngrx/store'
+import { Store } from '@ngrx/store'
+
+class NotOk5 {
+  foo$ = this.store.select(selector)
+                    ~~~~~~ [${operatorSelectMessageId}]
+
+  constructor(private store: Store) {}
+}`,
       {
         options: [SelectStyle.Operator],
-        output: stripIndent`
-          import type {Creator} from '@ngrx/store'
-          import { Store, select } from '@ngrx/store'
-          @Component()
-          export class FixtureComponent {
-            foo$ = this.store.pipe(select(selector))
-            constructor(private store: Store) {}
-          }
-        `,
+        output: `
+import type {Creator} from '@ngrx/store'
+import { Store, select } from '@ngrx/store'
+
+class NotOk5 {
+  foo$ = this.store.pipe(select(selector))
+
+  constructor(private store: Store) {}
+}`,
       },
     ),
   ],

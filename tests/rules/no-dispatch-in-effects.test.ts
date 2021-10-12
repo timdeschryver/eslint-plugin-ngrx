@@ -1,4 +1,3 @@
-import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
@@ -10,210 +9,270 @@ import { ruleTester } from '../utils'
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
-    import { Store } from '@ngrx/store'
-    @Component()
-    export class FixtureComponent {
-      readonly test$ = somethingOutside();
-    }`,
-    `
-    import { Store } from '@ngrx/store'
-    @Injectable()
-    export class FixtureEffects {
-      effectOK = createEffect(() => this.actions.pipe(
-        ofType('PING'),
-        tap(() => ({ type: 'PONG' }))
-      ))
+import { Store } from '@ngrx/store'
 
-      constructor(private actions: Actions, private store: Store) {}
-    }`,
+class Ok {
+  readonly effect = somethingOutside();
+}`,
     `
-    import { Store } from '@ngrx/store'
-    @Injectable()
-    export class FixtureEffects {
-      readonly effectOK1: CreateEffectMetadata
+import { Store } from '@ngrx/store'
 
-      constructor(private actions: Actions, private store$: Store) {
-         this.effectOK1 = createEffect(
-          () => ({ scheduler = asyncScheduler } = {}) =>
-            this.actions.pipe(
-              ofType(customerActions.remove),
-              tap(() => {
-                customObject.dispatch({ somethingElse: true })
-                return customerActions.removeSuccess()
-              }),
-            ),
-          { dispatch: false },
-        )
-      }
-    }`,
+class Ok1 {
+  effect = createEffect(() => this.actions.pipe(
+    ofType('PING'),
+    tap(() => ({ type: 'PONG' }))
+  ))
+
+  constructor(private actions: Actions, private store: Store) {}
+}`,
+    `
+import { Store } from '@ngrx/store'
+
+class Ok2 {
+  readonly effect: CreateEffectMetadata
+
+  constructor(private actions: Actions, private store$: Store) {
+      this.effect = createEffect(
+      () => ({ scheduler = asyncScheduler } = {}) =>
+        this.actions.pipe(
+          ofType(customerActions.remove),
+          tap(() => {
+            customObject.dispatch({ somethingElse: true })
+            return customerActions.removeSuccess()
+          }),
+        ),
+      { dispatch: false },
+    )
+  }
+}`,
   ],
   invalid: [
     fromFixture(
-      stripIndent`
-      import { Store } from '@ngrx/store'
-      @Injectable()
-      export class FixtureEffects {
-        effectNOK = createEffect(
-          () => {
-            return this.actions.pipe(
-              ofType(someAction),
-              tap(() => this.store.dispatch(awesomeAction())),
-                        ~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
-            )
-          },
-          { dispatch: false },
-        )
+      `
+import { Store } from '@ngrx/store'
 
-        constructor(private actions: Actions, private store: Store) {}
-      }`,
+class NotOk {
+  effect = createEffect(
+    () => {
+      return this.actions.pipe(
+        ofType(someAction),
+        tap(() => this.store.dispatch(awesomeAction())),
+                  ~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
+      )
+    },
+    { dispatch: false },
+  )
+
+  constructor(private actions: Actions, private store: Store) {}
+}`,
       {
         suggestions: [
           {
             messageId: noDispatchInEffectsSuggest,
-            output: stripIndent`
-            import { Store } from '@ngrx/store'
-            @Injectable()
-            export class FixtureEffects {
-              effectNOK = createEffect(
-                () => {
-                  return this.actions.pipe(
-                    ofType(someAction),
-                    tap(() => (awesomeAction())),
-                  )
-                },
-                { dispatch: false },
-              )
+            output: `
+import { Store } from '@ngrx/store'
 
-              constructor(private actions: Actions, private store: Store) {}
-            }`,
-          },
-        ],
-      },
-    ),
-    fromFixture(
-      stripIndent`
-      import { Store } from '@ngrx/store'
-      @Injectable()
-      export class FixtureEffects {
-        effectNOK1 = createEffect(() => condition ? this.actions.pipe(
-          ofType(userActions.add),
-          tap(() => {
-            return this.store.dispatch(userActions.addSuccess)
-                   ~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
-          })
-        ) : this.actions.pipe())
+class NotOk {
+  effect = createEffect(
+    () => {
+      return this.actions.pipe(
+        ofType(someAction),
+        tap(() => (awesomeAction())),
+      )
+    },
+    { dispatch: false },
+  )
 
-        constructor(private actions: Actions, private store: Store) {}
-      }`,
-      {
-        suggestions: [
-          {
-            messageId: noDispatchInEffectsSuggest,
-            output: stripIndent`
-            import { Store } from '@ngrx/store'
-            @Injectable()
-            export class FixtureEffects {
-              effectNOK1 = createEffect(() => condition ? this.actions.pipe(
-                ofType(userActions.add),
-                tap(() => {
-                  return (userActions.addSuccess)
-                })
-              ) : this.actions.pipe())
-
-              constructor(private actions: Actions, private store: Store) {}
-            }`,
+  constructor(private actions: Actions, private store: Store) {}
+}`,
           },
         ],
       },
     ),
     fromFixture(
-      stripIndent`
-      import { Store } from '@ngrx/store'
-      @Injectable()
-      export class FixtureEffects {
-        effectNOK2 = createEffect(
-          () => ({ debounce = 200 } = {}) =>
-            this.actions.pipe(
-              ofType(actions.ping),
-              tap(() => {
-                return this.customName.dispatch(/* you shouldn't do this */ actions.pong())
-                       ~~~~~~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
-              }),
-            ),
-        )
+      `
+import { Store } from '@ngrx/store'
 
-        constructor(private actions: Actions, private customName: Store) {}
-      }`,
+class NotOk1 {
+  readonly effect = createEffect(() => condition ? this.actions.pipe(
+    ofType(userActions.add),
+    tap(() => {
+      return this.store.dispatch(userActions.addSuccess)
+             ~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
+    })
+  ) : this.actions.pipe())
+
+  constructor(private actions: Actions, private store: Store) {}
+}`,
       {
         suggestions: [
           {
             messageId: noDispatchInEffectsSuggest,
-            output: stripIndent`
-            import { Store } from '@ngrx/store'
-            @Injectable()
-            export class FixtureEffects {
-              effectNOK2 = createEffect(
-                () => ({ debounce = 200 } = {}) =>
-                  this.actions.pipe(
-                    ofType(actions.ping),
-                    tap(() => {
-                      return (/* you shouldn't do this */ actions.pong())
-                    }),
-                  ),
-              )
+            output: `
+import { Store } from '@ngrx/store'
 
-              constructor(private actions: Actions, private customName: Store) {}
-            }`,
+class NotOk1 {
+  readonly effect = createEffect(() => condition ? this.actions.pipe(
+    ofType(userActions.add),
+    tap(() => {
+      return (userActions.addSuccess)
+    })
+  ) : this.actions.pipe())
+
+  constructor(private actions: Actions, private store: Store) {}
+}`,
           },
         ],
       },
     ),
     fromFixture(
-      stripIndent`
-      import { Store } from '@ngrx/store'
-      @Injectable()
-      export class FixtureEffects {
-        readonly effectNOK3: CreateEffectMetadata
+      `
+import { Store } from '@ngrx/store'
 
-        constructor(private actions: Actions, private readonly store$: Store) {
-          this.effectNOK3 = createEffect(
-            () =>
-              this.actions.pipe(
-                ofType(bookActions.load),
-                map(() => {
-                  this.store$.dispatch(bookActions.loadSuccess());// you shouldn't do this
-                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
-                  return somethingElse()
-                }),
-              ),
-            { dispatch: true, useEffectsErrorHandler: false, ...options },
-          )
-        }
-      }`,
+class NotOk2 {
+  effect = createEffect(
+    () => ({ debounce = 200 } = {}) =>
+      this.actions.pipe(
+        ofType(actions.ping),
+        tap(() => {
+          return this.customName.dispatch(/* you shouldn't do this */ actions.pong())
+                 ~~~~~~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects}]
+        }),
+      ),
+  )
+
+  constructor(private actions: Actions, private customName: Store) {}
+}`,
       {
         suggestions: [
           {
             messageId: noDispatchInEffectsSuggest,
-            output: stripIndent`
-            import { Store } from '@ngrx/store'
-            @Injectable()
-            export class FixtureEffects {
-              readonly effectNOK3: CreateEffectMetadata
+            output: `
+import { Store } from '@ngrx/store'
 
-              constructor(private actions: Actions, private readonly store$: Store) {
-                this.effectNOK3 = createEffect(
-                  () =>
-                    this.actions.pipe(
-                      ofType(bookActions.load),
-                      map(() => {
-                        ;// you shouldn't do this
-                        return somethingElse()
-                      }),
-                    ),
-                  { dispatch: true, useEffectsErrorHandler: false, ...options },
-                )
-              }
-            }`,
+class NotOk2 {
+  effect = createEffect(
+    () => ({ debounce = 200 } = {}) =>
+      this.actions.pipe(
+        ofType(actions.ping),
+        tap(() => {
+          return (/* you shouldn't do this */ actions.pong())
+        }),
+      ),
+  )
+
+  constructor(private actions: Actions, private customName: Store) {}
+}`,
+          },
+        ],
+      },
+    ),
+    fromFixture(
+      `
+import { Store } from '@ngrx/store'
+
+class NotOk3 {
+  readonly effect : CreateEffectMetadata
+  readonly effect : CreateEffectMetadata
+
+  constructor(private actions: Actions, store: Store, private readonly store$: Store) {
+    this.effect = createEffect(
+      () =>
+        this.actions.pipe(
+          ofType(bookActions.load),
+          map(() => {
+            this.store$.dispatch(bookActions.loadSuccess());// you shouldn't do this
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noDispatchInEffects} suggest 0]
+            return somethingElse()
+          }),
+        ),
+      { dispatch: true, useEffectsErrorHandler: false, ...options },
+    )
+    this.effect = createEffect(
+      () =>
+        this.actions.pipe(
+          ofType(bookActions.load),
+          tap(() => store.dispatch(bookActions.loadSuccess()))
+                    ~~~~~~~~~~~~~~ [${noDispatchInEffects} suggest 1]
+        ),
+    )
+  }
+
+  ngOnDestroy() {
+    store.dispatch()
+  }
+}`,
+      {
+        suggestions: [
+          {
+            messageId: noDispatchInEffectsSuggest,
+            output: `
+import { Store } from '@ngrx/store'
+
+class NotOk3 {
+  readonly effect : CreateEffectMetadata
+  readonly effect : CreateEffectMetadata
+
+  constructor(private actions: Actions, store: Store, private readonly store$: Store) {
+    this.effect = createEffect(
+      () =>
+        this.actions.pipe(
+          ofType(bookActions.load),
+          map(() => {
+            ;// you shouldn't do this
+            return somethingElse()
+          }),
+        ),
+      { dispatch: true, useEffectsErrorHandler: false, ...options },
+    )
+    this.effect = createEffect(
+      () =>
+        this.actions.pipe(
+          ofType(bookActions.load),
+          tap(() => store.dispatch(bookActions.loadSuccess()))
+        ),
+    )
+  }
+
+  ngOnDestroy() {
+    store.dispatch()
+  }
+}`,
+          },
+          {
+            messageId: noDispatchInEffectsSuggest,
+            output: `
+import { Store } from '@ngrx/store'
+
+class NotOk3 {
+  readonly effect : CreateEffectMetadata
+  readonly effect : CreateEffectMetadata
+
+  constructor(private actions: Actions, store: Store, private readonly store$: Store) {
+    this.effect = createEffect(
+      () =>
+        this.actions.pipe(
+          ofType(bookActions.load),
+          map(() => {
+            this.store$.dispatch(bookActions.loadSuccess());// you shouldn't do this
+            return somethingElse()
+          }),
+        ),
+      { dispatch: true, useEffectsErrorHandler: false, ...options },
+    )
+    this.effect = createEffect(
+      () =>
+        this.actions.pipe(
+          ofType(bookActions.load),
+          tap(() => (bookActions.loadSuccess()))
+        ),
+    )
+  }
+
+  ngOnDestroy() {
+    store.dispatch()
+  }
+}`,
           },
         ],
       },

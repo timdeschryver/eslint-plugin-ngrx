@@ -19,5 +19,6 @@ module.exports = {
     '@typescript-eslint/no-unnecessary-type-assertion': 'error',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/prefer-reduce-type-parameter': 'error',
+    curly: 'error',
   },
 }

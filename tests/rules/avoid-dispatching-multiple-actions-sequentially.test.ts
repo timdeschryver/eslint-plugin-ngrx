@@ -1,4 +1,3 @@
-import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
@@ -9,129 +8,114 @@ import { ruleTester } from '../utils'
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
-      import { Store } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 
-      @Component()
-      export class FixtureComponent {
-        ngOnInit() {
-          this.dispatch(UserActions.add())
-        }
-      }`,
+class Ok {
+  ngOnInit() {
+    this.dispatch(UserActions.add())
+  }
+}`,
     `
-      import { Store } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 
-      @Component()
-      export class FixtureComponent {
-        constructor(private store: Store){}
-        ping() {
-          this.store.dispatch({ type: 'PING' })
-        }
-      }`,
+class Ok1 {
+  constructor(private store: Store) {}
+
+  ping() {
+    this.store.dispatch(GameActions.ping())
+  }
+}`,
     // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/47
     `
-      import { Store } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 
-      @Component()
-      export class FixtureComponent {
-        valid = false;
-        constructor(private store: Store){}
+class Ok2 {
+  constructor(private store: Store) {}
 
-        pingPong() {
-          if (this.valid) {
-            this.store.dispatch({ type: 'PING' })
-          } else {
-            this.store.dispatch({ type: 'PONG' })
-          }
-        }
-      }`,
+  pingPong() {
+    if (condition) {
+      this.store.dispatch(GameActions.ping())
+    } else {
+      this.store.dispatch(GameActions.pong())
+    }
+  }
+}`,
     // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/86
     `
-    import { Store } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 
-    @Component()
-    export class FixtureComponent {
-      valid = false;
-      constructor(private store: Store){}
+class Ok3 {
+  constructor(private store: Store) {}
 
-      ngOnInit() {
-        this.store.subscribe(() => {
-          this.store.dispatch({ type : 'one' });
-        });
-        this.store.subscribe(() => {
-          this.store.dispatch({ type : 'another-one' });
-        });
-      }
-    }`,
+  ngOnInit() {
+    this.store.subscribe(() => {
+      this.store.dispatch(one());
+    });
+    this.store.subscribe(() => {
+      this.store.dispatch(anotherOne());
+    });
+  }
+}`,
   ],
   invalid: [
-    fromFixture(
-      stripIndent`
-      import { Store } from '@ngrx/store'
+    fromFixture(`
+import { Store } from '@ngrx/store'
 
-      @Component()
-      export class FixtureComponent {
-        constructor(private store: Store){}
+class NotOk {
+  constructor(private store: Store) {}
 
-        pingPong() {
-          this.store.dispatch({ type: 'PING' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-          this.store.dispatch({ type: 'PONG' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-        }
-      }`,
-    ),
-    fromFixture(
-      stripIndent`
-      import { Store } from '@ngrx/store'
+  pingPong() {
+    this.store.dispatch(GameActions.ping())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+    this.store.dispatch(GameActions.pong())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+  }
+}`),
+    fromFixture(`
+import { Store } from '@ngrx/store'
 
-      @Component()
-      export class FixtureComponent {
-        constructor(private store: Store){}
+class NotOk1 {
+  constructor(store: Store, private readonly store$: Store) {
+    store.dispatch(GameActions.ping())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+    this.ping();
+    this.name = 'Bob'
+    this.store$.dispatch(GameActions.pong())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+  }
+}`),
+    fromFixture(`
+import { Store } from '@ngrx/store'
 
-        pong() {
-          this.store.dispatch({ type: 'PING' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-          this.ping();
-          this.name = 'Bob'
-          this.store.dispatch({ type: 'PONG' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-        }
-      }`,
-    ),
-    fromFixture(
-      stripIndent`
-      import { Store } from '@ngrx/store'
+class NotOk2 {
+  constructor(private store: Store) {}
 
-      @Component()
-      export class FixtureComponent {
-        constructor(private store: Store){}
-
-        pingPongPong() {
-          this.store.dispatch({ type: 'PING' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-          this.store.dispatch({ type: 'PONG' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-          this.store.dispatch({ type: 'PONG' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-        }
-      }`,
-    ),
+  pingPongPong() {
+    this.store.dispatch(GameActions.ping())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+    this.store.dispatch(GameActions.pong())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+    this.store.dispatch(GameActions.pong())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+  }
+}`),
     // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/44
-    fromFixture(
-      stripIndent`
-      import { Store } from '@ngrx/store'
+    fromFixture(`
+import { Store } from '@ngrx/store'
 
-      @Component()
-      export class FixtureComponent {
-        constructor(private customName: Store){}
+class NotOk3 {
+  constructor(private customName: Store) {}
 
-        pingPong() {
-          this.customName.dispatch({ type: 'PING' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-          this.customName.dispatch({ type: 'PONG' })
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-        }
-      }`,
-    ),
+  ngOnInit() {
+    customName.dispatch()
+  }
+
+  pingPong() {
+    this.customName.dispatch(GameActions.ping())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+    this.customName.dispatch(GameActions.pong())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+  }
+}`),
   ],
 })

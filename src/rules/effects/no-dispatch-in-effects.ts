@@ -2,9 +2,10 @@ import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
+  asPattern,
   dispatchInEffects,
   docsUrl,
-  findNgRxStoreName,
+  getNgRxStores,
   isArrowFunctionExpression,
   isReturnStatement,
 } from '../../utils'
@@ -39,11 +40,15 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const storeName = findNgRxStoreName(context)
-    if (!storeName) return {}
+    const { identifiers = [] } = getNgRxStores(context)
+    const storeNames = identifiers.length > 0 ? asPattern(identifiers) : null
+
+    if (!storeNames) {
+      return {}
+    }
 
     return {
-      [dispatchInEffects(storeName)](
+      [dispatchInEffects(storeNames)](
         node: MemberExpressionWithinCallExpression,
       ) {
         const nodeToReport = getNodeToReport(node)

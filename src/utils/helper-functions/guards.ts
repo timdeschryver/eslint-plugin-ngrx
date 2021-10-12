@@ -56,9 +56,13 @@ export function isTypeReference(type: ts.Type): type is ts.TypeReference {
   return type.hasOwnProperty('target')
 }
 
+function equalTo(one: RegExp | string, other: string) {
+  return typeof one === 'string' ? one === other : one.test(other)
+}
+
 export function isCallExpressionWith(
   node: TSESTree.CallExpression,
-  objectName: string,
+  objectName: RegExp | string,
   propertyName: string,
 ) {
   return (
@@ -66,10 +70,10 @@ export function isCallExpressionWith(
     !node.callee.computed &&
     node.callee.property.name === propertyName &&
     ((isIdentifier(node.callee.object) &&
-      node.callee.object.name === objectName) ||
+      equalTo(objectName, node.callee.object.name)) ||
       (isMemberExpression(node.callee.object) &&
         isThisExpression(node.callee.object.object) &&
         isIdentifier(node.callee.object.property) &&
-        node.callee.object.property.name === objectName))
+        equalTo(objectName, node.callee.object.property.name)))
   )
 }

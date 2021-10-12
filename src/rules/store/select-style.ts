@@ -2,17 +2,18 @@ import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
+  asPattern,
   docsUrl,
-  findNgRxStoreName,
   getImportAddFix,
   getImportRemoveFix,
   getNearestUpperNodeFrom,
+  getNgRxStores,
   isCallExpression,
   isClassDeclaration,
   isMemberExpression,
   NGRX_MODULE_PATHS,
   pipeableSelect,
-  storeSelect,
+  selectExpression,
 } from '../../utils'
 
 export const methodSelectMessageId = 'methodSelect'
@@ -69,12 +70,16 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [SelectStyle.Method],
   create: (context, [mode]) => {
-    const storeName = findNgRxStoreName(context)
-    if (!storeName) return {}
+    const { identifiers, sourceCode } = getNgRxStores(context)
+    const storeNames = identifiers?.length ? asPattern(identifiers) : null
+
+    if (!storeNames) {
+      return {}
+    }
 
     if (mode === SelectStyle.Operator) {
       return {
-        [storeSelect(storeName)](node: CallExpression) {
+        [selectExpression(storeNames)](node: CallExpression) {
           context.report({
             node: node.callee.property,
             messageId: operatorSelectMessageId,
@@ -84,11 +89,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       }
     }
 
-    const sourceCode = context.getSourceCode()
-
     return {
       [`Program:has(${pipeableSelect(
-        storeName,
+        storeNames,
       )}) ImportDeclaration[source.value='${
         NGRX_MODULE_PATHS.store
       }'] > ImportSpecifier[imported.name='select']`](

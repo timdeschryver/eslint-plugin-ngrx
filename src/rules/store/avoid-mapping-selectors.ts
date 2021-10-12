@@ -2,10 +2,11 @@ import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
+  asPattern,
   docsUrl,
-  findNgRxStoreName,
-  storeExpressionCallable,
-  storePipe,
+  getNgRxStores,
+  namedCallableExpression,
+  pipeExpression,
 } from '../../utils'
 
 export const messageId = 'avoidMapppingSelectors'
@@ -31,14 +32,18 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const storeName = findNgRxStoreName(context)
-    if (!storeName) return {}
+    const { identifiers = [] } = getNgRxStores(context)
+    const storeNames = identifiers.length > 0 ? asPattern(identifiers) : null
 
-    const pipeWithSelectAndMapSelector = `${storePipe(
-      storeName,
+    if (!storeNames) {
+      return {}
+    }
+
+    const pipeWithSelectAndMapSelector = `${pipeExpression(
+      storeNames,
     )}:has(CallExpression[callee.name='select'] ~ CallExpression[callee.name='map'])` as const
-    const selectSelector = `${storeExpressionCallable(
-      storeName,
+    const selectSelector = `${namedCallableExpression(
+      storeNames,
     )}[callee.object.callee.property.name='select']` as const
 
     return {

@@ -1,4 +1,4 @@
-import { stripIndent } from 'common-tags'
+import {} from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, { messageId } from '../../src/rules/store/no-store-subscription'
@@ -7,141 +7,148 @@ import { ruleTester } from '../utils'
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
-      import { Store } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        readonly test$ = somethingOutside();
-      }`,
-    `
-      import { Store } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        vm$ = this.store.select(selectItems)
+import { Store } from '@ngrx/store'
 
-        constructor(private store: Store) {}
-      }
-    `,
+class Ok {
+  readonly test$ = somethingOutside();
+}`,
     `
-      import { Store } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        vm$ = this.store.pipe(select(selectItems))
+import { Store } from '@ngrx/store'
 
-        constructor(private store: Store) {}
-      }
-    `,
+class Ok1 {
+  vm$ = this.store.select(selectItems)
+
+  constructor(private store: Store) {}
+}`,
+    `
+import { Store } from '@ngrx/store'
+
+class Ok2 {
+  vm$ = this.store.pipe(select(selectItems))
+
+  constructor(private store: Store) {}
+}`,
     // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/175
     `
-      import { Store } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        readonly formControlChangesSubscription$ = this.formCtrlOrg.valueChanges
-          .pipe(takeUntil(this.drop))
-          .subscribe((orgName) => {
-            this.store.dispatch(UserPageActions.checkOrgNameInput({ orgName }))
-          })
+import { Store } from '@ngrx/store'
 
-        constructor(private store: Store) {}
-      }
-    `,
+class Ok3 {
+  readonly formControlChangesSubscription$ = this.formCtrlOrg.valueChanges
+    .pipe(takeUntil(this.drop))
+    .subscribe((orgName) => {
+      this.store.dispatch(UserPageActions.checkOrgNameInput({ orgName }))
+    })
+
+  constructor(private store: Store) {}
+}`,
     `
-      import { Store } from '@ngrx/store'
-      @Component()
-      export class FixtureComponent {
-        readonly items$: Observable<readonly Item[]>
-        readonly metrics$: Observable<Metric>
+import { Store } from '@ngrx/store'
 
-        constructor(store: Store) {
-          this.items$ = store.pipe(select(selectItems))
-          this.metrics$ = store.select(selectMetrics)
-        }
-      }
-    `,
+class Ok4 {
+  readonly items$: Observable<readonly Item[]>
+  readonly metrics$: Observable<Metric>
+
+  constructor(store: Store) {
+    this.items$ = store.pipe(select(selectItems))
+    this.metrics$ = store.select(selectMetrics)
+  }
+}`,
   ],
   invalid: [
-    fromFixture(
-      stripIndent`
-        import { Store } from '@ngrx/store'
-        @Component()
-        export class FixtureComponent {
-          sub = this.store.select(selectItems).subscribe()
-                                               ~~~~~~~~~ [${messageId}]
-          constructor(private store: Store) {}
-        }
-      `,
-    ),
-    fromFixture(
-      stripIndent`
-        import { Store } from '@ngrx/store'
-        @Component()
-        export class FixtureComponent {
-          sub = this.store.pipe(select(selectItems)).subscribe()
-                                                     ~~~~~~~~~ [${messageId}]
-          constructor(private store: Store) {}
-        }
-      `,
-    ),
-    fromFixture(
-      stripIndent`
-        import { Store } from '@ngrx/store'
-        @Component()
-        export class FixtureComponent {
-          constructor(private store: Store) {}
+    fromFixture(`
+import { Store } from '@ngrx/store'
 
-          ngOnInit() {
-            this.store.select(selectItems).subscribe()
-                                           ~~~~~~~~~ [${messageId}]
-          }
-        }
-      `,
-    ),
-    fromFixture(
-      stripIndent`
-        import { Store } from '@ngrx/store'
-        @Component()
-        export class FixtureComponent {
-          items: readonly Item[]
+class NotOk {
+  constructor(store: Store) {
+    store.subscribe()
+          ~~~~~~~~~ [${messageId}]
+  }
+}`),
+    fromFixture(`
+import { Store } from '@ngrx/store'
 
-          constructor(private store: Store) {}
+class NotOk1 {
+  constructor(store: Store) {
+    store.pipe(map(selectItems)).subscribe()
+                                 ~~~~~~~~~ [${messageId}]
+  }
+}`),
+    fromFixture(`
+import { Store } from '@ngrx/store'
 
-          ngOnInit() {
-            this.store.pipe(select(selectItems)).subscribe((items) => {
-                                                 ~~~~~~~~~ [${messageId}]
-              this.items = items
-            })
-          }
-        }
-      `,
-    ),
-    fromFixture(
-      stripIndent`
-        import { Store } from '@ngrx/store'
-        @Component()
-        export class FixtureComponent {
-          readonly items: readonly Item[]
+class NotOk2 {
+  sub = this.store.subscribe()
+                   ~~~~~~~~~ [${messageId}]
 
-          constructor(store: Store) {
-            store.pipe(select(selectItems)).subscribe((items) => this.items = items)
-                                            ~~~~~~~~~ [${messageId}]
-          }
-        }
-      `,
-    ),
-    fromFixture(
-      stripIndent`
-        import { Store } from '@ngrx/store'
-        @Component()
-        export class FixtureComponent {
-          readonly control = new FormControl()
+  constructor(private store: Store) {}
+}`),
+    fromFixture(`
+import { Store } from '@ngrx/store'
 
-          constructor(store: Store) {
-            this.control.valueChanges.subscribe(() => {
-              store.pipe(select(selectItems)).subscribe()
-                                              ~~~~~~~~~ [${messageId}]
-            })
-          }
-        }
-      `,
-    ),
+class NotOk3 {
+  sub = this.store.select(selectItems).subscribe()
+                                       ~~~~~~~~~ [${messageId}]
+
+  constructor(private store: Store) {}
+}`),
+    fromFixture(`
+import { Store } from '@ngrx/store'
+
+class NotOk4 {
+  sub = this.store.pipe(select(selectItems)).subscribe()
+                                             ~~~~~~~~~ [${messageId}]
+
+  constructor(private store: Store) {}
+}`),
+    fromFixture(`
+import { Store } from '@ngrx/store'
+
+class NotOk5 {
+  constructor(private store: Store) {}
+
+  ngOnInit() {
+    this.store.select(selectItems).subscribe()
+                                   ~~~~~~~~~ [${messageId}]
+  }
+}`),
+    fromFixture(`
+import { Store } from '@ngrx/store'
+
+class NotOk6 {
+  items: readonly Item[]
+
+  constructor(private store: Store) {}
+
+  ngOnInit() {
+    this.store.pipe(select(selectItems)).subscribe((items) => {
+                                         ~~~~~~~~~ [${messageId}]
+      this.items = items
+    })
+  }
+}`),
+    fromFixture(`
+import { Store } from '@ngrx/store'
+
+class NotOk6 {
+  readonly items: readonly Item[]
+
+  constructor(store: Store) {
+    store.pipe(select(selectItems)).subscribe((items) => this.items = items)
+                                    ~~~~~~~~~ [${messageId}]
+  }
+}`),
+    fromFixture(`
+import { Store } from '@ngrx/store'
+
+class NotOk7 {
+  readonly control = new FormControl()
+
+  constructor(store: Store) {
+    this.control.valueChanges.subscribe(() => {
+      store.pipe(select(selectItems)).subscribe()
+                                      ~~~~~~~~~ [${messageId}]
+    })
+  }
+}`),
   ],
 })

@@ -2,9 +2,10 @@ import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
+  asPattern,
   docsUrl,
-  findNgRxComponentStoreName,
-  storeExpression,
+  getNgRxComponentStores,
+  namedExpression,
 } from '../../utils'
 
 export const messageId = 'updaterExplicitReturnType'
@@ -29,13 +30,14 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const storeName = findNgRxComponentStoreName(context)
+    const { identifiers } = getNgRxComponentStores(context)
+    const storeNames = identifiers?.length ? asPattern(identifiers) : null
     const withoutTypeAnnotation = `ArrowFunctionExpression:not([returnType.typeAnnotation])`
     const selectors = [
       `ClassDeclaration[superClass.name='ComponentStore'] CallExpression[callee.object.type='ThisExpression'][callee.property.name='updater'] > ${withoutTypeAnnotation}`,
-      storeName &&
-        `${storeExpression(
-          storeName,
+      storeNames &&
+        `${namedExpression(
+          storeNames,
         )}[callee.property.name='updater'] > ${withoutTypeAnnotation}`,
     ]
       .filter(Boolean)

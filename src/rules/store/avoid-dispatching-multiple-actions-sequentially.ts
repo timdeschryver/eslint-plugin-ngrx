@@ -1,7 +1,12 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { docsUrl, findNgRxStoreName, storeDispatch } from '../../utils'
+import {
+  asPattern,
+  dispatchExpression,
+  docsUrl,
+  getNgRxStores,
+} from '../../utils'
 
 export const messageId = 'avoidDispatchingMultipleActionsSequentially'
 export type MessageIds = typeof messageId
@@ -25,15 +30,19 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const storeName = findNgRxStoreName(context)
-    if (!storeName) return {}
+    const { identifiers = [] } = getNgRxStores(context)
+    const storeNames = identifiers.length > 0 ? asPattern(identifiers) : null
+
+    if (!storeNames) {
+      return {}
+    }
 
     const collectedDispatches = new Set<TSESTree.CallExpression>()
 
     return {
-      [`BlockStatement > ExpressionStatement > ${storeDispatch(storeName)}`](
-        node: TSESTree.CallExpression,
-      ) {
+      [`BlockStatement > ExpressionStatement > ${dispatchExpression(
+        storeNames,
+      )}`](node: TSESTree.CallExpression) {
         collectedDispatches.add(node)
       },
       'BlockStatement:exit'() {

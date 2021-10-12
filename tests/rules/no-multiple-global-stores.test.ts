@@ -1,4 +1,4 @@
-import { stripIndents } from 'common-tags'
+import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
   noMultipleGlobalStores,
@@ -8,177 +8,203 @@ import { ruleTester } from '../utils'
 
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
-    `export class NoCtorOK {}`,
     `
-    export class EmptyOk {
-      constructor() {}
-    }`,
+class Ok {}`,
     `
-    export class OneWithVisibilityOk {
-      constructor(private store: Store) {}
-    }`,
+class Ok1 {
+  constructor() {}
+}`,
     `
-    export class OneWithoutVisibilityOk {
-      constructor(store: Store) {}
-    }`,
+import { Store } from '@ngrx/store'
+
+class Ok2 {
+  constructor(private store: Store) {}
+}`,
     `
-    export class OnePlusExtraOk {
-      constructor(private store: Store, data: Service) {}
-    }`,
+import { Store } from '@ngrx/store'
+
+class Ok3 {
+  constructor(store: Store) {}
+}`,
+    `
+import { Store } from '@ngrx/store'
+
+class Ok4 {
+  constructor(private store: Store, data: Service) {}
+}`,
+    `
+import { Store } from '@ngrx/store'
+
+class Ok5 {
+  constructor(private store: Store) {}
+}
+
+class Ok6 {
+  constructor(private readonly store: Store) {}
+}`,
+    `
+import { Store } from '@ngrx/store'
+
+class Ok7 {
+  constructor(store: Store, apiService: ApiService) {}
+}
+
+class Ok8 {
+  constructor(public store$: Store) {}
+}`,
   ],
   invalid: [
-    {
-      code: stripIndents`
-        export class NotOk1 {
-          constructor(store: Store, store2: Store) {}
-        }`,
-      errors: [
-        {
-          column: 13,
-          endColumn: 25,
-          line: 2,
-          messageId: noMultipleGlobalStores,
-          suggestions: [
-            {
-              messageId: noMultipleGlobalStoresSuggest,
-              output: stripIndents`
-              export class NotOk1 {
-                constructor( store2: Store) {}
-              }`,
-            },
-          ],
-        },
-        {
-          column: 27,
-          endColumn: 40,
-          line: 2,
-          messageId: noMultipleGlobalStores,
-          suggestions: [
-            {
-              messageId: noMultipleGlobalStoresSuggest,
-              output: stripIndents`
-              export class NotOk1 {
-                constructor(store: Store, ) {}
-              }`,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: stripIndents`
-        export class NotOk2 {
-          constructor(store: Store /* first store */, private readonly actions$: Actions, private store2: Store, b: B) {}
-        }`,
-      errors: [
-        {
-          column: 13,
-          endColumn: 25,
-          line: 2,
-          messageId: noMultipleGlobalStores,
-          suggestions: [
-            {
-              messageId: noMultipleGlobalStoresSuggest,
-              output: stripIndents`
-              export class NotOk2 {
-                constructor( /* first store */ private readonly actions$: Actions, private store2: Store, b: B) {}
-              }`,
-            },
-          ],
-        },
-        {
-          column: 89,
-          endColumn: 102,
-          line: 2,
-          messageId: noMultipleGlobalStores,
-          suggestions: [
-            {
-              messageId: noMultipleGlobalStoresSuggest,
-              output: stripIndents`
-              export class NotOk2 {
-                constructor(store: Store /* first store */, private readonly actions$: Actions,  b: B) {}
-              }`,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: stripIndents`
-        export class NotOk3 {
-          constructor(
-            a: A,
-            store: Store,// a comment
-            private readonly actions$: Actions,
-            private store2: Store,
-            private readonly store3: Store,
-          ) {}
-        }`,
-      errors: [
-        {
-          column: 1,
-          endColumn: 13,
-          line: 4,
-          messageId: noMultipleGlobalStores,
-          suggestions: [
-            {
-              messageId: noMultipleGlobalStoresSuggest,
-              output: stripIndents`
-              export class NotOk3 {
-                constructor(
-                  a: A,
-                  // a comment
-                  private readonly actions$: Actions,
-                  private store2: Store,
-                  private readonly store3: Store,
-                ) {}
-              }`,
-            },
-          ],
-        },
-        {
-          column: 9,
-          endColumn: 22,
-          line: 6,
-          messageId: noMultipleGlobalStores,
-          suggestions: [
-            {
-              messageId: noMultipleGlobalStoresSuggest,
-              output: stripIndents`
-              export class NotOk3 {
-                constructor(
-                  a: A,
-                  store: Store,// a comment
-                  private readonly actions$: Actions,
+    fromFixture(
+      `
+import { Store } from '@ngrx/store'
 
-                  private readonly store3: Store,
-                ) {}
-              }`,
-            },
-          ],
-        },
-        {
-          column: 18,
-          endColumn: 31,
-          line: 7,
-          messageId: noMultipleGlobalStores,
-          suggestions: [
-            {
-              messageId: noMultipleGlobalStoresSuggest,
-              output: stripIndents`
-              export class NotOk3 {
-                constructor(
-                  a: A,
-                  store: Store,// a comment
-                  private readonly actions$: Actions,
-                  private store2: Store,
+class ShouldNotBreakLaterReports {
+  constructor(store: Store, apiService: ApiService) {}
+}
 
-                ) {}
-              }`,
-            },
-          ],
-        },
-      ],
-    },
+class ShouldNotBreakLaterReports1 {
+  constructor(public store$: Store) {}
+}
+
+class NotOk {
+  constructor(store: Store, store2: Store) {}
+              ~~~~~~~~~~~~ [${noMultipleGlobalStores} suggest 0]
+                            ~~~~~~~~~~~~~ [${noMultipleGlobalStores} suggest 1]
+}`,
+      {
+        suggestions: [
+          {
+            messageId: noMultipleGlobalStoresSuggest,
+            output: `
+import { Store } from '@ngrx/store'
+
+class ShouldNotBreakLaterReports {
+  constructor(store: Store, apiService: ApiService) {}
+}
+
+class ShouldNotBreakLaterReports1 {
+  constructor(public store$: Store) {}
+}
+
+class NotOk {
+  constructor( store2: Store) {}
+}`,
+          },
+          {
+            messageId: noMultipleGlobalStoresSuggest,
+            output: `
+import { Store } from '@ngrx/store'
+
+class ShouldNotBreakLaterReports {
+  constructor(store: Store, apiService: ApiService) {}
+}
+
+class ShouldNotBreakLaterReports1 {
+  constructor(public store$: Store) {}
+}
+
+class NotOk {
+  constructor(store: Store, ) {}
+}`,
+          },
+        ],
+      },
+    ),
+    fromFixture(
+      `
+import { Store } from '@ngrx/store'
+
+class NotOk1 {
+  constructor(store: Store /* first store */, private readonly actions$: Actions, private store2: Store, b: B) {}
+              ~~~~~~~~~~~~ [${noMultipleGlobalStores} suggest 0]
+                                                                                  ~~~~~~~~~~~~~~~~~~~~~ [${noMultipleGlobalStores} suggest 1]
+}`,
+      {
+        suggestions: [
+          {
+            messageId: noMultipleGlobalStoresSuggest,
+            output: `
+import { Store } from '@ngrx/store'
+
+class NotOk1 {
+  constructor( /* first store */ private readonly actions$: Actions, private store2: Store, b: B) {}
+}`,
+          },
+          {
+            messageId: noMultipleGlobalStoresSuggest,
+            output: `
+import { Store } from '@ngrx/store'
+
+class NotOk1 {
+  constructor(store: Store /* first store */, private readonly actions$: Actions,  b: B) {}
+}`,
+          },
+        ],
+      },
+    ),
+    fromFixture(
+      `
+import { Store } from '@ngrx/store'
+
+class NotOk2 {
+  constructor(
+    a: A,
+    store: Store,// a comment
+    ~~~~~~~~~~~~ [${noMultipleGlobalStores} suggest 0]
+    private readonly actions$: Actions,
+    private store2: Store,
+    ~~~~~~~~~~~~~~~~~~~~~ [${noMultipleGlobalStores} suggest 1]
+    private readonly store3: Store,
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noMultipleGlobalStores} suggest 2]
+  ) {}
+}`,
+      {
+        suggestions: [
+          {
+            messageId: noMultipleGlobalStoresSuggest,
+            output: `
+import { Store } from '@ngrx/store'
+
+class NotOk2 {
+  constructor(
+    a: A,
+    // a comment
+    private readonly actions$: Actions,
+    private store2: Store,
+    private readonly store3: Store,
+  ) {}
+}`,
+          },
+          {
+            messageId: noMultipleGlobalStoresSuggest,
+            output: `
+import { Store } from '@ngrx/store'
+
+class NotOk2 {
+  constructor(
+    a: A,
+    store: Store,// a comment
+    private readonly actions$: Actions,
+    \n    private readonly store3: Store,
+  ) {}
+}`,
+          },
+          {
+            messageId: noMultipleGlobalStoresSuggest,
+            output: `
+import { Store } from '@ngrx/store'
+
+class NotOk2 {
+  constructor(
+    a: A,
+    store: Store,// a comment
+    private readonly actions$: Actions,
+    private store2: Store,
+    \n  ) {}
+}`,
+          },
+        ],
+      },
+    ),
   ],
 })

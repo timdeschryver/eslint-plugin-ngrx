@@ -4,9 +4,10 @@ import { getTypeServices } from 'eslint-etc'
 import path from 'path'
 import ts from 'typescript'
 import {
+  asPattern,
   createEffectExpression,
   docsUrl,
-  findNgRxEffectActionsName,
+  getNgRxEffectActions,
   isCallExpression,
   isIdentifier,
   isTypeReference,
@@ -38,8 +39,12 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const actionsName = findNgRxEffectActionsName(context)
-    if (!actionsName) return {}
+    const { identifiers = [] } = getNgRxEffectActions(context)
+    const actionsNames = identifiers.length > 0 ? asPattern(identifiers) : null
+
+    if (!actionsNames) {
+      return {}
+    }
 
     const { getType, typeChecker } = getTypeServices(context)
 
@@ -145,7 +150,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     }
 
     return {
-      [`${createEffectExpression}:not([arguments.1]:has(Property[key.name='dispatch'][value.value=false])) CallExpression[callee.property.name='pipe'][callee.object.property.name='${actionsName}']`]:
+      [`${createEffectExpression}:not([arguments.1]:has(Property[key.name='dispatch'][value.value=false])) CallExpression[callee.property.name='pipe'][callee.object.property.name=${actionsNames}]`]:
         checkNode,
     }
   },

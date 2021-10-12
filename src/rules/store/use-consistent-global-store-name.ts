@@ -1,7 +1,6 @@
-import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { docsUrl, injectedStore } from '../../utils'
+import { docsUrl, getNgRxStores } from '../../utils'
 
 export const useConsistentGlobalStoreName = 'useConsistentGlobalStoreName'
 export const useConsistentGlobalStoreNameSuggest =
@@ -37,37 +36,38 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: ['store'],
   create: (context, [storeName]) => {
     return {
-      [`${injectedStore}[name!=${storeName}]`]({
-        loc,
-        name,
-        range,
-        typeAnnotation,
-      }: TSESTree.Identifier & {
-        typeAnnotation: TSESTree.TSTypeAnnotation
-      }) {
-        const data = { storeName }
-        context.report({
-          loc: {
-            ...loc,
-            end: {
-              ...loc.start,
-              column: loc.start.column + name.length,
+      Program() {
+        const { identifiers = [] } = getNgRxStores(context)
+
+        for (const { loc, name, range, typeAnnotation } of identifiers) {
+          if (name === storeName) {
+            return
+          }
+
+          const data = { storeName }
+          context.report({
+            loc: {
+              ...loc,
+              end: {
+                ...loc.start,
+                column: loc.start.column + name.length,
+              },
             },
-          },
-          messageId: useConsistentGlobalStoreName,
-          data,
-          suggest: [
-            {
-              messageId: useConsistentGlobalStoreNameSuggest,
-              data,
-              fix: (fixer) =>
-                fixer.replaceTextRange(
-                  [range[0], typeAnnotation.range[0]],
-                  storeName,
-                ),
-            },
-          ],
-        })
+            messageId: useConsistentGlobalStoreName,
+            data,
+            suggest: [
+              {
+                messageId: useConsistentGlobalStoreNameSuggest,
+                data,
+                fix: (fixer) =>
+                  fixer.replaceTextRange(
+                    [range[0], typeAnnotation.range[0]],
+                    storeName,
+                  ),
+              },
+            ],
+          })
+        }
       },
     }
   },

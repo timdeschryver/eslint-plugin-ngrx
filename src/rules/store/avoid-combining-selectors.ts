@@ -2,10 +2,11 @@ import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
+  asPattern,
   docsUrl,
-  findNgRxStoreName,
-  storeExpression,
-  storeSelect,
+  getNgRxStores,
+  namedExpression,
+  selectExpression,
 } from '../../utils'
 
 export const messageId = 'avoidCombiningSelectors'
@@ -31,13 +32,17 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const storeName = findNgRxStoreName(context)
-    if (!storeName) return {}
+    const { identifiers = [] } = getNgRxStores(context)
+    const storeNames = identifiers.length > 0 ? asPattern(identifiers) : null
 
-    const pipeableOrStoreSelect = `:matches(${storeExpression(
-      storeName,
-    )}[callee.property.name='pipe']:has(CallExpression[callee.name='select']), ${storeSelect(
-      storeName,
+    if (!storeNames) {
+      return {}
+    }
+
+    const pipeableOrStoreSelect = `:matches(${namedExpression(
+      storeNames,
+    )}[callee.property.name='pipe']:has(CallExpression[callee.name='select']), ${selectExpression(
+      storeNames,
     )})` as const
 
     return {

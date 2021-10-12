@@ -1,4 +1,3 @@
-import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
@@ -6,116 +5,115 @@ import rule, {
 } from '../../src/rules/component-store/updater-explicit-return-type'
 import { ruleTester } from '../utils'
 
-const setup = `
-  import type { SelectConfig } from '@ngrx/component-store'
-  import { Projector } from '@ngrx/component-store'
-  import { ComponentStore } from '@ngrx/component-store'
-
-  interface Movie {
-    readonly genre: string;
-    readonly title: string;
-  }
-
-  interface MoviesState {
-    readonly movies: readonly Movie[];
-  }
-`
-
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
-    `${setup}
+    `
+import { ComponentStore } from '@ngrx/component-store'
 
-    export class MoviesStore extends ComponentStore<MoviesState> {
-      constructor() {
-        super({movies: []});
-      }
+class Ok extends ComponentStore<MoviesState> {
+  readonly addMovie = this.updater(
+    (state, movie): MoviesState => ({ movies: [...state.movies, movie] }),
+  )
 
-      readonly addMovie = this.updater((state, movie): MoviesState => ({ movies: [...state.movies, movie] }));
-    }`,
-    `${setup}
+  constructor() {
+    super({ movies: [] })
+  }
+}`,
+    `
+import { ComponentStore } from '@ngrx/component-store'
 
-    export class MoviesStore extends ComponentStore<MoviesState> {
-      constructor() {
-        super({movies: []});
-      }
+class Ok1 extends ComponentStore<MoviesState> {
+  readonly addMovie = this.updater<Movie>(
+    (state, movie): MoviesState => ({ movies: [...state.movies, movie] }),
+  )
 
-      readonly addMovie = this.updater<Movie>((state, movie): MoviesState => ({ movies: [...state.movies, movie] }));
-    }`,
-    `${setup}
+  constructor() {
+    super({ movies: [] })
+  }
+}`,
+    `
+import { ComponentStore } from '@ngrx/component-store'
 
-    export class MoviesStore {
-      constructor(private readonly store: ComponentStore<MoviesState>) {}
+class Ok2 {
+  readonly addMovie = this.store.updater<Movie>(
+    (state, movie): MoviesState => ({
+      movies: [...state.movies, movie],
+    }),
+  )
 
-      readonly addMovie = this.store.updater<Movie>((state, movie): MoviesState => ({
+  constructor(private readonly store: ComponentStore<MoviesState>) {}
+}`,
+    `
+import { ComponentStore } from '@ngrx/component-store'
+
+class Ok3 {
+  readonly addMovie: Observable<unknown>
+
+  constructor(customStore: ComponentStore<MoviesState>) {
+    this.addMovie = customStore.updater<Movie>(
+      (state, movie): MoviesState => ({
         movies: [...state.movies, movie],
-      }));
-    }`,
-    `${setup}
-
-    export class MoviesStore {
-      readonly addMovie: CreateEffectMetadata
-
-      constructor(customStore: ComponentStore<MoviesState>) {
-        this.addMovie = customStore.updater<Movie>((state, movie): MoviesState => ({
-          movies: [...state.movies, movie],
-        }));
-      }
-    }`,
+      }),
+    )
+  }
+}`,
   ],
   invalid: [
-    fromFixture(
-      stripIndent`
-        ${setup}
+    fromFixture(`
+import { ComponentStore } from '@ngrx/component-store'
 
-        export class MoviesStore extends ComponentStore<MoviesState> {
-          constructor() {
-            super({movies: []});
-          }
+class NotOk extends ComponentStore<MoviesState> {
+  readonly addMovie = this.updater((state, movie) => ({ movies: [...state.movies, movie] }))
+                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
 
-          readonly addMovie = this.updater((state, movie) => ({ movies: [...state.movies, movie] }));
-                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
-        }
-      `,
-    ),
-    fromFixture(
-      stripIndent`
-        ${setup}
+  constructor() {
+    super({ movies: [] })
+  }
+}`),
+    fromFixture(`
+import { ComponentStore } from '@ngrx/component-store'
 
-        export class MoviesStore extends ComponentStore<MoviesState> {
-          constructor() {
-            super({movies: []});
-          }
+class NotOk1 extends ComponentStore<MoviesState> {
+  readonly updateMovie: Observable<unknown>
+  readonly addMovie = this.updater<Movie | null>((state, movie) => movie ? ({ movies: [...state.movies, movie] }) : ({ movies }))
+                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
 
-          readonly addMovie = this.updater<Movie | null>((state, movie) => movie ? ({ movies: [...state.movies, movie] }) : ({ movies }));
-                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
-        }
-      `,
-    ),
-    fromFixture(
-      stripIndent`
-        ${setup}
+  constructor(componentStore: ComponentStore<MoviesState>) {
+    super({ movies: [] })
+    this.updateMovie = componentStore.updater(() => ({ movies: MOVIES }))
+                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+  }
+}`),
+    fromFixture(`
+import { ComponentStore } from '@ngrx/component-store'
 
-        export class MoviesStore {
-          constructor(private readonly store: ComponentStore<MoviesState>) {}
+class NotOk2 {
+  readonly addMovie = this.store.updater((state, movie) => ({ movies: [...state.movies, movie] }))
+                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
 
-          readonly addMovie = this.store.updater((state, movie) => ({ movies: [...state.movies, movie] }));
-                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
-        }
-      `,
-    ),
-    fromFixture(
-      stripIndent`
-        ${setup}
+  constructor(private readonly store: ComponentStore<MoviesState>) {}
+}`),
+    fromFixture(`
+import { ComponentStore } from '@ngrx/component-store'
 
-        export class MoviesStore {
-          readonly addMovie: CreateEffectMetadata
+class NotOk3 {
+  readonly addMovie: Observable<unknown>
+  readonly updateMovie: Observable<unknown>
 
-          constructor(customStore: ComponentStore<MoviesState>) {
-            this.addMovie = customStore.updater<Movie>((state, movie) => ({ movies: [...state.movies, movie] }));
-                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   [${messageId}]
-          }
-        }
-      `,
-    ),
+  constructor(
+    customStore: ComponentStore<MoviesState>,
+    private readonly store: ComponentStore<MoviesState>
+  ) {
+    this.addMovie = customStore.updater<Movie>((state, movie) => ({ movies: [...state.movies, movie] }))
+                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+    this.updateMovie = this.store.updater(() => ({ movies: MOVIES }))
+                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+  }
+
+  ngOnInit() {
+    const updater = (item: Movie) => item
+    updater()
+  }
+}`),
   ],
 })
