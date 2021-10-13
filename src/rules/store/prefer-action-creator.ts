@@ -1,7 +1,7 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { docsUrl } from '../../utils'
+import { classImplements, docsUrl } from '../../utils'
 
 export const messageId = 'preferActionCreator'
 export type MessageIds = typeof messageId
@@ -27,7 +27,9 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [`ClassDeclaration:has(TSClassImplements:matches([expression.name='Action'], [expression.property.name='Action'])):has(ClassProperty[key.name='type'])`](
+      [`ClassDeclaration:has(${classImplements(
+        'Action',
+      )}):has(ClassProperty[key.name='type'])`](
         node: TSESTree.ClassDeclaration,
       ) {
         context.report({

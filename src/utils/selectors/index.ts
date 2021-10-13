@@ -66,6 +66,9 @@ export const dispatchInEffects = (name: RegExp | string) =>
     name,
   )} > MemberExpression:has(Identifier[name=${name}])` as const
 
+export const classImplements = (interfaceName: string) =>
+  `TSClassImplements:matches([expression.name='${interfaceName}'], [expression.property.name='${interfaceName}'])` as const
+
 export const createReducer = `CallExpression[callee.name='createReducer']`
 
 export const onFunctionWithoutType =
