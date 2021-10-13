@@ -1,4 +1,4 @@
-import type { InvalidTestCase } from '@typescript-eslint/experimental-utils/dist/ts-eslint'
+import type { TSESLint } from '@typescript-eslint/experimental-utils'
 import { stripIndents } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
@@ -26,7 +26,7 @@ const valid = [
     }`,
 ]
 
-const invalid: InvalidTestCase<MessageIds, []>[] = [
+const invalid: TSESLint.InvalidTestCase<MessageIds, []>[] = [
   fromFixture(
     stripIndents`
         import { Effect } from '@ngrx/effects'

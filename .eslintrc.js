@@ -19,6 +19,13 @@ module.exports = {
     '@typescript-eslint/no-unnecessary-type-assertion': 'error',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/prefer-reduce-type-parameter': 'error',
+    // TODO: Use `@typescript-eslint/no-restricted-imports` once https://github.com/typescript-eslint/typescript-eslint/pull/3996 is available.
+    'no-restricted-imports': [
+      'error',
+      {
+        patterns: ['@typescript-eslint/experimental-utils/dist/*'],
+      },
+    ],
     curly: 'error',
   },
 }

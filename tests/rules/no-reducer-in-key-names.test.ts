@@ -1,4 +1,4 @@
-import type { InvalidTestCase } from '@typescript-eslint/experimental-utils/dist/ts-eslint'
+import type { TSESLint } from '@typescript-eslint/experimental-utils'
 import { stripIndent } from 'common-tags'
 import path from 'path'
 import { test } from 'uvu'
@@ -48,7 +48,7 @@ const valid = [
     };`,
 ]
 
-const invalid: InvalidTestCase<MessageIds, []>[] = [
+const invalid: TSESLint.InvalidTestCase<MessageIds, []>[] = [
   {
     code: stripIndent`
         @NgModule({

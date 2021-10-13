@@ -1,7 +1,4 @@
-import type {
-  InvalidTestCase,
-  ValidTestCase,
-} from '@typescript-eslint/experimental-utils/dist/ts-eslint'
+import type { TSESLint } from '@typescript-eslint/experimental-utils'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import { test } from 'uvu'
@@ -13,7 +10,7 @@ import rule, {
 } from '../../src/rules/store/select-style'
 import { ruleTester } from '../utils'
 
-const valid: (string | ValidTestCase<SelectStyle[]>)[] = [
+const valid: (string | TSESLint.ValidTestCase<SelectStyle[]>)[] = [
   `
 import { Store } from '@ngrx/store'
 
@@ -96,7 +93,7 @@ class Ok9 {
   },
 ]
 
-const invalid: InvalidTestCase<MessageIds, SelectStyle[]>[] = [
+const invalid: TSESLint.InvalidTestCase<MessageIds, SelectStyle[]>[] = [
   fromFixture(
     `
 import { select, Store } from '@ngrx/store'
@@ -271,9 +268,9 @@ test(__filename, () => {
   ruleTester().run(path.parse(__filename).name, rule, {
     valid: valid as (
       | string
-      | ValidTestCase<readonly ['operator' | 'method']>
+      | TSESLint.ValidTestCase<readonly ['operator' | 'method']>
     )[],
-    invalid: invalid as InvalidTestCase<
+    invalid: invalid as TSESLint.InvalidTestCase<
       MessageIds,
       readonly ['operator' | 'method']
     >[],

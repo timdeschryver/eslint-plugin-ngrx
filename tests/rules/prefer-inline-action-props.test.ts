@@ -1,4 +1,4 @@
-import type { InvalidTestCase } from '@typescript-eslint/experimental-utils/dist/ts-eslint'
+import type { TSESLint } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import { test } from 'uvu'
 import type { MessageIds } from '../../src/rules/store/prefer-inline-action-props'
@@ -21,7 +21,7 @@ const valid = [
     }));`,
 ]
 
-const invalid: InvalidTestCase<MessageIds, []>[] = [
+const invalid: TSESLint.InvalidTestCase<MessageIds, []>[] = [
   {
     code: `const notOk0 = createAction('notOk0', props<number>())`,
     errors: [

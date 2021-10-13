@@ -1,4 +1,4 @@
-import type { InvalidTestCase } from '@typescript-eslint/experimental-utils/dist/ts-eslint'
+import type { TSESLint } from '@typescript-eslint/experimental-utils'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import { test } from 'uvu'
@@ -72,7 +72,7 @@ class Ok2 {
 }`,
 ]
 
-const invalid: InvalidTestCase<MessageIds, { strict: boolean }[]>[] = [
+const invalid: TSESLint.InvalidTestCase<MessageIds, { strict: boolean }[]>[] = [
   fromFixture(
     `
 import { Actions } from '@ngrx/effects'
