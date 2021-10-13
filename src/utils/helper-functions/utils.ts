@@ -246,14 +246,39 @@ export function getInterface(
 }
 
 export function getImplementsSchemaFixer(
-  { id, implements: classImplements }: TSESTree.ClassDeclaration,
+  node: TSESTree.ClassDeclaration,
   interfaceName: string,
 ) {
-  const [implementsNodeReplace, implementsTextReplace] = classImplements
-    ? [getLast(classImplements), `, ${interfaceName}`]
-    : [id as TSESTree.Identifier, ` implements ${interfaceName}`]
+  const { id, implements: classImplements } = node
 
-  return { implementsNodeReplace, implementsTextReplace } as const
+  function getRange() {
+    return (
+      id?.range ??
+      // TODO: Use `as const` once https://github.com/typescript-eslint/typescript-eslint/pull/3844 is available.
+      ([node.body.range[0], node.body.range[0]] as TSESTree.Range)
+    )
+  }
+
+  const [classBodyOrLastInterfaceRange, implementsInterfaceText] =
+    classImplements
+      ? [getLast(classImplements).range, `, ${interfaceName}`]
+      : [getRange(), ` implements ${interfaceName}`]
+  return { classBodyOrLastInterfaceRange, implementsInterfaceText } as const
+}
+
+export function getLocOrNode({ body, id, loc }: TSESTree.ClassDeclaration) {
+  if (id) {
+    return { node: id } as const
+  }
+
+  const customLoc = {
+    ...loc,
+    end: {
+      column: body.loc.start.column,
+      line: loc.start.line,
+    },
+  }
+  return { loc: customLoc } as const
 }
 
 export function getLast<T extends readonly unknown[]>(items: T): T[number] {

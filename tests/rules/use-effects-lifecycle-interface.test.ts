@@ -138,5 +138,36 @@ class NotOk4 implements OnInitEffects, OnRunEffects, OnIdentifyEffects {
 }`,
       },
     ),
+    fromFixture(
+      `
+import type { OnInitEffects, OnRunEffects } from '@ngrx/effects'
+
+export default class NotOk5 implements OnDestroy {
+                     ~~~~~~ [${messageId} { "interfaceName": "OnRunEffects", "methodName": "ngrxOnRunEffects" }]
+  ngrxOnRunEffects() {}
+}`,
+      {
+        output: `
+import type { OnInitEffects, OnRunEffects } from '@ngrx/effects'
+
+export default class NotOk5 implements OnDestroy, OnRunEffects {
+  ngrxOnRunEffects() {}
+}`,
+      },
+    ),
+    fromFixture(
+      `
+export default class {
+               ~~~~~~ [${messageId} { "interfaceName": "OnIdentifyEffects", "methodName": "ngrxOnIdentifyEffects" }]
+  ngrxOnIdentifyEffects() {}
+}`,
+      {
+        output: `import { OnIdentifyEffects } from '@ngrx/effects';
+
+export default class  implements OnIdentifyEffects{
+  ngrxOnIdentifyEffects() {}
+}`,
+      },
+    ),
   ],
 })

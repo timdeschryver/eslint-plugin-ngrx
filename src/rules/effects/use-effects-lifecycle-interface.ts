@@ -6,6 +6,7 @@ import {
   docsUrl,
   getImplementsSchemaFixer,
   getImportAddFix,
+  getLocOrNode,
   NGRX_MODULE_PATHS,
 } from '../../utils'
 
@@ -45,7 +46,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
           node: TSESTree.ClassDeclaration,
         ) {
           context.report({
-            node: node.id ?? node,
+            ...getLocOrNode(node),
             messageId,
             data: {
               interfaceName,
@@ -71,10 +72,13 @@ function getFixes(
   node: TSESTree.ClassDeclaration,
   interfaceName: string,
 ): readonly TSESLint.RuleFix[] {
-  const { implementsNodeReplace, implementsTextReplace } =
+  const { classBodyOrLastInterfaceRange, implementsInterfaceText } =
     getImplementsSchemaFixer(node, interfaceName)
   return [
-    fixer.insertTextAfter(implementsNodeReplace, implementsTextReplace),
+    fixer.insertTextAfterRange(
+      classBodyOrLastInterfaceRange,
+      implementsInterfaceText,
+    ),
   ].concat(
     getImportAddFix({
       compatibleWithTypeOnlyImport: true,
