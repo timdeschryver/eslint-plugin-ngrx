@@ -1,15 +1,21 @@
-import type { TSESLint } from '@typescript-eslint/experimental-utils'
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import { test } from 'uvu'
-import type { MessageIds } from '../../src/rules/effects/prefer-concat-latest-from'
 import rule, {
   messageId,
 } from '../../src/rules/effects/prefer-concat-latest-from'
 import { NGRX_MODULE_PATHS } from '../../src/utils'
 import { ruleTester } from '../utils'
 
-const valid = [
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>[0][]
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
   {
     code: `
 import { of, withLatestFrom } from 'rxjs'
@@ -72,7 +78,7 @@ class Ok2 {
 }`,
 ]
 
-const invalid: TSESLint.InvalidTestCase<MessageIds, { strict: boolean }[]>[] = [
+const invalid: RunTests['invalid'] = [
   fromFixture(
     `
 import { Actions } from '@ngrx/effects'

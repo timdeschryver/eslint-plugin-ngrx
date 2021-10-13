@@ -1,9 +1,17 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import { test } from 'uvu'
 import rule, { messageId } from '../../src/rules/effects/avoid-cyclic-effects'
 import { ruleTester } from '../utils'
+
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
 
 const setup = `
   import type { OnRunEffects } from '@ngrx/effects'
@@ -27,7 +35,7 @@ const setup = `
   ].join('\n'),
 )
 
-const valid = [
+const valid: RunTests['valid'] = [
   `
 ${setup}
 class Effect {
@@ -156,7 +164,7 @@ class Effect {
 `,
 ]
 
-const invalid = [
+const invalid: RunTests['invalid'] = [
   fromFixture(stripIndent`
   ${setup}
   class Effect {

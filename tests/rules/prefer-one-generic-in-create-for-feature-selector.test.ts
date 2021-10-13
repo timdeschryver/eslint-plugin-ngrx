@@ -1,3 +1,7 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
@@ -8,13 +12,17 @@ import rule, {
 } from '../../src/rules/store/prefer-one-generic-in-create-for-feature-selector'
 import { ruleTester } from '../utils'
 
-const valid = [
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
   `const createFeatureSelector = test('feature-state')`,
   `const featureOk = createFeatureSelector('feature-state')`,
   `const featureOk1 = createFeatureSelector<FeatureState>('feature-state')`,
 ]
 
-const invalid = [
+const invalid: RunTests['invalid'] = [
   fromFixture(
     stripIndent`
         const featureNotOk = createFeatureSelector<GlobalState, FeatureState>('feature-state')

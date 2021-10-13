@@ -1,14 +1,20 @@
-import type { TSESLint } from '@typescript-eslint/experimental-utils'
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import { test } from 'uvu'
-import type { MessageIds } from '../../src/rules/store/prefer-inline-action-props'
 import rule, {
   preferInlineActionProps,
   preferInlineActionPropsSuggest,
 } from '../../src/rules/store/prefer-inline-action-props'
 import { ruleTester } from '../utils'
 
-const valid = [
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
   `const ok0 = createAction('ok0', props<{ id: number, name: string }>())`,
   `const ok1 = createAction('ok1', props<Readonly<{ description: string }>>())`,
   `const ok2 = createAction('ok2', props<Readonly<HttpErrorResponse & { description: string }>>())`,

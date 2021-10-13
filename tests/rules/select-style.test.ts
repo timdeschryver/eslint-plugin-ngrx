@@ -1,8 +1,10 @@
-import type { TSESLint } from '@typescript-eslint/experimental-utils'
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import { test } from 'uvu'
-import type { MessageIds } from '../../src/rules/store/select-style'
 import rule, {
   methodSelectMessageId,
   operatorSelectMessageId,
@@ -10,7 +12,11 @@ import rule, {
 } from '../../src/rules/store/select-style'
 import { ruleTester } from '../utils'
 
-const valid: (string | TSESLint.ValidTestCase<SelectStyle[]>)[] = [
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>[0][]
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
   `
 import { Store } from '@ngrx/store'
 
@@ -93,7 +99,7 @@ class Ok9 {
   },
 ]
 
-const invalid: TSESLint.InvalidTestCase<MessageIds, SelectStyle[]>[] = [
+const invalid: RunTests['invalid'] = [
   fromFixture(
     `
 import { select, Store } from '@ngrx/store'
@@ -266,14 +272,8 @@ class NotOk5 {
 
 test(__filename, () => {
   ruleTester().run(path.parse(__filename).name, rule, {
-    valid: valid as (
-      | string
-      | TSESLint.ValidTestCase<readonly ['operator' | 'method']>
-    )[],
-    invalid: invalid as TSESLint.InvalidTestCase<
-      MessageIds,
-      readonly ['operator' | 'method']
-    >[],
+    valid,
+    invalid,
   })
 })
 test.run()

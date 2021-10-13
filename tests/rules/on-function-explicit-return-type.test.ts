@@ -1,15 +1,21 @@
-import type { TSESLint } from '@typescript-eslint/experimental-utils'
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { stripIndent } from 'common-tags'
 import path from 'path'
 import { test } from 'uvu'
-import type { MessageIds } from '../../src/rules/store/on-function-explicit-return-type'
 import rule, {
   onFunctionExplicitReturnType,
   onFunctionExplicitReturnTypeSuggest,
 } from '../../src/rules/store/on-function-explicit-return-type'
 import { ruleTester } from '../utils'
 
-const valid = [
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
   `
   const reducer = createReducer(
     initialState,

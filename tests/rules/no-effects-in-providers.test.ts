@@ -1,3 +1,7 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { stripIndent, stripIndents } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
@@ -7,7 +11,11 @@ import rule, {
 } from '../../src/rules/effects/no-effects-in-providers'
 import { ruleTester } from '../utils'
 
-const valid = [
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
   `
 @NgModule({
   imports: [
@@ -20,7 +28,7 @@ const valid = [
 export class AppModule {}`,
 ]
 
-const invalid = [
+const invalid: RunTests['invalid'] = [
   fromFixture(
     stripIndent`
       @NgModule({

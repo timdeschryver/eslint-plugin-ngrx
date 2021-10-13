@@ -1,3 +1,7 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import { test } from 'uvu'
@@ -6,7 +10,11 @@ import rule, {
 } from '../../src/rules/component-store/updater-explicit-return-type'
 import { ruleTester } from '../utils'
 
-const valid = [
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
   `
 import { ComponentStore } from '@ngrx/component-store'
 
@@ -59,7 +67,7 @@ class Ok3 {
 }`,
 ]
 
-const invalid = [
+const invalid: RunTests['invalid'] = [
   fromFixture(`
 import { ComponentStore } from '@ngrx/component-store'
 

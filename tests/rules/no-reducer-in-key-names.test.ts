@@ -1,15 +1,21 @@
-import type { TSESLint } from '@typescript-eslint/experimental-utils'
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { stripIndent } from 'common-tags'
 import path from 'path'
 import { test } from 'uvu'
-import type { MessageIds } from '../../src/rules/store/no-reducer-in-key-names'
 import rule, {
   noReducerInKeyNames,
   noReducerInKeyNamesSuggest,
 } from '../../src/rules/store/no-reducer-in-key-names'
 import { ruleTester } from '../utils'
 
-const valid = [
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
   `
     @NgModule({
       imports: [
@@ -48,7 +54,7 @@ const valid = [
     };`,
 ]
 
-const invalid: TSESLint.InvalidTestCase<MessageIds, []>[] = [
+const invalid: RunTests['invalid'] = [
   {
     code: stripIndent`
         @NgModule({

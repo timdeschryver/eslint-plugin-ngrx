@@ -1,16 +1,22 @@
-import type { TSESLint } from '@typescript-eslint/experimental-utils'
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { stripIndents } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import { test } from 'uvu'
-import type { MessageIds } from '../../src/rules/effects/no-effect-decorator-and-creator'
 import rule, {
   noEffectDecoratorAndCreator,
   noEffectDecoratorAndCreatorSuggest,
 } from '../../src/rules/effects/no-effect-decorator-and-creator'
 import { ruleTester } from '../utils'
 
-const valid = [
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
   `
     @Injectable()
     export class FixtureEffects {
@@ -26,7 +32,7 @@ const valid = [
     }`,
 ]
 
-const invalid: TSESLint.InvalidTestCase<MessageIds, []>[] = [
+const invalid: RunTests['invalid'] = [
   fromFixture(
     stripIndents`
         import { Effect } from '@ngrx/effects'

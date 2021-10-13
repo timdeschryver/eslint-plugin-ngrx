@@ -1,3 +1,7 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
@@ -8,7 +12,11 @@ import rule, {
 } from '../../src/rules/store/prefix-selectors-with-select'
 import { ruleTester } from '../utils'
 
-const valid = [
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
   `
     export const selectFeature: MemoizedSelector<any, any> = (state: AppState) => state.feature`,
   `
@@ -25,7 +33,7 @@ const valid = [
     export const selectFeature = createSelectorFactory(factoryFn)`,
 ]
 
-const invalid = [
+const invalid: RunTests['invalid'] = [
   fromFixture(
     stripIndent`
       export const getCount: MemoizedSelector<any, any> = (state: AppState) => state.feature
