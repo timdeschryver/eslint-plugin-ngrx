@@ -1,11 +1,11 @@
-import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
 import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import {
+  classImplements,
   docsUrl,
   getImplementsSchemaFixer,
   getImportAddFix,
-  getInterface,
   NGRX_MODULE_PATHS,
 } from '../../utils'
 
@@ -33,57 +33,55 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const lifecycleMapper = {
-      ngrxOnIdentifyEffects: 'OnIdentifyEffects',
-      ngrxOnInitEffects: 'OnInitEffects',
-      ngrxOnRunEffects: 'OnRunEffects',
-    } as const
-    const lifecyclesPattern = Object.keys(lifecycleMapper).join('|')
-
-    return {
-      [`ClassDeclaration > ClassBody > MethodDefinition > Identifier[name=/${lifecyclesPattern}/]`](
-        node: TSESTree.Identifier & {
-          name: keyof typeof lifecycleMapper
-          parent: TSESTree.MethodDefinition & {
-            parent: TSESTree.ClassBody & { parent: TSESTree.ClassDeclaration }
-          }
+    const interfaceMethodNames = [
+      ['OnIdentifyEffects', 'ngrxOnIdentifyEffects'],
+      ['OnInitEffects', 'ngrxOnInitEffects'],
+      ['OnRunEffects', 'ngrxOnRunEffects'],
+    ] as const
+    return interfaceMethodNames.reduce(
+      (accumulator, [interfaceName, methodName]) => ({
+        ...accumulator,
+        [getSelector(interfaceName, methodName)](
+          node: TSESTree.ClassDeclaration,
+        ) {
+          context.report({
+            node: node.id ?? node,
+            messageId,
+            data: {
+              interfaceName,
+              methodName,
+            },
+            fix: (fixer) => getFixes(fixer, node, interfaceName),
+          })
         },
-      ) {
-        const classDeclaration = node.parent.parent.parent
-        const methodName = node.name
-        const interfaceName = lifecycleMapper[methodName]
-
-        if (getInterface(classDeclaration, interfaceName)) {
-          return
-        }
-
-        context.report({
-          fix: (fixer) => {
-            const { implementsNodeReplace, implementsTextReplace } =
-              getImplementsSchemaFixer(classDeclaration, interfaceName)
-            return [
-              fixer.insertTextAfter(
-                implementsNodeReplace,
-                implementsTextReplace,
-              ),
-            ].concat(
-              getImportAddFix({
-                compatibleWithTypeOnlyImport: true,
-                fixer,
-                importName: interfaceName,
-                moduleName: NGRX_MODULE_PATHS.effects,
-                node: classDeclaration,
-              }),
-            )
-          },
-          node,
-          messageId,
-          data: {
-            interfaceName,
-            methodName,
-          },
-        })
-      },
-    }
+      }),
+      {},
+    )
   },
 })
+
+function getSelector(interfaceName: string, methodName: string) {
+  return `ClassDeclaration:not(:has(${classImplements(
+    interfaceName,
+  )})):has(ClassBody > MethodDefinition[key.name='${methodName}'])` as const
+}
+
+function getFixes(
+  fixer: TSESLint.RuleFixer,
+  node: TSESTree.ClassDeclaration,
+  interfaceName: string,
+): readonly TSESLint.RuleFix[] {
+  const { implementsNodeReplace, implementsTextReplace } =
+    getImplementsSchemaFixer(node, interfaceName)
+  return [
+    fixer.insertTextAfter(implementsNodeReplace, implementsTextReplace),
+  ].concat(
+    getImportAddFix({
+      compatibleWithTypeOnlyImport: true,
+      fixer,
+      importName: interfaceName,
+      moduleName: NGRX_MODULE_PATHS.effects,
+      node,
+    }),
+  )
+}

@@ -1,4 +1,3 @@
-import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import rule, {
@@ -9,150 +8,134 @@ import { ruleTester } from '../utils'
 ruleTester().run(path.parse(__filename).name, rule, {
   valid: [
     `
-      class Foo {}
-    `,
+class Ok {}`,
     `
-      class UserEffects implements OnInitEffects {
-        ngrxOnInitEffects(): Action {
-          return { type: '[UserEffects]: Init' }
-        }
-      }
-    `,
+class Ok1 implements OnInitEffects {
+  ngrxOnInitEffects(): Action {
+    return { type: '[UserEffects]: Init' }
+  }
+}`,
     `
-      export class UserEffects implements OnRunEffects {
-        constructor(private actions$: Actions) {}
-        updateUser$ = createEffect(() =>
-            this.actions$.pipe(
-              ofType('UPDATE_USER'),
-              tap(action => {
-                console.log(action)
-              })
-            ),
-          { dispatch: false })
-        ngrxOnRunEffects(resolvedEffects$: Observable<EffectNotification>) {
-          return this.actions$.pipe(
-            ofType('LOGGED_IN'),
-            exhaustMap(() =>
-              resolvedEffects$.pipe(
-                takeUntil(this.actions$.pipe(ofType('LOGGED_OUT')))
-              )
-            )
-          )
-        }
-      }
-    `,
+class Ok2 implements OnRunEffects {
+  constructor(private readonly actions$: Actions) {}
+
+  ngrxOnRunEffects(resolvedEffects$: Observable<EffectNotification>) {
+    return this.actions$.pipe(
+      ofType(AuthActions.loggedIn),
+      exhaustMap(() =>
+        resolvedEffects$.pipe(
+          takeUntil(this.actions$.pipe(ofType('LOGGED_OUT')))
+        )
+      )
+    )
+  }
+}`,
     `
-      class EffectWithIdentifier implements OnIdentifyEffects {
-        constructor(private effectIdentifier: string) {}
-        ngrxOnIdentifyEffects() {
-          return this.effectIdentifier
-        }
-      }
-    `,
+class Ok3 implements OnIdentifyEffects {
+  constructor(private effectIdentifier: string) {}
+
+  ngrxOnIdentifyEffects() {
+    return this.effectIdentifier
+  }
+}`,
     `
-      class UserEffects implements ngrx.OnInitEffects, OnIdentifyEffects {
-        ngrxOnInitEffects(): Action {
-          return { type: '[UserEffects]: Init' }
-        }
-        ngrxOnIdentifyEffects(): string {
-          return ''
-        }
-      }
-    `,
+class Ok4 implements ngrx.OnInitEffects, OnIdentifyEffects {
+  ngrxOnInitEffects() {}
+
+  ngrxOnIdentifyEffects() {}
+}`,
   ],
   invalid: [
     fromFixture(
-      stripIndent`
-        class UserEffects {
-          ngrxOnInitEffects() {}
-          ~~~~~~~~~~~~~~~~~ [${messageId} { "interfaceName": "OnInitEffects", "methodName": "ngrxOnInitEffects" }]
-        }
-      `,
+      `
+class NotOk {
+      ~~~~~ [${messageId} { "interfaceName": "OnInitEffects", "methodName": "ngrxOnInitEffects" }]
+  ngrxOnInitEffects() {}
+}`,
       {
-        output: stripIndent`
-          import { OnInitEffects } from '@ngrx/effects';
-          class UserEffects implements OnInitEffects {
-            ngrxOnInitEffects() {}
-          }
-        `,
+        output: `import { OnInitEffects } from '@ngrx/effects';
+
+class NotOk implements OnInitEffects {
+  ngrxOnInitEffects() {}
+}`,
       },
     ),
     fromFixture(
-      stripIndent`
-        import Effects from '@ngrx/effects'
-        class UserEffects {
-          ngrxOnIdentifyEffects() {}
-          ~~~~~~~~~~~~~~~~~~~~~ [${messageId} { "interfaceName": "OnIdentifyEffects", "methodName": "ngrxOnIdentifyEffects" }]
-        }
-      `,
+      `
+import Effects from '@ngrx/effects'
+
+class NotOk1 {
+      ~~~~~~ [${messageId} { "interfaceName": "OnIdentifyEffects", "methodName": "ngrxOnIdentifyEffects" }]
+  ngrxOnIdentifyEffects() {}
+}`,
       {
-        output: stripIndent`
-          import Effects, { OnIdentifyEffects } from '@ngrx/effects'
-          class UserEffects implements OnIdentifyEffects {
-            ngrxOnIdentifyEffects() {}
-          }
-        `,
+        output: `
+import Effects, { OnIdentifyEffects } from '@ngrx/effects'
+
+class NotOk1 implements OnIdentifyEffects {
+  ngrxOnIdentifyEffects() {}
+}`,
       },
     ),
     fromFixture(
-      stripIndent`
-        import { Injectable } from '@angular/core'
-        class UserEffects {
-          ngrxOnRunEffects() {}
-          ~~~~~~~~~~~~~~~~ [${messageId} { "interfaceName": "OnRunEffects", "methodName": "ngrxOnRunEffects" }]
-        }
-      `,
+      `
+import { Injectable } from '@angular/core'
+
+class NotOk2 {
+      ~~~~~~ [${messageId} { "interfaceName": "OnRunEffects", "methodName": "ngrxOnRunEffects" }]
+  ngrxOnRunEffects() {}
+}`,
       {
-        output: stripIndent`
-          import { OnRunEffects } from '@ngrx/effects';
-          import { Injectable } from '@angular/core'
-          class UserEffects implements OnRunEffects {
-            ngrxOnRunEffects() {}
-          }
-        `,
+        output: `import { OnRunEffects } from '@ngrx/effects';
+
+import { Injectable } from '@angular/core'
+
+class NotOk2 implements OnRunEffects {
+  ngrxOnRunEffects() {}
+}`,
       },
     ),
     fromFixture(
-      stripIndent`
-        import * as ngrx from '@ngrx/effects'
-        class UserEffects {
-          ngrxOnInitEffects() {}
-          ~~~~~~~~~~~~~~~~~ [${messageId} { "interfaceName": "OnInitEffects", "methodName": "ngrxOnInitEffects" }]
-        }
-      `,
+      `
+import * as ngrx from '@ngrx/effects'
+
+class NotOk3 {
+      ~~~~~~ [${messageId} { "interfaceName": "OnInitEffects", "methodName": "ngrxOnInitEffects" }]
+  ngrxOnInitEffects() {}
+}`,
       {
-        output: stripIndent`
-          import { OnInitEffects } from '@ngrx/effects';
-          import * as ngrx from '@ngrx/effects'
-          class UserEffects implements OnInitEffects {
-            ngrxOnInitEffects() {}
-          }
-        `,
+        output: `import { OnInitEffects } from '@ngrx/effects';
+
+import * as ngrx from '@ngrx/effects'
+
+class NotOk3 implements OnInitEffects {
+  ngrxOnInitEffects() {}
+}`,
       },
     ),
     fromFixture(
-      stripIndent`
-        import type { OnInitEffects, OnRunEffects } from '@ngrx/effects'
-        class UserEffects implements OnInitEffects, OnRunEffects {
-          ngrxOnInitEffects() {}
+      `
+import type { OnInitEffects, OnRunEffects } from '@ngrx/effects'
 
-          ngrxOnIdentifyEffects() {}
-          ~~~~~~~~~~~~~~~~~~~~~ [${messageId} { "interfaceName": "OnIdentifyEffects", "methodName": "ngrxOnIdentifyEffects" }]
+class NotOk4 implements OnInitEffects, OnRunEffects {
+      ~~~~~~ [${messageId} { "interfaceName": "OnIdentifyEffects", "methodName": "ngrxOnIdentifyEffects" }]
+  ngrxOnInitEffects() {}
 
-          ngrxOnRunEffects() {}
-        }
-      `,
+  ngrxOnIdentifyEffects() {}
+
+  ngrxOnRunEffects() {}
+}`,
       {
-        output: stripIndent`
-          import type { OnInitEffects, OnRunEffects, OnIdentifyEffects } from '@ngrx/effects'
-          class UserEffects implements OnInitEffects, OnRunEffects, OnIdentifyEffects {
-            ngrxOnInitEffects() {}
+        output: `
+import type { OnInitEffects, OnRunEffects, OnIdentifyEffects } from '@ngrx/effects'
 
-            ngrxOnIdentifyEffects() {}
+class NotOk4 implements OnInitEffects, OnRunEffects, OnIdentifyEffects {
+  ngrxOnInitEffects() {}
 
-            ngrxOnRunEffects() {}
-          }
-        `,
+  ngrxOnIdentifyEffects() {}
+
+  ngrxOnRunEffects() {}
+}`,
       },
     ),
   ],
