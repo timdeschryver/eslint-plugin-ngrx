@@ -1,5 +1,10 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   methodSelectMessageId,
   operatorSelectMessageId,
@@ -7,27 +12,30 @@ import rule, {
 } from '../../src/rules/store/select-style'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>[0][]
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
+  `
 import { Store } from '@ngrx/store'
 
 class Ok {
   readonly test$ = somethingOutside();
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok1 {
   constructor(private store: Store) {}
 }`,
-    `
+  `
 import { Store, select } from '@ngrx/store'
 
 class Ok2 {
   constructor(private store: Store) {}
 }`,
-    `
+  `
 import { Store, select } from '@ngrx/store'
 
 class Ok3 {
@@ -35,7 +43,7 @@ class Ok3 {
 
   constructor(private store: Store) {}
 }`,
-    `
+  `
 import { select } from '@my-org/framework'
 import { Store } from '@ngrx/store'
 
@@ -44,7 +52,7 @@ class Ok4 {
 
   constructor(private store: Store) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok5 {
@@ -52,7 +60,7 @@ class Ok5 {
 
   constructor(private store: Store) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok6 {
@@ -60,15 +68,15 @@ class Ok6 {
 
   constructor(private store: Store) {}
 }`,
-    `
+  `
 import { Store, select } from '@ngrx/store'
 
 class Ok7 {
   foo$ = this.customName.select(selector)
   constructor(private customName: Store) {}
 }`,
-    {
-      code: `
+  {
+    code: `
 import { Store, select } from '@ngrx/store'
 
 class Ok8 {
@@ -76,10 +84,10 @@ class Ok8 {
 
   constructor(private store: Store) {}
 }`,
-      options: [SelectStyle.Operator],
-    },
-    {
-      code: `
+    options: [SelectStyle.Operator],
+  },
+  {
+    code: `
 import { select, Store } from '@ngrx/store'
 
 class Ok9 {
@@ -87,12 +95,13 @@ class Ok9 {
 
   constructor(private store: Store) {}
 }`,
-      options: [SelectStyle.Method],
-    },
-  ],
-  invalid: [
-    fromFixture(
-      `
+    options: [SelectStyle.Method],
+  },
+]
+
+const invalid: RunTests['invalid'] = [
+  fromFixture(
+    `
 import { select, Store } from '@ngrx/store'
          ~~~~~~ [${methodSelectMessageId}]
 
@@ -102,8 +111,8 @@ class NotOk {
 
   constructor(private store: Store) {}
 }`,
-      {
-        output: `
+    {
+      output: `
 import {  Store } from '@ngrx/store'
 
 class NotOk {
@@ -111,10 +120,10 @@ class NotOk {
 
   constructor(private store: Store) {}
 }`,
-      },
-    ),
-    fromFixture(
-      `
+    },
+  ),
+  fromFixture(
+    `
 import { Store, select } from '@ngrx/store'
                 ~~~~~~ [${methodSelectMessageId}]
 
@@ -125,9 +134,9 @@ class NotOk1 {
 
   constructor(private store: Store) {}
 }`,
-      {
-        options: [SelectStyle.Method],
-        output: `
+    {
+      options: [SelectStyle.Method],
+      output: `
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
@@ -136,10 +145,10 @@ class NotOk1 {
 
   constructor(private store: Store) {}
 }`,
-      },
-    ),
-    fromFixture(
-      `
+    },
+  ),
+  fromFixture(
+    `
 import { select, Store } from '@ngrx/store'
 
 class NotOk2 {
@@ -160,9 +169,9 @@ class NotOk2 {
     )
   }
 }`,
-      {
-        options: [SelectStyle.Operator] as const,
-        output: `
+    {
+      options: [SelectStyle.Operator],
+      output: `
 import { select, Store } from '@ngrx/store'
 
 class NotOk2 {
@@ -181,10 +190,10 @@ class NotOk2 {
     ))
   }
 }`,
-      },
-    ),
-    fromFixture(
-      `
+    },
+  ),
+  fromFixture(
+    `
 import {
   Store,
   select,
@@ -210,9 +219,9 @@ class NotOk4 {
 
   constructor(private readonly store: Store) {}
 }`,
-      {
-        options: [SelectStyle.Method],
-        output: `
+    {
+      options: [SelectStyle.Method],
+      output: `
 import {
   Store,
 } from '@ngrx/store'
@@ -233,10 +242,10 @@ class NotOk4 {
 
   constructor(private readonly store: Store) {}
 }`,
-      },
-    ),
-    fromFixture(
-      `
+    },
+  ),
+  fromFixture(
+    `
 import type {Creator} from '@ngrx/store'
 import { Store } from '@ngrx/store'
 
@@ -246,9 +255,9 @@ class NotOk5 {
 
   constructor(private store: Store) {}
 }`,
-      {
-        options: [SelectStyle.Operator],
-        output: `
+    {
+      options: [SelectStyle.Operator],
+      output: `
 import type {Creator} from '@ngrx/store'
 import { Store, select } from '@ngrx/store'
 
@@ -257,7 +266,14 @@ class NotOk5 {
 
   constructor(private store: Store) {}
 }`,
-      },
-    ),
-  ],
+    },
+  ),
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, {
+    valid,
+    invalid,
+  })
 })
+test.run()

@@ -1,44 +1,53 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { stripIndent, stripIndents } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   messageId,
 } from '../../src/rules/effects/no-effects-in-providers'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
-    @NgModule({
-      imports: [
-        StoreModule.forFeature('persons', {"foo": "bar"}),
-        EffectsModule.forRoot([RootEffectOne]),
-        EffectsModule.forFeature([FeatEffectOne]),
-      ],
-      providers: [FeatEffectTwo, UnRegisteredEffect, FeatEffectThree, RootEffectTwo],
-    })
-    export class AppModule {}`,
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
+  `
+@NgModule({
+  imports: [
+    StoreModule.forFeature('persons', {"foo": "bar"}),
+    EffectsModule.forRoot([RootEffectOne]),
+    EffectsModule.forFeature([FeatEffectOne]),
   ],
-  invalid: [
-    fromFixture(
-      stripIndent`
+  providers: [FeatEffectTwo, UnRegisteredEffect, FeatEffectThree, RootEffectTwo],
+})
+export class AppModule {}`,
+]
+
+const invalid: RunTests['invalid'] = [
+  fromFixture(
+    stripIndent`
       @NgModule({
         imports: [EffectsModule.forFeature([RegisteredEffect])],
         providers: [RegisteredEffect]
                     ~~~~~~~~~~~~~~~~ [${messageId}]
       })
       export class AppModule {}`,
-      {
-        output: stripIndent`
+    {
+      output: stripIndent`
         @NgModule({
           imports: [EffectsModule.forFeature([RegisteredEffect])],
           providers: []
         })
         export class AppModule {}`,
-      },
-    ),
-    fromFixture(
-      stripIndents`
+    },
+  ),
+  fromFixture(
+    stripIndents`
       @NgModule({
         imports: [EffectsModule.forRoot([RegisteredEffect])],
         providers: [
@@ -48,8 +57,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ],
       })
       export class AppModule {}`,
-      {
-        output: stripIndents`
+    {
+      output: stripIndents`
         @NgModule({
           imports: [EffectsModule.forRoot([RegisteredEffect])],
           providers: [
@@ -58,10 +67,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ],
         })
         export class AppModule {}`,
-      },
-    ),
-    fromFixture(
-      stripIndents`
+    },
+  ),
+  fromFixture(
+    stripIndents`
       @NgModule({
         providers: [
           UnRegisteredEffect,
@@ -82,8 +91,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
         providers: [],
       })
       export class SharedModule {}`,
-      {
-        output: stripIndents`
+    {
+      output: stripIndents`
         @NgModule({
           providers: [
             UnRegisteredEffect,
@@ -103,10 +112,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
           providers: [],
         })
         export class SharedModule {}`,
-      },
-    ),
-    fromFixture(
-      stripIndents`
+    },
+  ),
+  fromFixture(
+    stripIndents`
       @NgModule({
         imports: [
           StoreModule.forFeature('persons', {"foo": "bar"}),
@@ -125,8 +134,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ],
       })
       export class AppModule {}`,
-      {
-        output: stripIndents`
+    {
+      output: stripIndents`
         @NgModule({
           imports: [
             StoreModule.forFeature('persons', {"foo": "bar"}),
@@ -142,10 +151,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ],
         })
         export class AppModule {}`,
-      },
-    ),
-    fromFixture(
-      stripIndents`
+    },
+  ),
+  fromFixture(
+    stripIndents`
       @NgModule({
         [\`providers\`]: [
           FeatEffectTwo,
@@ -164,8 +173,8 @@ ruleTester().run(path.parse(__filename).name, rule, {
         ],
       })
       export class AppModule {}`,
-      {
-        output: stripIndents`
+    {
+      output: stripIndents`
         @NgModule({
           [\`providers\`]: [
 
@@ -181,7 +190,11 @@ ruleTester().run(path.parse(__filename).name, rule, {
           ],
         })
         export class AppModule {}`,
-      },
-    ),
-  ],
+    },
+  ),
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()
