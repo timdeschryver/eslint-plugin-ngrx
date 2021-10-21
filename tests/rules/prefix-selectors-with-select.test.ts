@@ -32,7 +32,11 @@ const valid: RunTests['valid'] = [
   `
     export const selectFeature = createSelectorFactory(factoryFn)`,
   `
-    export const selectFeature1 = createSelectorFactory(factoryFn)`,
+    export const select_feature = createSelectorFactory(factoryFn)`,
+  `
+    export const select$feature = createSelectorFactory(factoryFn)`,
+  `
+    export const selectF01 = createSelector(factoryFn)`,
 ]
 
 const invalid: RunTests['invalid'] = [
@@ -65,6 +69,21 @@ const invalid: RunTests['invalid'] = [
           messageId: prefixSelectorsWithSelectSuggest,
           output: stripIndent`
             export const selectF01 = createSelector((state: AppState) => state.feature)`,
+        },
+      ],
+    },
+  ),
+  fromFixture(
+    stripIndent`
+      export const get_f01 = createSelector((state: AppState) => state.feature)
+                   ~~~~~~~ [${prefixSelectorsWithSelect}]
+      `,
+    {
+      suggestions: [
+        {
+          messageId: prefixSelectorsWithSelectSuggest,
+          output: stripIndent`
+            export const select_f01 = createSelector((state: AppState) => state.feature)`,
         },
       ],
     },
@@ -122,6 +141,24 @@ const invalid: RunTests['invalid'] = [
           },
           output: stripIndent`
             export const selectFeature = createFeatureSelector<AppState, FeatureState>(featureKey)`,
+        },
+      ],
+    },
+  ),
+  fromFixture(
+    stripIndent`
+      export const selectfeature = createSelector((state: AppState) => state.feature)
+                   ~~~~~~~~~~~~~ [${prefixSelectorsWithSelect}]
+      `,
+    {
+      suggestions: [
+        {
+          messageId: prefixSelectorsWithSelectSuggest,
+          data: {
+            name: 'selectFeature',
+          },
+          output: stripIndent`
+            export const selectFeature = createSelector((state: AppState) => state.feature)`,
         },
       ],
     },
