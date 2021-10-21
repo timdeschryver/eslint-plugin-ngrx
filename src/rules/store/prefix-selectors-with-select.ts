@@ -33,7 +33,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      'VariableDeclarator[id.name!=/^select[A-Z][a-zA-Z]+$/]:matches([id.typeAnnotation.typeAnnotation.typeName.name=/^MemoizedSelector(WithProps)?$/], :has(CallExpression[callee.name=/^(create(Feature)?Selector|createSelectorFactory)$/]))'({
+      'VariableDeclarator[id.name!=/^select.+$/]:matches([id.typeAnnotation.typeAnnotation.typeName.name=/^MemoizedSelector(WithProps)?$/], :has(CallExpression[callee.name=/^(create(Feature)?Selector|createSelectorFactory)$/]))'({
         id,
       }: TSESTree.VariableDeclarator & { id: TSESTree.Identifier }) {
         const suggestedName = getSuggestedName(id.name)

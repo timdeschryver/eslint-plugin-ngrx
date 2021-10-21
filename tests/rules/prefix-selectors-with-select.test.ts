@@ -31,6 +31,8 @@ const valid: RunTests['valid'] = [
     export const selectThing = (id: string) => createSelector(selectThings, things => things[id])`,
   `
     export const selectFeature = createSelectorFactory(factoryFn)`,
+  `
+    export const selectFeature1 = createSelectorFactory(factoryFn)`,
 ]
 
 const invalid: RunTests['invalid'] = [
@@ -120,24 +122,6 @@ const invalid: RunTests['invalid'] = [
           },
           output: stripIndent`
             export const selectFeature = createFeatureSelector<AppState, FeatureState>(featureKey)`,
-        },
-      ],
-    },
-  ),
-  fromFixture(
-    stripIndent`
-      export const selectfeature = createSelector((state: AppState) => state.feature)
-                   ~~~~~~~~~~~~~ [${prefixSelectorsWithSelect}]
-      `,
-    {
-      suggestions: [
-        {
-          messageId: prefixSelectorsWithSelectSuggest,
-          data: {
-            name: 'selectFeature',
-          },
-          output: stripIndent`
-            export const selectFeature = createSelector((state: AppState) => state.feature)`,
         },
       ],
     },
