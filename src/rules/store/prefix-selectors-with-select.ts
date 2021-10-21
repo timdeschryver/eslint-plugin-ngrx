@@ -80,12 +80,9 @@ function getSuggestedName(name: string) {
   }
 
   // Ex: 'getCount' => 'selectCount'
-  possibleReplacedName = name.replace(
-    /^get([^a-z].+)/,
-    (_, word: string) => {
-      return `${selectWord}${capitalize(word)}`
-    },
-  )
+  possibleReplacedName = name.replace(/^get([^a-z].+)/, (_, word: string) => {
+    return `${selectWord}${capitalize(word)}`
+  })
 
   if (name !== possibleReplacedName) {
     return possibleReplacedName
