@@ -144,6 +144,17 @@
         "code",
         "ideas"
       ]
+    },
+    {
+      "login": "alorle",
+      "name": "alorle",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4264243?v=4",
+      "profile": "https://alorle.github.io/",
+      "contributions": [
+        "bug",
+        "test",
+        "code"
+      ]
     }
   ],
   "skipCi": true,
