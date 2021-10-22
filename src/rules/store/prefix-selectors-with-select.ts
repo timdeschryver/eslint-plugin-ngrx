@@ -33,7 +33,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      'VariableDeclarator[id.name!=/^select[A-Z][a-zA-Z]+$/]:matches([id.typeAnnotation.typeAnnotation.typeName.name=/^MemoizedSelector(WithProps)?$/], :has(CallExpression[callee.name=/^(create(Feature)?Selector|createSelectorFactory)$/]))'({
+      'VariableDeclarator[id.name!=/^select[^a-z].+$/]:matches([id.typeAnnotation.typeAnnotation.typeName.name=/^MemoizedSelector(WithProps)?$/], :has(CallExpression[callee.name=/^(create(Feature)?Selector|createSelectorFactory)$/]))'({
         id,
       }: TSESTree.VariableDeclarator & { id: TSESTree.Identifier }) {
         const suggestedName = getSuggestedName(id.name)
@@ -70,8 +70,8 @@ function getSuggestedName(name: string) {
   // Ex: 'selectfeature' => 'selectFeature'
   let possibleReplacedName = name.replace(
     new RegExp(`^${selectWord}(.+)`),
-    (_, lowercasedWord: string) => {
-      return `${selectWord}${capitalize(lowercasedWord)}`
+    (_, word: string) => {
+      return `${selectWord}${capitalize(word)}`
     },
   )
 
@@ -80,12 +80,9 @@ function getSuggestedName(name: string) {
   }
 
   // Ex: 'getCount' => 'selectCount'
-  possibleReplacedName = name.replace(
-    /^get([A-Z][A-Za-z\d]+)/,
-    (_, capitalizedWord: string) => {
-      return `${selectWord}${capitalizedWord}`
-    },
-  )
+  possibleReplacedName = name.replace(/^get([^a-z].+)/, (_, word: string) => {
+    return `${selectWord}${capitalize(word)}`
+  })
 
   if (name !== possibleReplacedName) {
     return possibleReplacedName
