@@ -58,7 +58,6 @@ import { OnRunEffects } from '@ngrx/effects'
 
 class Effect implements OnRunEffects {
   constructor(private actions$: Actions) {}
-
   ngrxOnRunEffects(resolvedEffects$: Observable<EffectNotification>) {
     return this.actions$.pipe(
       ofType('LOGGED_IN'),

@@ -12,7 +12,7 @@ import rule, {
 import { ruleTester } from '../utils'
 
 type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
-type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>[0][]
+type Options = readonly ESLintUtils.InferOptionsTypeFromRule<typeof rule>[0][]
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
 const valid: RunTests['valid'] = [
