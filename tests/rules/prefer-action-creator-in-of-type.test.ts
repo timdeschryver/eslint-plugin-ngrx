@@ -1,45 +1,54 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { stripIndent } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   messageId,
 } from '../../src/rules/effects/prefer-action-creator-in-of-type'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
+  `
     @Injectable()
     class Test {
       effectOK = createEffect(() => this.actions$.pipe(ofType(userActions.ping)))
 
       constructor(private readonly actions$: Actions) {}
     }`,
-    `
+  `
     @Injectable()
     class Test {
       effectOK1 = createEffect(() => this.actions$.pipe(ofType(userActions.ping.type)))
 
       constructor(private readonly actions$: Actions) {}
     }`,
-    `
+  `
     @Injectable()
     class Test {
       effectOK2 = createEffect(() => this.actions$.pipe(ofType(method())))
 
       constructor(private readonly actions$: Actions) {}
     }`,
-    `
+  `
     @Injectable()
     class Test {
       effectOK3 = createEffect(() => this.actions$.pipe(ofType(condition ? methodA() : bookActions.load)))
 
       constructor(private readonly actions$: Actions) {}
     }`,
-  ],
-  invalid: [
-    fromFixture(
-      stripIndent`
+]
+
+const invalid: RunTests['invalid'] = [
+  fromFixture(
+    stripIndent`
       @Injectable()
       class Test {
         effectNOK = createEffect(() => this.actions$.pipe(ofType('PING')))
@@ -47,9 +56,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
 
         constructor(private readonly actions$: Actions) {}
       }`,
-    ),
-    fromFixture(
-      stripIndent`
+  ),
+  fromFixture(
+    stripIndent`
       @Injectable()
       class Test {
         effectNOK1 = createEffect(() => this.actions$.pipe(ofType(BookActions.load, 'PONG')))
@@ -57,9 +66,9 @@ ruleTester().run(path.parse(__filename).name, rule, {
 
         constructor(private readonly actions$: Actions) {}
       }`,
-    ),
-    fromFixture(
-      stripIndent`
+  ),
+  fromFixture(
+    stripIndent`
       @Injectable()
       class Test {
         effectNOK2 = createEffect(() =>
@@ -69,6 +78,10 @@ ruleTester().run(path.parse(__filename).name, rule, {
 
         constructor(private readonly actions$: Actions) {}
       }`,
-    ),
-  ],
+  ),
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

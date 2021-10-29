@@ -1,38 +1,46 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   noMultipleGlobalStores,
   noMultipleGlobalStoresSuggest,
 } from '../../src/rules/store/no-multiple-global-stores'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
+  `
 class Ok {}`,
-    `
+  `
 class Ok1 {
   constructor() {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok2 {
   constructor(private store: Store) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok3 {
   constructor(store: Store) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok4 {
   constructor(private store: Store, data: Service) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok5 {
@@ -42,7 +50,7 @@ class Ok5 {
 class Ok6 {
   constructor(private readonly store: Store) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok7 {
@@ -52,10 +60,11 @@ class Ok7 {
 class Ok8 {
   constructor(public store$: Store) {}
 }`,
-  ],
-  invalid: [
-    fromFixture(
-      `
+]
+
+const invalid: RunTests['invalid'] = [
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class ShouldNotBreakLaterReports {
@@ -71,11 +80,11 @@ class NotOk {
               ~~~~~~~~~~~~ [${noMultipleGlobalStores} suggest 0]
                             ~~~~~~~~~~~~~ [${noMultipleGlobalStores} suggest 1]
 }`,
-      {
-        suggestions: [
-          {
-            messageId: noMultipleGlobalStoresSuggest,
-            output: `
+    {
+      suggestions: [
+        {
+          messageId: noMultipleGlobalStoresSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class ShouldNotBreakLaterReports {
@@ -89,10 +98,10 @@ class ShouldNotBreakLaterReports1 {
 class NotOk {
   constructor( store2: Store) {}
 }`,
-          },
-          {
-            messageId: noMultipleGlobalStoresSuggest,
-            output: `
+        },
+        {
+          messageId: noMultipleGlobalStoresSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class ShouldNotBreakLaterReports {
@@ -106,12 +115,12 @@ class ShouldNotBreakLaterReports1 {
 class NotOk {
   constructor(store: Store, ) {}
 }`,
-          },
-        ],
-      },
-    ),
-    fromFixture(
-      `
+        },
+      ],
+    },
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
@@ -119,31 +128,31 @@ class NotOk1 {
               ~~~~~~~~~~~~ [${noMultipleGlobalStores} suggest 0]
                                                                                   ~~~~~~~~~~~~~~~~~~~~~ [${noMultipleGlobalStores} suggest 1]
 }`,
-      {
-        suggestions: [
-          {
-            messageId: noMultipleGlobalStoresSuggest,
-            output: `
+    {
+      suggestions: [
+        {
+          messageId: noMultipleGlobalStoresSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
   constructor( /* first store */ private readonly actions$: Actions, private store2: Store, b: B) {}
 }`,
-          },
-          {
-            messageId: noMultipleGlobalStoresSuggest,
-            output: `
+        },
+        {
+          messageId: noMultipleGlobalStoresSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
   constructor(store: Store /* first store */, private readonly actions$: Actions,  b: B) {}
 }`,
-          },
-        ],
-      },
-    ),
-    fromFixture(
-      `
+        },
+      ],
+    },
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
@@ -158,11 +167,11 @@ class NotOk2 {
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${noMultipleGlobalStores} suggest 2]
   ) {}
 }`,
-      {
-        suggestions: [
-          {
-            messageId: noMultipleGlobalStoresSuggest,
-            output: `
+    {
+      suggestions: [
+        {
+          messageId: noMultipleGlobalStoresSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
@@ -174,10 +183,10 @@ class NotOk2 {
     private readonly store3: Store,
   ) {}
 }`,
-          },
-          {
-            messageId: noMultipleGlobalStoresSuggest,
-            output: `
+        },
+        {
+          messageId: noMultipleGlobalStoresSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
@@ -188,10 +197,10 @@ class NotOk2 {
     \n    private readonly store3: Store,
   ) {}
 }`,
-          },
-          {
-            messageId: noMultipleGlobalStoresSuggest,
-            output: `
+        },
+        {
+          messageId: noMultipleGlobalStoresSuggest,
+          output: `
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
@@ -202,9 +211,13 @@ class NotOk2 {
     private store2: Store,
     \n  ) {}
 }`,
-          },
-        ],
-      },
-    ),
-  ],
+        },
+      ],
+    },
+  ),
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

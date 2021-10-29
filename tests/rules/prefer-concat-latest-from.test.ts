@@ -1,18 +1,23 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   messageId,
 } from '../../src/rules/effects/prefer-concat-latest-from'
 import { NGRX_MODULE_PATHS } from '../../src/utils'
 import { ruleTester } from '../utils'
 
-ruleTester({ ngrxModule: NGRX_MODULE_PATHS.effects, version: '12.1.0' }).run(
-  path.parse(__filename).name,
-  rule,
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>[0][]
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
   {
-    valid: [
-      {
-        code: `
+    code: `
 import { of, withLatestFrom } from 'rxjs'
 
 class Ok {
@@ -27,9 +32,9 @@ class Ok {
       ),
   );
 }`,
-        options: [{ strict: true }],
-      },
-      `
+    options: [{ strict: true }],
+  },
+  `
 import { Actions } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
 
@@ -48,7 +53,7 @@ constructor(actions$: Actions) {
   }, { dispatch: false })
 }
 }`,
-      `
+  `
 import { Actions } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
 
@@ -71,10 +76,11 @@ class Ok2 {
 
   constructor(private readonly actions$: Actions) {}
 }`,
-    ],
-    invalid: [
-      fromFixture(
-        `
+]
+
+const invalid: RunTests['invalid'] = [
+  fromFixture(
+    `
 import { Actions } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
 
@@ -94,8 +100,8 @@ class NotOk {
 
   constructor(private readonly actions$: Actions) {}
 }`,
-        {
-          output: `
+    {
+      output: `
 import { Actions, concatLatestFrom } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
 
@@ -114,10 +120,10 @@ class NotOk {
 
   constructor(private readonly actions$: Actions) {}
 }`,
-        },
-      ),
-      fromFixture(
-        `
+    },
+  ),
+  fromFixture(
+    `
 import { Actions } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
 
@@ -141,8 +147,8 @@ class NotOk1 {
     )
   }
 }`,
-        {
-          output: `
+    {
+      output: `
 import { Actions, concatLatestFrom } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
 
@@ -165,10 +171,10 @@ class NotOk1 {
     )
   }
 }`,
-        },
-      ),
-      fromFixture(
-        `
+    },
+  ),
+  fromFixture(
+    `
 import { of, withLatestFrom } from 'rxjs'
 
 class NotOk2 {
@@ -183,9 +189,9 @@ class NotOk2 {
     )
   }, { dispatch: false })
 }`,
-        {
-          options: [{ strict: true }],
-          output: `import { concatLatestFrom } from '@ngrx/effects';\n
+    {
+      options: [{ strict: true }],
+      output: `import { concatLatestFrom } from '@ngrx/effects';\n
 import { of, withLatestFrom } from 'rxjs'
 
 class NotOk2 {
@@ -199,10 +205,10 @@ class NotOk2 {
     )
   }, { dispatch: false })
 }`,
-        },
-      ),
-      fromFixture(
-        `
+    },
+  ),
+  fromFixture(
+    `
 import { concatLatestFrom } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
 
@@ -222,9 +228,9 @@ class NotOk3 {
       : this.actions$.pipe()
   })
 }`,
-        {
-          options: [{ strict: true }],
-          output: `import { map } from 'rxjs/operators';\n
+    {
+      options: [{ strict: true }],
+      output: `import { map } from 'rxjs/operators';\n
 import { concatLatestFrom } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
 
@@ -243,18 +249,12 @@ class NotOk3 {
       : this.actions$.pipe()
   })
 }`,
-        },
-      ),
-    ],
-  },
-)
+    },
+  ),
+]
 
-ruleTester({ ngrxModule: NGRX_MODULE_PATHS.effects, version: '^11.0.0' }).run(
-  path.parse(__filename).name,
-  rule,
-  {
-    valid: [
-      `
+const validNgrx11 = [
+  `
 import { of, withLatestFrom } from 'rxjs';
 
 class Ok {
@@ -269,7 +269,18 @@ class Ok {
       ),
   );
 }`,
-    ],
-    invalid: [],
-  },
-)
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
+})
+
+test(`[NgRx 11] ${__filename}`, () => {
+  ruleTester({ ngrxModule: NGRX_MODULE_PATHS.effects, version: '^11.0.0' }).run(
+    path.parse(__filename).name,
+    rule,
+    { valid: validNgrx11, invalid: [] },
+  )
+})
+
+test.run()

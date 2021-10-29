@@ -149,6 +149,9 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
     <td align="center"><a href="https://github.com/ValentinBossi"><img src="https://avatars.githubusercontent.com/u/19373754?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Valentin</b></sub></a><br /><a href="https://github.com/timdeschryver/eslint-plugin-ngrx/pulls?q=is%3Apr+reviewed-by%3AValentinBossi" title="Reviewed Pull Requests">👀</a></td>
     <td align="center"><a href="https://github.com/prince-chrismc"><img src="https://avatars.githubusercontent.com/u/16867443?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Chris Mc</b></sub></a><br /><a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=prince-chrismc" title="Code">💻</a> <a href="#ideas-prince-chrismc" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://alorle.github.io/"><img src="https://avatars.githubusercontent.com/u/4264243?v=4?s=100" width="100px;" alt=""/><br /><sub><b>alorle</b></sub></a><br /><a href="https://github.com/timdeschryver/eslint-plugin-ngrx/issues?q=author%3Aalorle" title="Bug reports">🐛</a> <a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=alorle" title="Tests">⚠️</a> <a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=alorle" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->

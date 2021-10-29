@@ -1,121 +1,134 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   messageId,
 } from '../../src/rules/store/avoid-dispatching-multiple-actions-sequentially'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
+  `
 import { Store } from '@ngrx/store'
 
 class Ok {
-  ngOnInit() {
-    this.dispatch(UserActions.add())
-  }
+ngOnInit() {
+  this.dispatch(UserActions.add())
+}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok1 {
-  constructor(private store: Store) {}
+constructor(private store: Store) {}
 
-  ping() {
-    this.store.dispatch(GameActions.ping())
-  }
+ping() {
+  this.store.dispatch(GameActions.ping())
+}
 }`,
-    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/47
-    `
+  // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/47
+  `
 import { Store } from '@ngrx/store'
 
 class Ok2 {
-  constructor(private store: Store) {}
+constructor(private store: Store) {}
 
-  pingPong() {
-    if (condition) {
-      this.store.dispatch(GameActions.ping())
-    } else {
-      this.store.dispatch(GameActions.pong())
-    }
+pingPong() {
+  if (condition) {
+    this.store.dispatch(GameActions.ping())
+  } else {
+    this.store.dispatch(GameActions.pong())
   }
+}
 }`,
-    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/86
-    `
+  // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/86
+  `
 import { Store } from '@ngrx/store'
 
 class Ok3 {
-  constructor(private store: Store) {}
+constructor(private store: Store) {}
 
-  ngOnInit() {
-    this.store.subscribe(() => {
-      this.store.dispatch(one());
-    });
-    this.store.subscribe(() => {
-      this.store.dispatch(anotherOne());
-    });
-  }
+ngOnInit() {
+  this.store.subscribe(() => {
+    this.store.dispatch(one());
+  });
+  this.store.subscribe(() => {
+    this.store.dispatch(anotherOne());
+  });
+}
 }`,
-  ],
-  invalid: [
-    fromFixture(`
+]
+
+const invalid: RunTests['invalid'] = [
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk {
-  constructor(private store: Store) {}
+constructor(private store: Store) {}
 
-  pingPong() {
-    this.store.dispatch(GameActions.ping())
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-    this.store.dispatch(GameActions.pong())
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-  }
+pingPong() {
+  this.store.dispatch(GameActions.ping())
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+  this.store.dispatch(GameActions.pong())
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+}
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
-  constructor(store: Store, private readonly store$: Store) {
-    store.dispatch(GameActions.ping())
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-    this.ping();
-    this.name = 'Bob'
-    this.store$.dispatch(GameActions.pong())
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-  }
+constructor(store: Store, private readonly store$: Store) {
+  store.dispatch(GameActions.ping())
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+  this.ping();
+  this.name = 'Bob'
+  this.store$.dispatch(GameActions.pong())
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+}
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
-  constructor(private store: Store) {}
+constructor(private store: Store) {}
 
-  pingPongPong() {
-    this.store.dispatch(GameActions.ping())
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-    this.store.dispatch(GameActions.pong())
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-    this.store.dispatch(GameActions.pong())
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-  }
+pingPongPong() {
+  this.store.dispatch(GameActions.ping())
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+  this.store.dispatch(GameActions.pong())
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+  this.store.dispatch(GameActions.pong())
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+}
 }`),
-    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/44
-    fromFixture(`
+  // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/44
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk3 {
-  constructor(private customName: Store) {}
+constructor(private customName: Store) {}
 
-  ngOnInit() {
-    customName.dispatch()
-  }
+ngOnInit() {
+  customName.dispatch()
+}
 
-  pingPong() {
-    this.customName.dispatch(GameActions.ping())
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-    this.customName.dispatch(GameActions.pong())
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
-  }
+pingPong() {
+  this.customName.dispatch(GameActions.ping())
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+  this.customName.dispatch(GameActions.pong())
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
+}
 }`),
-  ],
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

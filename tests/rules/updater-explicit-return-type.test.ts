@@ -1,13 +1,21 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   messageId,
 } from '../../src/rules/component-store/updater-explicit-return-type'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
+  `
 import { ComponentStore } from '@ngrx/component-store'
 
 class Ok extends ComponentStore<MoviesState> {
@@ -19,7 +27,7 @@ class Ok extends ComponentStore<MoviesState> {
     super({ movies: [] })
   }
 }`,
-    `
+  `
 import { ComponentStore } from '@ngrx/component-store'
 
 class Ok1 extends ComponentStore<MoviesState> {
@@ -31,7 +39,7 @@ class Ok1 extends ComponentStore<MoviesState> {
     super({ movies: [] })
   }
 }`,
-    `
+  `
 import { ComponentStore } from '@ngrx/component-store'
 
 class Ok2 {
@@ -43,7 +51,7 @@ class Ok2 {
 
   constructor(private readonly store: ComponentStore<MoviesState>) {}
 }`,
-    `
+  `
 import { ComponentStore } from '@ngrx/component-store'
 
 class Ok3 {
@@ -57,9 +65,10 @@ class Ok3 {
     )
   }
 }`,
-  ],
-  invalid: [
-    fromFixture(`
+]
+
+const invalid: RunTests['invalid'] = [
+  fromFixture(`
 import { ComponentStore } from '@ngrx/component-store'
 
 class NotOk extends ComponentStore<MoviesState> {
@@ -70,7 +79,7 @@ class NotOk extends ComponentStore<MoviesState> {
     super({ movies: [] })
   }
 }`),
-    fromFixture(`
+  fromFixture(`
 import { ComponentStore } from '@ngrx/component-store'
 
 class NotOk1 extends ComponentStore<MoviesState> {
@@ -84,7 +93,7 @@ class NotOk1 extends ComponentStore<MoviesState> {
                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~ [${messageId}]
   }
 }`),
-    fromFixture(`
+  fromFixture(`
 import { ComponentStore } from '@ngrx/component-store'
 
 class NotOk2 {
@@ -93,7 +102,7 @@ class NotOk2 {
 
   constructor(private readonly store: ComponentStore<MoviesState>) {}
 }`),
-    fromFixture(`
+  fromFixture(`
 import { ComponentStore } from '@ngrx/component-store'
 
 class NotOk3 {
@@ -115,5 +124,9 @@ class NotOk3 {
     updater()
   }
 }`),
-  ],
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

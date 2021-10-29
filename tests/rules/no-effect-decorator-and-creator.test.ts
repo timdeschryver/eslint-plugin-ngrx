@@ -1,91 +1,108 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { stripIndents } from 'common-tags'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   noEffectDecoratorAndCreator,
   noEffectDecoratorAndCreatorSuggest,
 } from '../../src/rules/effects/no-effect-decorator-and-creator'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
-class Ok {
-  effect = createEffect(() => this.actions)
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
 
-  constructor(private actions: Actions) {}
-}`,
-    `
-class Ok1 {
-  @Effect({ dispatch: false })
-  effect = this.actions
+const valid: RunTests['valid'] = [
+  `
+    @Injectable()
+    export class FixtureEffects {
+      creator = createEffect(() => this.actions)
+      constructor(private actions: Actions) {}
+    }`,
+  `
+    @Injectable()
+    export class FixtureEffects {
+      @Effect({ dispatch: false })
+      decorator = this.actions
+      constructor(private actions: Actions) {}
+    }`,
+]
 
-  constructor(private actions: Actions) {}
-}`,
-  ],
-  invalid: [
-    fromFixture(
-      stripIndents`
-import { Effect } from '@ngrx/effects'
+const invalid: RunTests['invalid'] = [
+  fromFixture(
+    stripIndents`
+        import { Effect } from '@ngrx/effects'
+        @Injectable()
+        export class FixtureEffects {
+          @Effect()
+          both = createEffect(() => this.actions)
+          ~~~~ [${noEffectDecoratorAndCreator}]
+          constructor(private actions: Actions) {}
+        }
 
-class NotOk {
-  @Effect()
-  effect = createEffect(() => this.actions)
-  ~~~~~~ [${noEffectDecoratorAndCreator}]
+        @Injectable()
+        export class FixtureEffects2 {
+          @Effect() source$ = defer(() => {
+            return mySocketService.connect()
+          })
+        }`,
+    {
+      output: stripIndents`
+          import { Effect } from '@ngrx/effects'
+          @Injectable()
+          export class FixtureEffects {
 
-  constructor(private actions: Actions) {}
-}
+            both = createEffect(() => this.actions)
+            constructor(private actions: Actions) {}
+          }
 
-
-class NotOk1 {
-  @Effect() source$ = defer(() => {
-    return mySocketService.connect()
-  })
-}`,
+          @Injectable()
+          export class FixtureEffects2 {
+            @Effect() source$ = defer(() => {
+              return mySocketService.connect()
+            })
+          }`,
+    },
+  ),
+  {
+    code: stripIndents`
+        import {Effect} from '@ngrx/effects'
+        @Injectable()
+        export class FixtureEffects {
+          @Effect({ dispatch: false })
+          both = createEffect(() => this.actions)
+          constructor(private actions: Actions) {}
+        }`,
+    errors: [
       {
-        output: stripIndents`
-import { Effect } from '@ngrx/effects'
-
-class NotOk {
-
-  effect = createEffect(() => this.actions)
-
-  constructor(private actions: Actions) {}
-}
-
-
-class NotOk1 {
-  @Effect() source$ = defer(() => {
-    return mySocketService.connect()
-  })
-}`,
-      },
-    ),
-    fromFixture(
-      stripIndents`import {Effect} from '@ngrx/effects'
-class NotOk2 {
-  @Effect({ dispatch: false })
-  effect = createEffect(() => this.actions)
-  ~~~~~~ [${noEffectDecoratorAndCreator}]
-
-  constructor(private actions: Actions) {}
-}`,
-      {
+        column: 1,
+        endColumn: 5,
+        line: 5,
+        messageId: noEffectDecoratorAndCreator,
         suggestions: [
           {
-            messageId: noEffectDecoratorAndCreatorSuggest,
+            messageId: noEffectDecoratorAndCreatorSuggest as MessageIds,
             output:
               '\n' +
               stripIndents`
-class NotOk2 {
+                @Injectable()
+                export class FixtureEffects {
 
-  effect = createEffect(() => this.actions)
-
-  constructor(private actions: Actions) {}
-}`,
+                  both = createEffect(() => this.actions)
+                  constructor(private actions: Actions) {}
+                }`,
           },
         ],
       },
-    ),
-  ],
+    ],
+  },
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

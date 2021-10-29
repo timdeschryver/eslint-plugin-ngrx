@@ -1,19 +1,27 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   messageId,
 } from '../../src/rules/store/prefer-action-creator-in-dispatch'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
+  `
 class Ok {
   readonly viewModel$ = somethingElse()
 
   constructor(private readonly appFacade: AppFacade) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok1 {
@@ -21,7 +29,7 @@ class Ok1 {
     store$.dispatch(action)
   }
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok2 {
@@ -29,8 +37,8 @@ class Ok2 {
     this.store$.dispatch(BookActions.load())
   }
 }`,
-    // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/255
-    `
+  // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/255
+  `
 import { Store } from '@ngrx/store'
 
 class Ok3 {
@@ -40,9 +48,10 @@ class Ok3 {
     nonStore.dispatch(AuthActions.dispatch({ type: 'FAIL' }));
   }
 }`,
-  ],
-  invalid: [
-    fromFixture(`
+]
+
+const invalid: RunTests['invalid'] = [
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk {
@@ -51,7 +60,7 @@ class NotOk {
                     ~~~~~~~~~~~~~~~~~~ [${messageId}]
   }
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
@@ -60,7 +69,7 @@ class NotOk1 {
                          ~~~~~~~~~~~~~~~~~~ [${messageId}]
   }
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
@@ -77,7 +86,7 @@ class NotOk2 {
     store.dispatch()
   }
 }`),
-    fromFixture(`
+  fromFixture(`
 import { Store } from '@ngrx/store'
 
 class NotOk3 {
@@ -89,5 +98,9 @@ class NotOk3 {
                                                           ~~~~~~~~~~~~~~~~~~ [${messageId}]
   }
 }`),
-  ],
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()

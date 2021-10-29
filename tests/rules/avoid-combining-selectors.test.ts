@@ -1,19 +1,27 @@
+import type {
+  ESLintUtils,
+  TSESLint,
+} from '@typescript-eslint/experimental-utils'
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
+import { test } from 'uvu'
 import rule, {
   messageId,
 } from '../../src/rules/store/avoid-combining-selectors'
 import { ruleTester } from '../utils'
 
-ruleTester().run(path.parse(__filename).name, rule, {
-  valid: [
-    `
+type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
+type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
+type RunTests = TSESLint.RunTests<MessageIds, Options>
+
+const valid: RunTests['valid'] = [
+  `
 import { Store } from '@ngrx/store'
 
 class Ok {
   readonly test$ = somethingOutside();
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok1 {
@@ -23,7 +31,7 @@ class Ok1 {
     this.vm$ = store.select(selectItems)
   }
 }`,
-    `
+  `
 import { Store, select } from '@ngrx/store'
 
 class Ok2 {
@@ -31,7 +39,7 @@ class Ok2 {
 
   constructor(private store: Store) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 class Ok3 {
@@ -39,7 +47,7 @@ class Ok3 {
 
   constructor(private store$: Store) {}
 }`,
-    `
+  `
 import { Store } from '@ngrx/store'
 
 @Pipe()
@@ -48,10 +56,11 @@ class Ok4 {
 
   constructor(private readonly store: Store) {}
 }`,
-  ],
-  invalid: [
-    fromFixture(
-      `
+]
+
+const invalid: RunTests['invalid'] = [
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk {
@@ -67,9 +76,9 @@ class NotOk {
     )
   }
 }`,
-    ),
-    fromFixture(
-      `
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk1 {
@@ -81,9 +90,9 @@ class NotOk1 {
 
   constructor(private store: Store) {}
 }`,
-    ),
-    fromFixture(
-      `
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk2 {
@@ -96,9 +105,9 @@ class NotOk2 {
 
   constructor(private customName: Store) {}
 }`,
-    ),
-    fromFixture(
-      `
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 @Pipe()
@@ -112,9 +121,9 @@ class NotOk3 {
 
   constructor(private readonly customName: Store) {}
 }`,
-    ),
-    fromFixture(
-      `
+  ),
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk4 {
@@ -126,10 +135,10 @@ class NotOk4 {
 
   constructor(private store: Store) {}
 }`,
-    ),
+  ),
 
-    fromFixture(
-      `
+  fromFixture(
+    `
 import { Store } from '@ngrx/store'
 
 class NotOk5 {
@@ -143,6 +152,10 @@ class NotOk5 {
 
   constructor(private store: Store, private store2: Store) {}
 }`,
-    ),
-  ],
+  ),
+]
+
+test(__filename, () => {
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
+test.run()
