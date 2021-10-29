@@ -1,30 +1,32 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { actionCreatorPropsComputed, docsUrl } from '../../utils'
+import { createRule } from '../../rule-creator'
+import { actionCreatorPropsComputed } from '../../utils'
 
 export const preferInlineActionProps = 'preferInlineActionProps'
 export const preferInlineActionPropsSuggest = 'preferInlineActionPropsSuggest'
-export type MessageIds =
+
+type MessageIds =
   | typeof preferInlineActionProps
   | typeof preferInlineActionPropsSuggest
+type Options = readonly []
 
-type Options = []
-
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
-      description: 'Prefer using inline types instead of interfaces/classes.',
+      description:
+        'Prefer using inline types instead of interfaces, types or classes.',
       recommended: 'warn',
       suggestion: true,
     },
     schema: [],
     messages: {
       [preferInlineActionProps]:
-        'Prefer using inline types instead of interfaces/classes.',
+        'Use inline types instead of interfaces, types or classes.',
       [preferInlineActionPropsSuggest]: 'Change to inline types.',
     },
   },

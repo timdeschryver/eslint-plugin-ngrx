@@ -1,6 +1,13 @@
-# No Dispatch In Effects
+---
+Fixable: no
+---
 
-> This rule disallows dispatching actions as side effects in NgRx Effects.
+# no-dispatch-in-effects
+
+> `Effect` should not call `store.dispatch`.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

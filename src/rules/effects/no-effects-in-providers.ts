@@ -1,8 +1,7 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
+import { createRule } from '../../rule-creator'
 import {
-  docsUrl,
   effectsInNgModuleImports,
   effectsInNgModuleProviders,
   getNodeToCommaRemoveFix,
@@ -10,25 +9,26 @@ import {
 } from '../../utils'
 
 export const messageId = 'noEffectsInProviders'
-export type MessageIds = typeof messageId
 
-type Options = []
+type MessageIds = typeof messageId
+type Options = readonly []
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'problem',
+    ngrxModule: 'effects',
     docs: {
       category: 'Possible Errors',
       description:
-        'An `Effect` should not be listed as a provider if it is added to the `EffectsModule`.',
+        '`Effect` should not be listed as a provider if it is added to the `EffectsModule`.',
       recommended: 'error',
     },
     fixable: 'code',
     schema: [],
     messages: {
       [messageId]:
-        'The `Effect` should not be listed as a provider if it is added to the `EffectsModule`.',
+        '`Effect` should not be listed as a provider if it is added to the `EffectsModule`.',
     },
   },
   defaultOptions: [],
@@ -41,8 +41,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       [effectsInNgModuleProviders](node: TSESTree.Identifier) {
         effectsInProviders.add(node)
       },
-      [effectsInNgModuleImports](node: TSESTree.Identifier) {
-        effectsInImports.add(node.name)
+      [effectsInNgModuleImports]({ name }: TSESTree.Identifier) {
+        effectsInImports.add(name)
       },
       [`${ngModuleDecorator}:exit`]() {
         for (const effectInProvider of effectsInProviders) {

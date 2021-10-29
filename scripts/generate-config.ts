@@ -10,8 +10,9 @@ const RULE_NAME_PREFIX = 'ngrx/'
 const CONFIG_DIRECTORY = './src/configs/'
 
 const getRules = (
-  predicate: (rule: NgRxRuleModule) => boolean,
-  setting = (rule: NgRxRuleModule) => rule.meta.docs?.recommended || 'warn',
+  predicate: (rule: NgRxRuleModule<[], string>) => boolean,
+  setting = (rule: NgRxRuleModule<[], string>) =>
+    rule.meta.docs?.recommended || 'warn',
 ) =>
   Object.entries(rules).reduce<Record<string, string>>(
     (rules, [ruleName, rule]) => {

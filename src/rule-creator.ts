@@ -3,15 +3,20 @@ import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import type { NGRX_MODULE } from './utils'
 import { docsUrl, ngrxVersionSatisfies, NGRX_MODULE_PATHS } from './utils'
 
-export type NgRxRuleModule<TMessageIds extends string = string> =
-  TSESLint.RuleModule<TMessageIds, unknown[]> & {
-    meta: { ngrxModule: NGRX_MODULE; version?: string }
-  }
-
-type CreateRuleMetaDocs = Omit<TSESLint.RuleMetaDataDocs, 'url'>
+type Meta<TMessageIds extends string> =
+  | TSESLint.RuleMetaData<TMessageIds> & {
+      ngrxModule: NGRX_MODULE
+      version?: string
+    }
 type CreateRuleMeta<TMessageIds extends string> = {
-  docs: CreateRuleMetaDocs
-} & Omit<NgRxRuleModule<TMessageIds>['meta'], 'docs'>
+  docs: Omit<TSESLint.RuleMetaDataDocs, 'url'>
+} & Omit<Meta<TMessageIds>, 'docs'>
+export type NgRxRuleModule<
+  TOptions extends readonly unknown[],
+  TMessageIds extends string,
+> = Omit<TSESLint.RuleModule<TMessageIds, TOptions>, 'meta'> & {
+  meta: Meta<TMessageIds>
+}
 
 export function createRule<
   TOptions extends readonly unknown[],
@@ -33,12 +38,12 @@ export function createRule<
       context: Readonly<TSESLint.RuleContext<TMessageIds, TOptions>>,
       optionsWithDefault: Readonly<TOptions>,
     ) => {
+      const {
+        meta: { ngrxModule, version },
+      } = config
       if (
-        config.meta.version !== undefined &&
-        !ngrxVersionSatisfies(
-          NGRX_MODULE_PATHS[config.meta.ngrxModule],
-          config.meta.version,
-        )
+        version !== undefined &&
+        !ngrxVersionSatisfies(NGRX_MODULE_PATHS[ngrxModule], version)
       ) {
         return {}
       }

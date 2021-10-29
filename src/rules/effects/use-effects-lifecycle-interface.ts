@@ -1,8 +1,7 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
+import { createRule } from '../../rule-creator'
 import {
-  docsUrl,
   getImplementsSchemaFixer,
   getImportAddFix,
   getInterface,
@@ -10,14 +9,15 @@ import {
 } from '../../utils'
 
 export const messageId = 'useEffectsLifecycleInterface'
-export type MessageIds = typeof messageId
 
-type Options = []
+type MessageIds = typeof messageId
+type Options = readonly []
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'effects',
     docs: {
       category: 'Best Practices',
       description:

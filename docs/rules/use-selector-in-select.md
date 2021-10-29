@@ -1,13 +1,20 @@
-# Use Selector In Select
+---
+Fixable: no
+---
 
-> Using a selector in a `select` method is preferred over `string` or `props drilling`.
+# use-selector-in-select
+
+> Using a selector in the `select` is preferred over `string` or `props drilling`.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
+
+## Rule Details
 
 It's recommended to use selectors to get data out of the state tree.
 A selector is memoized, thus this has the benefit that it's faster because the result is cached and will only be recalculated when it's needed.
 
-Because a selector is just a pure function, it's also easy to test the selector's logic.
-
-## Rule Details
+Because a selector is just a pure function, it's easier to test.
 
 Examples of **incorrect** code for this rule:
 

@@ -1,6 +1,13 @@
-# No Store Subscription
+---
+Fixable: no
+---
 
-> Don't create a store subscription, prefer to use the async pipe.
+# no-store-subscription
+
+> Using the `async` pipe is preferred over `store` subscription.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

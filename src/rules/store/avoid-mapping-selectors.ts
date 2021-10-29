@@ -1,33 +1,31 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
+import { createRule } from '../../rule-creator'
 import {
   asPattern,
-  docsUrl,
   getNgRxStores,
   namedCallableExpression,
   pipeExpression,
 } from '../../utils'
 
 export const messageId = 'avoidMapppingSelectors'
-export type MessageIds = typeof messageId
 
-type Options = []
+type MessageIds = typeof messageId
+type Options = readonly []
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
-      description:
-        'Avoid to add mapping logic in the component, instead move that logic in the projector method of `createSelector`.',
+      description: 'Avoid mapping logic outside the selector level.',
       recommended: 'warn',
     },
     schema: [],
     messages: {
-      [messageId]:
-        'Map the value of a selector in the projection method of `createSelector`.',
+      [messageId]: 'Map logic at the selector level instead.',
     },
   },
   defaultOptions: [],

@@ -1,6 +1,13 @@
-# Prefer One Generic In `createForFeatureSelector`
+---
+Fixable: no
+---
+
+# prefer-one-generic-in-create-for-feature-selector
 
 > Prefer using a single generic to define the feature state.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

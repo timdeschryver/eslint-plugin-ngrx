@@ -1,11 +1,18 @@
-# Avoid Combining Selectors
+---
+Fixable: no
+---
 
-> Prefer combining selectors at the selector level with `createSelector`.
+# avoid-combining-selectors
+
+> Prefer combining selectors at the selector level.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 
 A selector is a pure function that is used to derive state.
-Because a selector is a pure function (and a synchronous function), a selector is easy to test.
+Because a selector is a pure function (and a synchronous function), it's easier to test.
 
 That's why it's recommended to build a view model by composing multiple selectors into one selector, instead of consuming multiple selector observable streams to create a view model in the component.
 

@@ -1,9 +1,8 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
+import { createRule } from '../../rule-creator'
 import {
   actionReducerMap,
-  docsUrl,
   getRawText,
   metadataProperty,
   storeActionReducerMap,
@@ -11,18 +10,17 @@ import {
 
 export const noReducerInKeyNames = 'noReducerInKeyNames'
 export const noReducerInKeyNamesSuggest = 'noReducerInKeyNamesSuggest'
-export type MessageIds =
-  | typeof noReducerInKeyNames
-  | typeof noReducerInKeyNamesSuggest
 
-type Options = []
+type MessageIds = typeof noReducerInKeyNames | typeof noReducerInKeyNamesSuggest
+type Options = readonly []
 
 const reducerKeyword = 'reducer'
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
       description: `Avoid the word "${reducerKeyword}" in the key names.`,

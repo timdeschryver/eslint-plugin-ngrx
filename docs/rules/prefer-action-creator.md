@@ -1,6 +1,13 @@
-# Prefer Action Creator
+---
+Fixable: no
+---
 
-> Using an `action creator` is preferred over `Action class`.
+# prefer-action-creator
+
+> Using `action creator` is preferred over `Action class`.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

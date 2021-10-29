@@ -10,6 +10,8 @@ Required NgRx Version Range: >=12.0.0
 <!-- Everything above this generated, do not edit -->
 <!-- MANUAL-DOC:START -->
 
+## Rule Details
+
 Using `concatLatestFrom` (a lazy version of `withLatestFrom`) ensures that the selector is only invoked when the effect receives the action.
 In contrast to `withLatestFrom` that immediately subscribes whether the action is dispatched yet or not. If that state used by the selector is not initialized yet, you could get an error that you're not expecting.
 

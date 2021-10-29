@@ -1,39 +1,37 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-} from '@typescript-eslint/experimental-utils'
+import { AST_NODE_TYPES } from '@typescript-eslint/experimental-utils'
 import { getTypeServices } from 'eslint-etc'
 import path from 'path'
+import { createRule } from '../../rule-creator'
 import {
   createEffectExpression,
-  docsUrl,
   mapLikeOperatorsExplicitReturn,
   mapLikeOperatorsImplicitReturn,
 } from '../../utils'
 
 export const messageId = 'noMultipleActionsInEffects'
-export type MessageIds = typeof messageId
 
-type Options = []
+type MessageIds = typeof messageId
+type Options = readonly []
 type EffectsMapLikeOperatorsReturn =
   | TSESTree.ArrowFunctionExpression
   | TSESTree.CallExpression
   | TSESTree.ReturnStatement
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'problem',
+    ngrxModule: 'effects',
     docs: {
-      category: 'Best Practices',
-      description: 'An `Effect` should not return multiple actions.',
+      category: 'Possible Errors',
+      description: '`Effect` should not return multiple actions.',
       recommended: 'warn',
       requiresTypeChecking: true,
     },
     schema: [],
     messages: {
-      [messageId]: 'An `Effect` should return a single action.',
+      [messageId]: '`Effect` should return a single action.',
     },
   },
   defaultOptions: [],

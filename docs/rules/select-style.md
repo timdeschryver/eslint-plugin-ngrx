@@ -1,6 +1,13 @@
-# Select Style
+---
+Fixable: yes
+---
 
-> This rule enforces consistent usage of `select` method or `select` operator on the store.
+# select-style
+
+> Selector can be used either with `select` as a pipeable operator or as a method.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

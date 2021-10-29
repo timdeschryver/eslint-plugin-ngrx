@@ -1,11 +1,18 @@
-# Avoid Mapping Selectors
+---
+Fixable: no
+---
 
-> Avoid to add mapping logic in the component, instead move that logic in the projector method of `createSelector`.
+# avoid-mapping-selectors
+
+> Avoid mapping logic outside the selector level.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 
 A selector is a pure function that is used to derive state.
-Because a selector is a pure function (and it's synchronous), a selector is easy to test.
+Because a selector is a pure function (and it's synchronous), it's easier to test.
 
 That's why it's recommended to put (mapping) logic into a selector, instead of in the component by using the RxJS `map` operator.
 

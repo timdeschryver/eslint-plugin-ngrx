@@ -1,6 +1,13 @@
-# Use Effects Lifecycle Interface
+---
+Fixable: yes
+---
+
+# use-effects-lifecycle-interface
 
 > Ensures classes implement lifecycle interfaces corresponding to the declared lifecycle methods.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 
@@ -51,7 +58,6 @@ import { OnRunEffects } from '@ngrx/effects'
 
 class Effect implements OnRunEffects {
   constructor(private actions$: Actions) {}
-
   ngrxOnRunEffects(resolvedEffects$: Observable<EffectNotification>) {
     return this.actions$.pipe(
       ofType('LOGGED_IN'),

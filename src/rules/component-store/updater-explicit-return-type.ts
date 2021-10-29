@@ -1,22 +1,18 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import {
-  asPattern,
-  docsUrl,
-  getNgRxComponentStores,
-  namedExpression,
-} from '../../utils'
+import { createRule } from '../../rule-creator'
+import { asPattern, getNgRxComponentStores, namedExpression } from '../../utils'
 
 export const messageId = 'updaterExplicitReturnType'
-export type MessageIds = typeof messageId
 
-type Options = []
+type MessageIds = typeof messageId
+type Options = readonly []
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'problem',
+    ngrxModule: 'component-store',
     docs: {
       category: 'Possible Errors',
       description: '`Updater` should have an explicit return type.',
@@ -30,8 +26,8 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const { identifiers } = getNgRxComponentStores(context)
-    const storeNames = identifiers?.length ? asPattern(identifiers) : null
+    const { identifiers = [] } = getNgRxComponentStores(context)
+    const storeNames = identifiers.length > 0 ? asPattern(identifiers) : null
     const withoutTypeAnnotation = `ArrowFunctionExpression:not([returnType.typeAnnotation])`
     const selectors = [
       `ClassDeclaration[superClass.name='ComponentStore'] CallExpression[callee.object.type='ThisExpression'][callee.property.name='updater'] > ${withoutTypeAnnotation}`,

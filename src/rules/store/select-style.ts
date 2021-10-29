@@ -1,9 +1,8 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
+import { createRule } from '../../rule-creator'
 import {
   asPattern,
-  docsUrl,
   getImportAddFix,
   getImportRemoveFix,
   getNearestUpperNodeFrom,
@@ -16,18 +15,16 @@ import {
   selectExpression,
 } from '../../utils'
 
-export const methodSelectMessageId = 'methodSelect'
-export const operatorSelectMessageId = 'operatorSelect'
-export type MessageIds =
-  | typeof methodSelectMessageId
-  | typeof operatorSelectMessageId
+export const selectMethod = 'selectMethod'
+export const selectOperator = 'selectOperator'
 
 export const enum SelectStyle {
-  Operator = 'operator',
   Method = 'method',
+  Operator = 'operator',
 }
 
-type Options = [`${SelectStyle}`]
+type MessageIds = `${SelectStyle}`
+type Options = readonly [MessageIds]
 type MemberExpressionWithProperty = Omit<
   TSESTree.MemberExpression,
   'property'
@@ -43,14 +40,15 @@ type CallExpression = Omit<TSESTree.CallExpression, 'parent'> & {
   }
 }
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'problem',
+    type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
       description:
-        'Selectors can be used either with `select` as a pipeable operator or as a method.',
+        'Selector can be used either with `select` as a pipeable operator or as a method.',
       recommended: 'warn',
     },
     fixable: 'code',
@@ -62,16 +60,16 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       },
     ],
     messages: {
-      [methodSelectMessageId]:
-        'Selectors should be used with select method: `this.store.select(selector)`.',
-      [operatorSelectMessageId]:
-        'Selectors should be used with the pipeable operator: `this.store.pipe(select(selector))`.',
+      [SelectStyle.Method]:
+        'Selector should be used with select method: `this.store.select(selector)`.',
+      [SelectStyle.Operator]:
+        'Selector should be used with the pipeable operator: `this.store.pipe(select(selector))`.',
     },
   },
   defaultOptions: [SelectStyle.Method],
   create: (context, [mode]) => {
-    const { identifiers, sourceCode } = getNgRxStores(context)
-    const storeNames = identifiers?.length ? asPattern(identifiers) : null
+    const { identifiers = [], sourceCode } = getNgRxStores(context)
+    const storeNames = identifiers.length > 0 ? asPattern(identifiers) : null
 
     if (!storeNames) {
       return {}
@@ -82,7 +80,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         [selectExpression(storeNames)](node: CallExpression) {
           context.report({
             node: node.callee.property,
-            messageId: operatorSelectMessageId,
+            messageId: SelectStyle.Operator,
             fix: (fixer) => getMethodToOperatorFixes(node, fixer),
           })
         },
@@ -101,7 +99,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       ) {
         context.report({
           node,
-          messageId: methodSelectMessageId,
+          messageId: SelectStyle.Method,
           fix: (fixer) =>
             getImportRemoveFix(sourceCode, [node.parent], 'select', fixer),
         })
@@ -111,7 +109,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
         for (const { identifier } of references) {
           context.report({
             node: identifier,
-            messageId: methodSelectMessageId,
+            messageId: SelectStyle.Method,
             fix: (fixer) =>
               getOperatorToMethodFixes(identifier, sourceCode, fixer),
           })

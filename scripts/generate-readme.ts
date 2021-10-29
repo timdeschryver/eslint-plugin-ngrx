@@ -8,7 +8,7 @@ const moduleRules = Object.entries(rules).reduce<Record<string, string[][]>>(
   (all, [ruleName, { meta }]) => {
     all[meta.ngrxModule] = (all[meta.ngrxModule] ?? []).concat([
       [
-        `[ngrx/${ruleName}](${meta.docs?.url})`,
+        `[ngrx/${ruleName}]${meta.docs?.url ? '(' + meta.docs.url + ')' : ''}`,
         meta.docs?.description ?? 'TODO',
         meta.type,
         `${meta.docs?.recommended} (${meta.docs?.category})`,

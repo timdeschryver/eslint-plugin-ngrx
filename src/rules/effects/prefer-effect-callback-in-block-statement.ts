@@ -1,17 +1,19 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
-import { ASTUtils, ESLintUtils } from '@typescript-eslint/experimental-utils'
+import { ASTUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
-import { createEffectExpression, docsUrl } from '../../utils'
+import { createRule } from '../../rule-creator'
+import { createEffectExpression } from '../../utils'
 
 export const messageId = 'preferEffectCallbackInBlockStatement'
-export type MessageIds = typeof messageId
 
-type Options = []
+type MessageIds = typeof messageId
+type Options = readonly []
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'effects',
     docs: {
       category: 'Best Practices',
       description: 'A block statement is easier to troubleshoot.',
@@ -20,7 +22,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
     schema: [],
     messages: {
       [messageId]:
-        'The callback of an effect should be wrapped in a block statement.',
+        'The callback of `Effect` should be wrapped in a block statement.',
     },
     fixable: 'code',
   },

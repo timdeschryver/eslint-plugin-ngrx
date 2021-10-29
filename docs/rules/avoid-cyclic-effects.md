@@ -1,8 +1,15 @@
-# Avoid cyclic actions in effects
+---
+Fixable: no
+---
 
-> Avoid effects that re-emit filtered actions.
+# avoid-cyclic-effects
 
-## Rule details
+> Avoid `Effect` that re-emit filtered actions.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
+
+## Rule Details
 
 This rule prevents that the same action as the filtered action is dispatched in an effect, causing an infinite loop.
 Effects that are configured with `dispatch: false`, are discarded.

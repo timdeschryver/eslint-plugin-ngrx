@@ -1,10 +1,17 @@
-# No Multiple Stores
+---
+Fixable: no
+---
+
+# no-multiple-global-stores
 
 > There should only be one global store injected.
 
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
+
 ## Rule Details
 
-There is only one global store, thus there should also only be one global store injected in a class (component, service, ...). Violating this rule is often paired with violating the [No Typed Store](./no-typed-global-store.md) rule.
+There is only one global store, thus there should also only be one global store injected in a class (component, service, ...). Violating this rule is often paired with violating the [`no-typed-global-store`](./no-typed-global-store.md) rule.
 
 Examples of **incorrect** code for this rule:
 

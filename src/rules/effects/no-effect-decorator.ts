@@ -1,9 +1,8 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
+import { createRule } from '../../rule-creator'
 import {
   classPropertyWithEffectDecorator,
-  docsUrl,
   getDecoratorArguments,
   getImportAddFix,
   isIdentifier,
@@ -12,11 +11,9 @@ import {
 
 export const noEffectDecorator = 'noEffectDecorator'
 export const noEffectDecoratorSuggest = 'noEffectDecoratorSuggest'
-export type MessageIds =
-  | typeof noEffectDecorator
-  | typeof noEffectDecoratorSuggest
 
-type Options = []
+type MessageIds = typeof noEffectDecorator | typeof noEffectDecoratorSuggest
+type Options = readonly []
 type EffectDecorator = TSESTree.Decorator & {
   parent: TSESTree.ClassProperty & {
     parent: TSESTree.ClassBody & { parent: TSESTree.ClassDeclaration }
@@ -24,23 +21,24 @@ type EffectDecorator = TSESTree.Decorator & {
   }
 }
 
-const createEffect = 'createEffect'
+const createEffectKeyword = 'createEffect'
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'problem',
+    type: 'suggestion',
+    ngrxModule: 'effects',
     docs: {
       category: 'Best Practices',
-      description: 'The `createEffect` creator function is preferred.',
+      description: `The \`${createEffectKeyword}\` is preferred as the \`@Effect\` decorator is deprecated.`,
       recommended: 'warn',
       suggestion: true,
     },
     fixable: 'code',
     schema: [],
     messages: {
-      [noEffectDecorator]: 'The `createEffect` creator function is preferred.',
-      [noEffectDecoratorSuggest]: 'Remove the `@Effect` decorator.',
+      [noEffectDecorator]: `The \`@Effect\` decorator is deprecated. Use \`${createEffectKeyword}\` instead.`,
+      [noEffectDecoratorSuggest]: `Remove the \`@Effect\` decorator.`,
     },
   },
   defaultOptions: [],
@@ -51,7 +49,7 @@ export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
       [classPropertyWithEffectDecorator](node: EffectDecorator) {
         const isUsingEffectCreator =
           isIdentifier(node.parent.value.callee) &&
-          node.parent.value.callee.name === createEffect
+          node.parent.value.callee.name === createEffectKeyword
 
         context.report({
           node,
@@ -78,7 +76,7 @@ function getCreateEffectFix(
 ): TSESLint.RuleFix {
   return fixer.insertTextBefore(
     propertyValueExpression,
-    `${createEffect}(() => { return `,
+    `${createEffectKeyword}(() => { return `,
   )
 }
 
@@ -95,7 +93,7 @@ function getFixes(
   node: EffectDecorator,
   sourceCode: Readonly<TSESLint.SourceCode>,
   fixer: TSESLint.RuleFixer,
-): TSESLint.RuleFix[] {
+): readonly TSESLint.RuleFix[] {
   const classDeclaration = node.parent.parent.parent
   const {
     parent: { value: propertyValueExpression },
@@ -113,7 +111,7 @@ function getFixes(
   ].concat(
     getImportAddFix({
       fixer,
-      importName: createEffect,
+      importName: createEffectKeyword,
       moduleName: NGRX_MODULE_PATHS.effects,
       node: classDeclaration,
     }),

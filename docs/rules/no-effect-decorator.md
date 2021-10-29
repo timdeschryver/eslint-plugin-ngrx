@@ -1,10 +1,17 @@
-# No Effect Decorator
+---
+Fixable: yes
+---
 
-> This rule disallows using the `@Effect` decorator.
+# no-effect-decorator
+
+> The `createEffect` is preferred as the `@Effect` decorator is deprecated.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 
-The `@Effect` decorator is deprecated. There is no standardized support for decorators in ECMAScript, and Angular uses its internal build system to compile code with decorators, essentially using them as code annotations, so it is not sustainable to rely on decorators in other features. Instead, use the `createEffect` function to create `Effects`.
+The `@Effect` decorator is deprecated. There is no standardized support for decorators in ECMAScript, and Angular uses its internal build system to compile code with decorators, essentially using them as code annotations, so it is not sustainable to rely on decorators in other features. Instead, use the `createEffect` to create `Effects`.
 
 Examples of **incorrect** code for this rule:
 

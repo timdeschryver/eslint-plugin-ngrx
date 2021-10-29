@@ -1,8 +1,7 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import path from 'path'
+import { createRule } from '../../rule-creator'
 import {
-  docsUrl,
   getNgRxStores,
   getNodeToCommaRemoveFix,
   isTSParameterProperty,
@@ -10,16 +9,17 @@ import {
 
 export const noMultipleGlobalStores = 'noMultipleGlobalStores'
 export const noMultipleGlobalStoresSuggest = 'noMultipleGlobalStoresSuggest'
-export type MessageIds =
+
+type MessageIds =
   | typeof noMultipleGlobalStores
   | typeof noMultipleGlobalStoresSuggest
+type Options = readonly []
 
-type Options = []
-
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    ngrxModule: 'store',
     docs: {
       category: 'Best Practices',
       description: 'There should only be one global store injected.',

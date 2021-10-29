@@ -1,6 +1,13 @@
-# On Function Explicit Return Type
+---
+Fixable: no
+---
 
-> This rule disallows using the `on` reducer function without providing an explicit return type.
+# on-function-explicit-return-type
+
+> `On` function should have an explicit return type.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

@@ -1,6 +1,13 @@
-# No Reducer In Key Names
+---
+Fixable: no
+---
 
-> Avoid the word "reducer" in the reducer key names.
+# no-reducer-in-key-names
+
+> Avoid the word "reducer" in the key names.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

@@ -1,12 +1,11 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
-import { ESLintUtils } from '@typescript-eslint/experimental-utils'
 import { getTypeServices } from 'eslint-etc'
 import path from 'path'
 import ts from 'typescript'
+import { createRule } from '../../rule-creator'
 import {
   asPattern,
   createEffectExpression,
-  docsUrl,
   getNgRxEffectActions,
   isCallExpression,
   isIdentifier,
@@ -14,27 +13,28 @@ import {
 } from '../../utils'
 
 export const messageId = 'avoidCyclicEffects'
-export type MessageIds = typeof messageId
 
-type Options = []
+type MessageIds = typeof messageId
+type Options = readonly []
 
 // This rule is a modified version (to support dispatch: false) from the eslint-plugin-rxjs plugin.
 // The original implementation can be found at https://github.com/cartant/eslint-plugin-rxjs/blob/main/source/rules/no-cyclic-action.ts
 // Thank you Nicholas Jamieson (@cartant).
 
-export default ESLintUtils.RuleCreator(docsUrl)<Options, MessageIds>({
+export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'suggestion',
+    type: 'problem',
+    ngrxModule: 'effects',
     docs: {
       category: 'Possible Errors',
-      description: 'Avoid effects that re-emit filtered actions.',
+      description: 'Avoid `Effect` that re-emit filtered actions.',
       recommended: 'error',
       requiresTypeChecking: true,
     },
     schema: [],
     messages: {
-      [messageId]: '`Effects` that re-emit filtered actions are forbidden.',
+      [messageId]: '`Effect` that re-emit filtered actions are forbidden.',
     },
   },
   defaultOptions: [],

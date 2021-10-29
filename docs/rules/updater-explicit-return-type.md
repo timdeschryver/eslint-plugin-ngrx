@@ -1,6 +1,13 @@
-# Updater Explicit Return Type
+---
+Fixable: no
+---
 
-> Updater should have an explicit return type
+# updater-explicit-return-type
+
+> `Updater` should have an explicit return type.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

@@ -1,6 +1,13 @@
-# Prefer Action Creator In Dispatch
+---
+Fixable: no
+---
 
-> Using an `action creator` in `dispatch` is preferred over `object` or old `Action`.
+# prefer-action-creator-in-dispatch
+
+> Using `action creator` in `dispatch` is preferred over `object` or old `Action`.
+
+<!-- Everything above this generated, do not edit -->
+<!-- MANUAL-DOC:START -->
 
 ## Rule Details
 

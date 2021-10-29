@@ -5,15 +5,11 @@ import type {
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import { test } from 'uvu'
-import rule, {
-  methodSelectMessageId,
-  operatorSelectMessageId,
-  SelectStyle,
-} from '../../src/rules/store/select-style'
+import rule, { SelectStyle } from '../../src/rules/store/select-style'
 import { ruleTester } from '../utils'
 
 type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
-type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>[0][]
+type Options = readonly ESLintUtils.InferOptionsTypeFromRule<typeof rule>[0][]
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
 const valid: RunTests['valid'] = [
@@ -103,11 +99,11 @@ const invalid: RunTests['invalid'] = [
   fromFixture(
     `
 import { select, Store } from '@ngrx/store'
-         ~~~~~~ [${methodSelectMessageId}]
+         ~~~~~~ [${SelectStyle.Method}]
 
 class NotOk {
   foo$ = this.store.pipe( select(selector), )
-                          ~~~~~~ [${methodSelectMessageId}]
+                          ~~~~~~ [${SelectStyle.Method}]
 
   constructor(private store: Store) {}
 }`,
@@ -125,11 +121,11 @@ class NotOk {
   fromFixture(
     `
 import { Store, select } from '@ngrx/store'
-                ~~~~~~ [${methodSelectMessageId}]
+                ~~~~~~ [${SelectStyle.Method}]
 
 class NotOk1 {
   foo$ = this.store.pipe  (select
-                           ~~~~~~ [${methodSelectMessageId}]
+                           ~~~~~~ [${SelectStyle.Method}]
     (selector, selector2), filter(Boolean))
 
   constructor(private store: Store) {}
@@ -157,14 +153,14 @@ class NotOk2 {
 
   constructor(store: Store, private readonly customStore: Store) {
     this.foo$ = store.select(
-                      ~~~~~~ [${operatorSelectMessageId}]
+                      ~~~~~~ [${SelectStyle.Operator}]
       selector,
     )
   }
 
   ngOnInit() {
     this.bar$ = this.customStore.select(
-                                 ~~~~~~ [${operatorSelectMessageId}]
+                                 ~~~~~~ [${SelectStyle.Operator}]
       selector,
     )
   }
@@ -197,17 +193,17 @@ class NotOk2 {
 import {
   Store,
   select,
-  ~~~~~~ [${methodSelectMessageId}]
+  ~~~~~~ [${SelectStyle.Method}]
 } from '@ngrx/store'
 
 class NotOk3 {
   foo$ = this.store.pipe(select(selector), map(toItem)).pipe()
-                         ~~~~~~ [${methodSelectMessageId}]
+                         ~~~~~~ [${SelectStyle.Method}]
   bar$ = this.store.
     select(selector).pipe()
   baz$ = this.store.pipe(
     select(({ customers }) => customers), map(toItem),
-    ~~~~~~ [${methodSelectMessageId}]
+    ~~~~~~ [${SelectStyle.Method}]
   ).pipe()
 
   constructor(private store: Store) {}
@@ -215,7 +211,7 @@ class NotOk3 {
 
 class NotOk4 {
   foo$ = this.store.pipe(select(selector), map(toItem)).pipe()
-                         ~~~~~~ [${methodSelectMessageId}]
+                         ~~~~~~ [${SelectStyle.Method}]
 
   constructor(private readonly store: Store) {}
 }`,
@@ -251,7 +247,7 @@ import { Store } from '@ngrx/store'
 
 class NotOk5 {
   foo$ = this.store.select(selector)
-                    ~~~~~~ [${operatorSelectMessageId}]
+                    ~~~~~~ [${SelectStyle.Operator}]
 
   constructor(private store: Store) {}
 }`,
