@@ -46,11 +46,29 @@ Next, add `eslint-plugin-ngrx` to your ESLint config (for example in `.eslintrc.
 }
 ```
 
-To enable the recommended configuration, add it to your ESLint configuration file.
+To enable the recommended configuration, add the desired configuration to your ESLint configuration file. When you do this, you don't need to define the `parser` and `parserOptions` properties.
 
 ```json
 {
   "extends": ["plugin:ngrx/recommended"]
+}
+```
+
+### Configuring the plugin in an NX project
+
+To configure the NgRx ESLint plugin in an NX workspace, add a new entry to the overrides section of the ESLint configuration file.
+
+```json
+{
+  "root": true,
+  "ignorePatterns": ["**/*"],
+  "plugins": ["@nrwl/nx"],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "extends": ["plugin:ngrx/recommended"]
+    }
+  ]
 }
 ```
 
