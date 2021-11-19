@@ -40,14 +40,6 @@ writeConfig('all', {
   ...rxjsRules,
 })
 
-writeConfig('strict', {
-  ...getRules(
-    () => true,
-    () => 'error',
-  ),
-  ...rxjsRules,
-})
-
 writeConfig(
   'store',
   {
@@ -72,6 +64,47 @@ writeConfig(
   ['ngrx'],
 )
 
+writeConfig('strict', {
+  ...getRules(
+    () => true,
+    () => 'error',
+  ),
+  ...rxjsRules,
+})
+
+writeConfig(
+  'store-strict',
+  {
+    ...getRules(
+      (rule) => rule.meta.ngrxModule === 'store',
+      () => 'error',
+    ),
+  },
+  ['ngrx'],
+)
+
+writeConfig(
+  'effects-strict',
+  {
+    ...getRules(
+      (rule) => rule.meta.ngrxModule === 'effects',
+      () => 'error',
+    ),
+  },
+  ['ngrx'],
+)
+
+writeConfig(
+  'component-store-strict',
+  {
+    ...getRules(
+      (rule) => rule.meta.ngrxModule === 'component-store',
+      () => 'error',
+    ),
+  },
+  ['ngrx'],
+)
+
 function writeConfig(
   configName:
     | 'recommended'
@@ -79,7 +112,10 @@ function writeConfig(
     | 'store'
     | 'effects'
     | 'component-store'
-    | 'strict',
+    | 'strict'
+    | 'store-strict'
+    | 'effects-strict'
+    | 'component-store-strict',
   configRules: Record<string, string>,
   plugins = ['ngrx', 'rxjs'],
 ) {
