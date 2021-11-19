@@ -128,13 +128,17 @@ To configure the NgRx ESLint plugin in an NX workspace, add a new entry to the o
 
 ## Configurations
 
-| Name                                        | Description                              |
-| ------------------------------------------- | ---------------------------------------- |
-| [recommended](./src/configs/recommended.ts) | The recommended config                   |
-| [store](./src/configs/store.ts)             | Only the recommended global store config |
-| [effects](./src/configs/effects.ts)         | Only the recommended effects config      |
-| [all](./src/configs/all.ts)                 | All rules are enabled                    |
-| [strict](./src/configs/strict.ts)           | All rules are enable and give errors     |
+| Name                                                              | Description                                 |
+| ----------------------------------------------------------------- | ------------------------------------------- |
+| [recommended](./src/configs/recommended.ts)                       | The recommended config                      |
+| [all](./src/configs/all.ts)                                       | All rules are enabled                       |
+| [store](./src/configs/store.ts)                                   | Only the recommended global store config    |
+| [effects](./src/configs/effects.ts)                               | Only the recommended effects config         |
+| [component-store](./src/configs/component-store.ts)               | Only the recommended component store config |
+| [strict](./src/configs/strict.ts)                                 | All rules are enable and give errors        |
+| [store-strict](./src/configs/store-strict.ts)                     | All global store rules and give errors      |
+| [effects-strict](./src/configs/effects-strict.ts)                 | All effects rules and give errors           |
+| [component-store-strict](./src/configs/component-store-strict.ts) | All component store rules and give errors   |
 
 ## Migrating from ngrx-tslint-rules
 
