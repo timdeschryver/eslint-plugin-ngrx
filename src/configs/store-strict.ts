@@ -27,9 +27,9 @@ export = {
     'ngrx/prefer-action-creator': 'error',
     'ngrx/prefer-inline-action-props': 'error',
     'ngrx/prefer-one-generic-in-create-for-feature-selector': 'error',
+    'ngrx/prefer-selector-in-select': 'error',
     'ngrx/prefix-selectors-with-select': 'error',
     'ngrx/select-style': 'error',
     'ngrx/use-consistent-global-store-name': 'error',
-    'ngrx/use-selector-in-select': 'error',
   },
 }

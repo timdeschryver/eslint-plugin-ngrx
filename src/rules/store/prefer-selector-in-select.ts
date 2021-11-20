@@ -11,7 +11,7 @@ import {
   selectExpression,
 } from '../../utils'
 
-export const messageId = 'useSelectorInSelect'
+export const messageId = 'preferSelectorInSelect'
 
 type MessageIds = typeof messageId
 type Options = readonly []
