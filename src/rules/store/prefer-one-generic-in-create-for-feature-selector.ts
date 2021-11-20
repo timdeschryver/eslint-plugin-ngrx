@@ -16,9 +16,9 @@ export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    hasSuggestions: true,
     ngrxModule: 'store',
     docs: {
-      category: 'Best Practices',
       description: 'Prefer using a single generic to define the feature state.',
       recommended: 'warn',
       suggestion: true,

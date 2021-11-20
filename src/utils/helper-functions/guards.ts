@@ -14,9 +14,8 @@ export const isReturnStatement = isNodeOfType(AST_NODE_TYPES.ReturnStatement)
 export const isMethodDefinition = isNodeOfType(AST_NODE_TYPES.MethodDefinition)
 export const isCallExpression = isNodeOfType(AST_NODE_TYPES.CallExpression)
 export const isClassDeclaration = isNodeOfType(AST_NODE_TYPES.ClassDeclaration)
-export const isClassProperty = isNodeOfType(AST_NODE_TYPES.ClassProperty)
-export const isExpressionStatement = isNodeOfType(
-  AST_NODE_TYPES.ExpressionStatement,
+export const isPropertyDefinition = isNodeOfType(
+  AST_NODE_TYPES.PropertyDefinition,
 )
 export const isFunctionExpression = isNodeOfType(
   AST_NODE_TYPES.FunctionExpression,

@@ -20,9 +20,9 @@ export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    hasSuggestions: true,
     ngrxModule: 'store',
     docs: {
-      category: 'Best Practices',
       description: `Avoid the word "${reducerKeyword}" in the key names.`,
       recommended: 'warn',
       suggestion: true,

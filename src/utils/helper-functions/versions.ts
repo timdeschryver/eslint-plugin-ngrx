@@ -16,10 +16,10 @@ function getNgrxVersion(pkg: string): string {
 function readPlatformVersion(pkg: string) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const ngrxVersion = require(`${pkg}/schematics-core`) as {
-      platformVersion?: string
+    const ngrxVersion = require(`${pkg}/package.json`) as {
+      version?: string
     }
-    return ngrxVersion.platformVersion?.replace(/[^\d\.]/g, '')
+    return ngrxVersion.version?.replace(/[^\d\.]/g, '')
   } catch {
     return null
   }

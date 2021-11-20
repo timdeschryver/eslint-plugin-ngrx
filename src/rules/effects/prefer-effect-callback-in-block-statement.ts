@@ -15,7 +15,6 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     ngrxModule: 'effects',
     docs: {
-      category: 'Best Practices',
       description: 'A block statement is easier to troubleshoot.',
       recommended: 'warn',
     },

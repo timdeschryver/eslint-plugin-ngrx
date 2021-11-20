@@ -12,9 +12,9 @@ export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    hasSuggestions: true,
     ngrxModule: 'store',
     docs: {
-      category: 'Best Practices',
       description: 'The global store should not be typed.',
       recommended: 'warn',
       suggestion: true,
