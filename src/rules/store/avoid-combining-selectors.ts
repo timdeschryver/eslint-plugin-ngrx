@@ -19,7 +19,6 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     ngrxModule: 'store',
     docs: {
-      category: 'Best Practices',
       description: 'Prefer combining selectors at the selector level.',
       recommended: 'warn',
     },

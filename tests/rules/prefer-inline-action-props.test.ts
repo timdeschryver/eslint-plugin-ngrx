@@ -14,7 +14,7 @@ type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
 type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
-const valid: RunTests['valid'] = [
+const valid: () => RunTests['valid'] = () => [
   `const ok0 = createAction('ok0', props<{ id: number, name: string }>())`,
   `const ok1 = createAction('ok1', props<Readonly<{ description: string }>>())`,
   `const ok2 = createAction('ok2', props<Readonly<HttpErrorResponse & { description: string }>>())`,
@@ -27,7 +27,7 @@ const valid: RunTests['valid'] = [
     }));`,
 ]
 
-const invalid: TSESLint.InvalidTestCase<MessageIds, []>[] = [
+const invalid: () => TSESLint.InvalidTestCase<MessageIds, []>[] = () => [
   {
     code: `const notOk0 = createAction('notOk0', props<number>())`,
     errors: [
@@ -101,6 +101,9 @@ const invalid: TSESLint.InvalidTestCase<MessageIds, []>[] = [
 ]
 
 test(__filename, () => {
-  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
+  ruleTester().run(path.parse(__filename).name, rule, {
+    valid: valid(),
+    invalid: invalid(),
+  })
 })
 test.run()

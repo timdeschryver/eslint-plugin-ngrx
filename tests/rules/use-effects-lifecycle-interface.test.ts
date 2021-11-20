@@ -15,7 +15,7 @@ type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
 type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
-const valid: RunTests['valid'] = [
+const valid: () => RunTests['valid'] = () => [
   `
       class Foo {}
     `,
@@ -69,7 +69,7 @@ const valid: RunTests['valid'] = [
     `,
 ]
 
-const invalid: RunTests['invalid'] = [
+const invalid: () => RunTests['invalid'] = () => [
   fromFixture(
     stripIndent`
         class UserEffects {
@@ -167,6 +167,9 @@ const invalid: RunTests['invalid'] = [
 ]
 
 test(__filename, () => {
-  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
+  ruleTester().run(path.parse(__filename).name, rule, {
+    valid: valid(),
+    invalid: invalid(),
+  })
 })
 test.run()

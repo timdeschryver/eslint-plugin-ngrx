@@ -12,7 +12,7 @@ type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
 type Options = readonly ESLintUtils.InferOptionsTypeFromRule<typeof rule>[0][]
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
-const valid: RunTests['valid'] = [
+const valid: () => RunTests['valid'] = () => [
   `
 import { Store } from '@ngrx/store'
 
@@ -95,7 +95,7 @@ class Ok9 {
   },
 ]
 
-const invalid: RunTests['invalid'] = [
+const invalid: () => RunTests['invalid'] = () => [
   fromFixture(
     `
 import { select, Store } from '@ngrx/store'
@@ -268,8 +268,8 @@ class NotOk5 {
 
 test(__filename, () => {
   ruleTester().run(path.parse(__filename).name, rule, {
-    valid,
-    invalid,
+    valid: valid(),
+    invalid: invalid(),
   })
 })
 test.run()

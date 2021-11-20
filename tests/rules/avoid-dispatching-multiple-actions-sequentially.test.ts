@@ -14,7 +14,7 @@ type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
 type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
-const valid: RunTests['valid'] = [
+const valid: () => RunTests['valid'] = () => [
   `
 import { Store } from '@ngrx/store'
 
@@ -66,7 +66,7 @@ ngOnInit() {
 }`,
 ]
 
-const invalid: RunTests['invalid'] = [
+const invalid: () => RunTests['invalid'] = () => [
   fromFixture(`
 import { Store } from '@ngrx/store'
 
@@ -129,6 +129,9 @@ pingPong() {
 ]
 
 test(__filename, () => {
-  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
+  ruleTester().run(path.parse(__filename).name, rule, {
+    valid: valid(),
+    invalid: invalid(),
+  })
 })
 test.run()
