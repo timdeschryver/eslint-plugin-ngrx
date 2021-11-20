@@ -5,7 +5,9 @@ import type {
 import { fromFixture } from 'eslint-etc'
 import path from 'path'
 import { test } from 'uvu'
-import rule, { messageId } from '../../src/rules/store/use-selector-in-select'
+import rule, {
+  messageId,
+} from '../../src/rules/store/prefer-selector-in-select'
 import { ruleTester } from '../utils'
 
 type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>

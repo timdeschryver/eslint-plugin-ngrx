@@ -13,7 +13,7 @@ const moduleRules = Object.entries(rules).reduce<Record<string, string[][]>>(
         meta.type,
         `${meta.docs?.recommended} (${meta.docs?.category})`,
         meta.fixable ? 'Yes' : 'No',
-        meta.docs?.suggestion ? 'Yes' : 'No',
+        meta.hasSuggestions ? 'Yes' : 'No',
         meta.schema.length ? 'Yes' : 'No',
         meta.docs?.requiresTypeChecking ? 'Yes' : 'No',
       ],

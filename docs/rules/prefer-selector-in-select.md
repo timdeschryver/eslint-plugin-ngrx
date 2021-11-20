@@ -2,7 +2,7 @@
 Fixable: no
 ---
 
-# use-selector-in-select
+# prefer-selector-in-select
 
 > Using a selector in the `select` is preferred over `string` or `props drilling`.
 
