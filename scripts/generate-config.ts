@@ -24,20 +24,12 @@ const getRules = (
     {},
   )
 
-const rxjsRules = {
-  'rxjs/no-unsafe-catch': 'warn',
-  'rxjs/no-unsafe-first': 'warn',
-  'rxjs/no-unsafe-switchmap': 'warn',
-}
-
 writeConfig('recommended', {
   ...getRules((rule) => !!rule.meta.docs?.recommended),
-  ...rxjsRules,
 })
 
 writeConfig('all', {
   ...getRules(() => true),
-  ...rxjsRules,
 })
 
 writeConfig(
@@ -69,7 +61,6 @@ writeConfig('strict', {
     () => true,
     () => 'error',
   ),
-  ...rxjsRules,
 })
 
 writeConfig(
@@ -117,7 +108,7 @@ function writeConfig(
     | 'effects-strict'
     | 'component-store-strict',
   configRules: Record<string, string>,
-  plugins = ['ngrx', 'rxjs'],
+  plugins = ['ngrx'],
 ) {
   const code = `
 /**

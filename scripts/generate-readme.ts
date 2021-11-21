@@ -23,33 +23,6 @@ const moduleRules = Object.entries(rules).reduce<Record<string, string[][]>>(
   {},
 )
 
-moduleRules['effects'] = moduleRules['effects'].concat([
-  [
-    '[rxjs/no-unsafe-catch](https://github.com/cartant/eslint-plugin-rxjs/blob/main/docs/rules/no-unsafe-catch.md)',
-    'Forbids unsafe `catchError` usage in effects.',
-    'problem',
-    'error (Possible Errors)',
-    'No',
-    'No',
-  ],
-  [
-    '[rxjs/no-unsafe-first](https://github.com/cartant/eslint-plugin-rxjs/blob/main/docs/rules/no-unsafe-first.md)',
-    'Forbids unsafe `first`/`take` usage in effects.',
-    'problem',
-    'error (Possible Errors)',
-    'No',
-    'No',
-  ],
-  [
-    '[rxjs/no-unsafe-switchmap](https://github.com/cartant/eslint-plugin-rxjs/blob/main/docs/rules/no-unsafe-switchmap.md)',
-    'Forbids unsafe `switchMap` usage in effects.',
-    'problem',
-    'error (Possible Errors)',
-    'No',
-    'No',
-  ],
-])
-
 const tableHeader = `| Name | Description | Recommended | Category | Fixable | Has suggestions | Configurable | Requires type information
 | --- | --- | --- | --- | --- | --- | --- | --- |`
 
