@@ -46,6 +46,7 @@ writeConfig(
     ...getRules((rule) => rule.meta.ngrxModule === 'store'),
   },
   ['ngrx'],
+  null,
 )
 
 writeConfig(
@@ -62,6 +63,7 @@ writeConfig(
     ...getRules((rule) => rule.meta.ngrxModule === 'component-store'),
   },
   ['ngrx'],
+  null,
 )
 
 writeConfig('strict', {
@@ -81,6 +83,7 @@ writeConfig(
     ),
   },
   ['ngrx'],
+  null,
 )
 
 writeConfig(
@@ -103,6 +106,7 @@ writeConfig(
     ),
   },
   ['ngrx'],
+  null,
 )
 
 function writeConfig(
@@ -118,6 +122,11 @@ function writeConfig(
     | 'component-store-strict',
   configRules: Record<string, string>,
   plugins = ['ngrx', 'rxjs'],
+  parserOptions: null | Record<string, string | number> = {
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    project: './tsconfig.json',
+  },
 ) {
   const code = `
 /**
@@ -128,11 +137,7 @@ function writeConfig(
 
 export = {
   parser: "@typescript-eslint/parser",
-  parserOptions: {
-    ecmaVersion: 2020,
-    sourceType: "module",
-    project: "./tsconfig.json"
-  },
+  ${parserOptions ? `parserOptions: ${JSON.stringify(parserOptions)},` : ''}
   plugins: ${JSON.stringify(plugins)},
   rules: ${JSON.stringify(configRules)},
 }
