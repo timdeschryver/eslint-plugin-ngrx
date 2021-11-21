@@ -35,7 +35,7 @@ const setup = `
   ].join('\n'),
 )
 
-const valid: RunTests['valid'] = [
+const valid: () => RunTests['valid'] = () => [
   `
 ${setup}
 class Effect {
@@ -164,7 +164,7 @@ class Effect {
 `,
 ]
 
-const invalid: RunTests['invalid'] = [
+const invalid: () => RunTests['invalid'] = () => [
   fromFixture(stripIndent`
   ${setup}
   class Effect {
@@ -285,6 +285,9 @@ const invalid: RunTests['invalid'] = [
 ]
 
 test(__filename, () => {
-  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
+  ruleTester().run(path.parse(__filename).name, rule, {
+    valid: valid(),
+    invalid: invalid(),
+  })
 })
 test.run()

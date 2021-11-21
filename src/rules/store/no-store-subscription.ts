@@ -14,7 +14,6 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     ngrxModule: 'store',
     docs: {
-      category: 'Best Practices',
       description:
         'Using the `async` pipe is preferred over `store` subscription.',
       recommended: 'warn',

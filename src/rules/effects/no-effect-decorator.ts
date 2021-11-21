@@ -2,11 +2,11 @@ import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
 import path from 'path'
 import { createRule } from '../../rule-creator'
 import {
-  classPropertyWithEffectDecorator,
   getDecoratorArguments,
   getImportAddFix,
   isIdentifier,
   NGRX_MODULE_PATHS,
+  propertyDefinitionWithEffectDecorator,
 } from '../../utils'
 
 export const noEffectDecorator = 'noEffectDecorator'
@@ -15,7 +15,7 @@ export const noEffectDecoratorSuggest = 'noEffectDecoratorSuggest'
 type MessageIds = typeof noEffectDecorator | typeof noEffectDecoratorSuggest
 type Options = readonly []
 type EffectDecorator = TSESTree.Decorator & {
-  parent: TSESTree.ClassProperty & {
+  parent: TSESTree.PropertyDefinition & {
     parent: TSESTree.ClassBody & { parent: TSESTree.ClassDeclaration }
     value: TSESTree.CallExpression
   }
@@ -27,9 +27,9 @@ export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    hasSuggestions: true,
     ngrxModule: 'effects',
     docs: {
-      category: 'Best Practices',
       description: `The \`${createEffectKeyword}\` is preferred as the \`@Effect\` decorator is deprecated.`,
       recommended: 'warn',
       suggestion: true,
@@ -46,25 +46,29 @@ export default createRule<Options, MessageIds>({
     const sourceCode = context.getSourceCode()
 
     return {
-      [classPropertyWithEffectDecorator](node: EffectDecorator) {
+      [propertyDefinitionWithEffectDecorator](node: EffectDecorator) {
         const isUsingEffectCreator =
           isIdentifier(node.parent.value.callee) &&
           node.parent.value.callee.name === createEffectKeyword
 
-        context.report({
-          node,
-          messageId: noEffectDecorator,
-          ...(isUsingEffectCreator
-            ? {
-                suggest: [
-                  {
-                    messageId: noEffectDecoratorSuggest,
-                    fix: (fixer) => fixer.remove(node),
-                  },
-                ],
-              }
-            : { fix: (fixer) => getFixes(node, sourceCode, fixer) }),
-        })
+        if (isUsingEffectCreator) {
+          context.report({
+            node,
+            messageId: noEffectDecorator,
+            suggest: [
+              {
+                messageId: noEffectDecoratorSuggest,
+                fix: (fixer) => fixer.remove(node),
+              },
+            ],
+          })
+        } else {
+          context.report({
+            node,
+            messageId: noEffectDecorator,
+            fix: (fixer) => getFixes(node, sourceCode, fixer),
+          })
+        }
       },
     }
   },

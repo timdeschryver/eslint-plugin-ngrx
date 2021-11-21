@@ -24,7 +24,6 @@ export default createRule<Options, MessageIds>({
     type: 'problem',
     ngrxModule: 'effects',
     docs: {
-      category: 'Possible Errors',
       description: '`Effect` should not return multiple actions.',
       recommended: 'warn',
       requiresTypeChecking: true,

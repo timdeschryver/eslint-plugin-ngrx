@@ -15,9 +15,9 @@ export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    hasSuggestions: true,
     ngrxModule: 'store',
     docs: {
-      category: 'Best Practices',
       description: 'Use a consistent name for the global store.',
       recommended: 'warn',
       suggestion: true,

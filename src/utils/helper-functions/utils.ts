@@ -2,7 +2,6 @@ import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils'
 import { ASTUtils } from '@typescript-eslint/experimental-utils'
 import {
   isCallExpression,
-  isClassProperty,
   isIdentifier,
   isIdentifierOrMemberExpression,
   isImportDeclaration,
@@ -13,6 +12,7 @@ import {
   isMethodDefinition,
   isProgram,
   isProperty,
+  isPropertyDefinition,
   isTemplateElement,
   isTemplateLiteral,
   isTSTypeAnnotation,
@@ -280,7 +280,7 @@ export function getDecorator(
   {
     decorators,
   }:
-    | TSESTree.ClassProperty
+    | TSESTree.PropertyDefinition
     | TSESTree.ClassDeclaration
     | TSESTree.MethodDefinition,
   decoratorName: string,
@@ -295,7 +295,11 @@ export function getRawText(node: TSESTree.Node): string | null {
     return node.name
   }
 
-  if (isClassProperty(node) || isMethodDefinition(node) || isProperty(node)) {
+  if (
+    isPropertyDefinition(node) ||
+    isMethodDefinition(node) ||
+    isProperty(node)
+  ) {
     return getRawText(node.key)
   }
 
