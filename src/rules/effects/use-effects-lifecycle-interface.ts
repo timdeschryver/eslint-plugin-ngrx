@@ -19,6 +19,7 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     ngrxModule: 'effects',
     docs: {
+      category: 'Best Practices',
       description:
         'Ensures classes implement lifecycle interfaces corresponding to the declared lifecycle methods.',
       recommended: 'warn',

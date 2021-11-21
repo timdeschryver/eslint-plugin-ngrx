@@ -16,7 +16,7 @@ type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
 type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
-const valid: () => RunTests['valid'] = () => [
+const valid: RunTests['valid'] = [
   `
     export const selectFeature: MemoizedSelector<any, any> = (state: AppState) => state.feature`,
   `
@@ -39,11 +39,11 @@ const valid: () => RunTests['valid'] = () => [
     export const selectF01 = createSelector(factoryFn)`,
 ]
 
-const invalid: () => RunTests['invalid'] = () => [
+const invalid: RunTests['invalid'] = [
   fromFixture(
     stripIndent`
       export const getCount: MemoizedSelector<any, any> = (state: AppState) => state.feature
-                   ~~~~~~~~ [${prefixSelectorsWithSelect} suggest]
+                   ~~~~~~~~ [${prefixSelectorsWithSelect}]
       `,
     {
       suggestions: [
@@ -61,7 +61,7 @@ const invalid: () => RunTests['invalid'] = () => [
   fromFixture(
     stripIndent`
       export const getF01 = createSelector((state: AppState) => state.feature)
-                   ~~~~~~ [${prefixSelectorsWithSelect} suggest]
+                   ~~~~~~ [${prefixSelectorsWithSelect}]
       `,
     {
       suggestions: [
@@ -76,7 +76,7 @@ const invalid: () => RunTests['invalid'] = () => [
   fromFixture(
     stripIndent`
       export const get_f01 = createSelector((state: AppState) => state.feature)
-                   ~~~~~~~ [${prefixSelectorsWithSelect} suggest]
+                   ~~~~~~~ [${prefixSelectorsWithSelect}]
       `,
     {
       suggestions: [
@@ -91,7 +91,7 @@ const invalid: () => RunTests['invalid'] = () => [
   fromFixture(
     stripIndent`
       export const select = (id: string) => createSelector(selectThings, things => things[id])
-                   ~~~~~~ [${prefixSelectorsWithSelect} suggest]
+                   ~~~~~~ [${prefixSelectorsWithSelect}]
       `,
     {
       suggestions: [
@@ -109,7 +109,7 @@ const invalid: () => RunTests['invalid'] = () => [
   fromFixture(
     stripIndent`
       export const SELECT_TEST = (id: string) => {
-                   ~~~~~~~~~~~ [${prefixSelectorsWithSelect} suggest]
+                   ~~~~~~~~~~~ [${prefixSelectorsWithSelect}]
         return createSelector(selectThings, things => things[id])
       }`,
     {
@@ -130,7 +130,7 @@ const invalid: () => RunTests['invalid'] = () => [
   fromFixture(
     stripIndent`
       export const feature = createFeatureSelector<AppState, FeatureState>(featureKey)
-                   ~~~~~~~ [${prefixSelectorsWithSelect} suggest]
+                   ~~~~~~~ [${prefixSelectorsWithSelect}]
       `,
     {
       suggestions: [
@@ -148,7 +148,7 @@ const invalid: () => RunTests['invalid'] = () => [
   fromFixture(
     stripIndent`
       export const selectfeature = createSelector((state: AppState) => state.feature)
-                   ~~~~~~~~~~~~~ [${prefixSelectorsWithSelect} suggest]
+                   ~~~~~~~~~~~~~ [${prefixSelectorsWithSelect}]
       `,
     {
       suggestions: [
@@ -166,7 +166,7 @@ const invalid: () => RunTests['invalid'] = () => [
   fromFixture(
     stripIndent`
       export const createSelect = createSelectorFactory((projectionFun) =>
-                   ~~~~~~~~~~~~ [${prefixSelectorsWithSelect} suggest]
+                   ~~~~~~~~~~~~ [${prefixSelectorsWithSelect}]
         defaultMemoize(
           projectionFun,
           orderDoesNotMatterComparer,
@@ -195,9 +195,6 @@ const invalid: () => RunTests['invalid'] = () => [
 ]
 
 test(__filename, () => {
-  ruleTester().run(path.parse(__filename).name, rule, {
-    valid: valid(),
-    invalid: invalid(),
-  })
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
 test.run()

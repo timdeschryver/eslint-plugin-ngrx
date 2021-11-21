@@ -14,6 +14,7 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     ngrxModule: 'store',
     docs: {
+      category: 'Best Practices',
       description: 'It is recommended to only dispatch one `Action` at a time.',
       recommended: 'warn',
     },

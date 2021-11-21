@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-ngrx",
-  "version": "0.0.0-development",
+  "version": "0.0.300",
   "description": "ESLint plugin for NgRx",
   "keywords": [
     "NgRx",
@@ -51,10 +51,10 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@angular-devkit/schematics": "^13.0.3",
-    "@typescript-eslint/experimental-utils": "^5.4.0",
-    "eslint-etc": "^5.1.0",
-    "eslint-plugin-rxjs": "^4.0.3",
+    "@angular-devkit/schematics": "^12.2.2",
+    "@typescript-eslint/experimental-utils": "^4.31.1",
+    "eslint-etc": "^4.2.4",
+    "eslint-plugin-rxjs": "^3.3.6",
     "semver": "^7.3.5"
   },
   "peerDependencies": {
@@ -62,29 +62,28 @@
     "typescript": ">=3.0.0"
   },
   "devDependencies": {
-    "@ngrx/effects": "^13.0.1",
-    "@ngrx/store": "^13.0.1",
+    "@ngrx/effects": "^12.4.0",
+    "@ngrx/store": "^12.4.0",
     "@types/common-tags": "^1.8.1",
-    "@types/eslint": "^8.2.0",
-    "@types/node": "^16.11.9",
-    "@types/prettier": "^2.4.2",
-    "@types/semver": "^7.3.9",
-    "@typescript-eslint/eslint-plugin": "^5.4.0",
-    "@typescript-eslint/parser": "^5.4.0",
-    "c8": "^7.10.0",
-    "common-tags": "^1.8.2",
+    "@types/eslint": "^7.28.0",
+    "@types/node": "^14.14.7",
+    "@types/prettier": "^2.3.2",
+    "@types/semver": "^7.3.8",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "c8": "^7.9.0",
+    "common-tags": "^1.8.0",
     "cpy-cli": "^3.1.1",
-    "eslint": "^8.2.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-eslint-plugin": "^4.0.2",
-    "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^7.0.4",
-    "lint-staged": "^12.0.3",
-    "prettier": "^2.4.1",
-    "prettier-plugin-organize-imports": "^2.3.4",
+    "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^7.0.1",
+    "lint-staged": "^11.1.2",
+    "prettier": "^2.3.2",
+    "prettier-plugin-organize-imports": "^2.3.3",
     "rimraf": "^3.0.2",
-    "ts-node": "^10.4.0",
-    "typescript": "~4.5.2",
-    "uvu": "^0.5.2"
+    "ts-node": "^9.0.0",
+    "typescript": "~4.4.3",
+    "uvu": "^0.5.1"
   }
 }

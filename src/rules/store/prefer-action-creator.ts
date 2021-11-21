@@ -13,6 +13,7 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     ngrxModule: 'store',
     docs: {
+      category: 'Best Practices',
       description: 'Using `action creator` is preferred over `Action class`.',
       recommended: 'warn',
     },
@@ -25,7 +26,7 @@ export default createRule<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     return {
-      [`ClassDeclaration:has(TSClassImplements:matches([expression.name='Action'], [expression.property.name='Action'])):has(PropertyDefinition[key.name='type'])`](
+      [`ClassDeclaration:has(TSClassImplements:matches([expression.name='Action'], [expression.property.name='Action'])):has(ClassProperty[key.name='type'])`](
         node: TSESTree.ClassDeclaration,
       ) {
         context.report({

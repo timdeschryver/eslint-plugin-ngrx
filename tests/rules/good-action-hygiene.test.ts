@@ -13,7 +13,7 @@ type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
 type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
-const valid: () => RunTests['valid'] = () => [
+const valid: RunTests['valid'] = [
   `export const loadCustomer = createAction('[Customer Page] Load Customer')`,
   `export const loadCustomerSuccess = createAction('[Customer API] Load Customer Success', props<{ customer: Customer }>())`,
   `export const loadCustomerFail = createAction('[Customer API] Load Customer Fail', (error: string) => ({ error, timestamp: +Date.now() }))`,
@@ -21,7 +21,7 @@ const valid: () => RunTests['valid'] = () => [
   `export const withIncorrectFunction = createActionType('Just testing')`,
 ]
 
-const invalid: () => RunTests['invalid'] = () => [
+const invalid: RunTests['invalid'] = [
   fromFixture(
     stripIndent`
         export const loadCustomer = createAction('Load Customer')
@@ -31,9 +31,6 @@ const invalid: () => RunTests['invalid'] = () => [
 ]
 
 test(__filename, () => {
-  ruleTester().run(path.parse(__filename).name, rule, {
-    valid: valid(),
-    invalid: invalid(),
-  })
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
 test.run()

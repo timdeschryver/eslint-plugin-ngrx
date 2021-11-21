@@ -22,6 +22,7 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     ngrxModule: 'store',
     docs: {
+      category: 'Best Practices',
       description:
         'Using a selector in the `select` is preferred over `string` or `props drilling`.',
       recommended: 'warn',

@@ -27,6 +27,7 @@ export default createRule<Options, MessageIds>({
     type: 'problem',
     ngrxModule: 'effects',
     docs: {
+      category: 'Possible Errors',
       description: 'Avoid `Effect` that re-emit filtered actions.',
       recommended: 'error',
       requiresTypeChecking: true,

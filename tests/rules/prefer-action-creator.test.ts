@@ -13,7 +13,7 @@ type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
 type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
-const valid: () => RunTests['valid'] = () => [
+const valid: RunTests['valid'] = [
   `const loadUser = createAction('[User Page] Load User')`,
   `
     class Test {
@@ -36,7 +36,7 @@ const valid: () => RunTests['valid'] = () => [
     }`,
 ]
 
-const invalid: () => RunTests['invalid'] = () => [
+const invalid: RunTests['invalid'] = [
   fromFixture(
     stripIndent`
       class Test implements Action { type = '[Customer Page] Load Customer' }
@@ -50,9 +50,6 @@ const invalid: () => RunTests['invalid'] = () => [
 ]
 
 test(__filename, () => {
-  ruleTester().run(path.parse(__filename).name, rule, {
-    valid: valid(),
-    invalid: invalid(),
-  })
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
 test.run()

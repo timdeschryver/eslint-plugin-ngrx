@@ -14,6 +14,7 @@ export default createRule<Options, MessageIds>({
     type: 'problem',
     ngrxModule: 'component-store',
     docs: {
+      category: 'Possible Errors',
       description: '`Updater` should have an explicit return type.',
       recommended: 'warn',
     },

@@ -13,6 +13,7 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     ngrxModule: 'effects',
     docs: {
+      category: 'Best Practices',
       description:
         'Using `action creator` in `ofType` is preferred over `string`.',
       recommended: 'warn',

@@ -46,6 +46,7 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     ngrxModule: 'store',
     docs: {
+      category: 'Best Practices',
       description:
         'Selector can be used either with `select` as a pipeable operator or as a method.',
       recommended: 'warn',

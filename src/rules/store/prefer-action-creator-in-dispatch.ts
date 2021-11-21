@@ -21,6 +21,7 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     ngrxModule: 'store',
     docs: {
+      category: 'Best Practices',
       description:
         'Using `action creator` in `dispatch` is preferred over `object` or old `Action`.',
       recommended: 'warn',

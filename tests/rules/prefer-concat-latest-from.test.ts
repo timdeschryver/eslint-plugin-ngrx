@@ -15,7 +15,7 @@ type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
 type Options = readonly ESLintUtils.InferOptionsTypeFromRule<typeof rule>[0][]
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
-const valid: () => RunTests['valid'] = () => [
+const valid: RunTests['valid'] = [
   {
     code: `
 import { of, withLatestFrom } from 'rxjs'
@@ -78,7 +78,7 @@ class Ok2 {
 }`,
 ]
 
-const invalid: () => RunTests['invalid'] = () => [
+const invalid: RunTests['invalid'] = [
   fromFixture(
     `
 import { Actions } from '@ngrx/effects'
@@ -272,10 +272,7 @@ class Ok {
 ]
 
 test(__filename, () => {
-  ruleTester().run(path.parse(__filename).name, rule, {
-    valid: valid(),
-    invalid: invalid(),
-  })
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
 
 test(`[NgRx 11] ${__filename}`, () => {

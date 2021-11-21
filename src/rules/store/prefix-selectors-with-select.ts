@@ -16,9 +16,9 @@ export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
-    hasSuggestions: true,
     ngrxModule: 'store',
     docs: {
+      category: 'Best Practices',
       description:
         'The selector should start with "select", for example "selectThing".',
       recommended: 'warn',

@@ -16,10 +16,10 @@ type Options = readonly []
 export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'suggestion',
-    hasSuggestions: true,
+    type: 'problem',
     ngrxModule: 'store',
     docs: {
+      category: 'Possible Errors',
       description: '`On` function should have an explicit return type.',
       recommended: 'warn',
       suggestion: true,

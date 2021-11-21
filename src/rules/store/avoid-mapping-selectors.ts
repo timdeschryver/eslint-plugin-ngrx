@@ -19,6 +19,7 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     ngrxModule: 'store',
     docs: {
+      category: 'Best Practices',
       description: 'Avoid mapping logic outside the selector level.',
       recommended: 'warn',
     },

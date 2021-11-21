@@ -15,7 +15,7 @@ type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
 type Options = readonly ESLintUtils.InferOptionsTypeFromRule<typeof rule>[0][]
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
-const valid: () => RunTests['valid'] = () => [
+const valid: RunTests['valid'] = [
   `
 class Ok {}`,
   `
@@ -35,14 +35,14 @@ class Ok2 {
   },
 ]
 
-const invalid: () => RunTests['invalid'] = () => [
+const invalid: RunTests['invalid'] = [
   fromFixture(
     `
 import { Store } from '@ngrx/store'
 
 class NotOk {
   constructor(private readonly somethingElse$: Store) {}
-                               ~~~~~~~~~~~~~~ [${useConsistentGlobalStoreName} { "storeName": "store" } suggest]
+                               ~~~~~~~~~~~~~~ [${useConsistentGlobalStoreName} { "storeName": "store" }]
 }`,
     {
       suggestions: [
@@ -67,7 +67,7 @@ import { Store } from '@ngrx/store'
 
 class NotOk1 {
   constructor(private readonly store1: Store, private readonly store: Store) {}
-                               ~~~~~~ [${useConsistentGlobalStoreName} { "storeName": "store" } suggest]
+                               ~~~~~~ [${useConsistentGlobalStoreName} { "storeName": "store" }]
 }`,
     {
       suggestions: [
@@ -130,7 +130,7 @@ import { Store } from '@ngrx/store'
 
 class NotOk3 {
   constructor(private store: Store) {}
-                      ~~~~~ [${useConsistentGlobalStoreName} { "storeName": "customName" } suggest]
+                      ~~~~~ [${useConsistentGlobalStoreName} { "storeName": "customName" }]
 }`,
     {
       options: ['customName'],
@@ -153,9 +153,6 @@ class NotOk3 {
 ]
 
 test(__filename, () => {
-  ruleTester().run(path.parse(__filename).name, rule, {
-    valid: valid(),
-    invalid: invalid(),
-  })
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
 test.run()

@@ -11,7 +11,7 @@ const moduleRules = Object.entries(rules).reduce<Record<string, string[][]>>(
         `[ngrx/${ruleName}]${meta.docs?.url ? '(' + meta.docs.url + ')' : ''}`,
         meta.docs?.description ?? 'TODO',
         meta.type,
-        `${meta.docs?.recommended}`,
+        `${meta.docs?.recommended} (${meta.docs?.category})`,
         meta.fixable ? 'Yes' : 'No',
         meta.docs?.suggestion ? 'Yes' : 'No',
         meta.schema.length ? 'Yes' : 'No',

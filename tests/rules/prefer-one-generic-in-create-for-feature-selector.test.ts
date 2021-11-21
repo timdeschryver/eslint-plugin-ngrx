@@ -16,17 +16,17 @@ type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
 type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
-const valid: () => RunTests['valid'] = () => [
+const valid: RunTests['valid'] = [
   `const createFeatureSelector = test('feature-state')`,
   `const featureOk = createFeatureSelector('feature-state')`,
   `const featureOk1 = createFeatureSelector<FeatureState>('feature-state')`,
 ]
 
-const invalid: () => RunTests['invalid'] = () => [
+const invalid: RunTests['invalid'] = [
   fromFixture(
     stripIndent`
         const featureNotOk = createFeatureSelector<GlobalState, FeatureState>('feature-state')
-                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${preferOneGenericInCreateForFeatureSelector} suggest]
+                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${preferOneGenericInCreateForFeatureSelector}]
       `,
     {
       suggestions: [
@@ -42,7 +42,7 @@ const invalid: () => RunTests['invalid'] = () => [
   fromFixture(
     stripIndent`
       const featureNotOk1 = createFeatureSelector<AppState, readonly string[]>('feature-state')
-                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${preferOneGenericInCreateForFeatureSelector} suggest]
+                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${preferOneGenericInCreateForFeatureSelector}]
     `,
     {
       suggestions: [
@@ -58,7 +58,7 @@ const invalid: () => RunTests['invalid'] = () => [
   fromFixture(
     stripIndent`
         const featureNotOk2 = createFeatureSelector<GlobalState  , StateA & StateB>('feature-state')
-                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${preferOneGenericInCreateForFeatureSelector} suggest]
+                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [${preferOneGenericInCreateForFeatureSelector}]
       `,
     {
       suggestions: [
@@ -74,9 +74,6 @@ const invalid: () => RunTests['invalid'] = () => [
 ]
 
 test(__filename, () => {
-  ruleTester().run(path.parse(__filename).name, rule, {
-    valid: valid(),
-    invalid: invalid(),
-  })
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
 test.run()

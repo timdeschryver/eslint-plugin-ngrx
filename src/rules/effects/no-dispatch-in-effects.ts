@@ -21,10 +21,10 @@ type MemberExpressionWithinCallExpression = TSESTree.MemberExpression & {
 export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'suggestion',
+    type: 'problem',
     ngrxModule: 'effects',
-    hasSuggestions: true,
     docs: {
+      category: 'Possible Errors',
       description: '`Effect` should not call `store.dispatch`.',
       recommended: 'warn',
       suggestion: true,

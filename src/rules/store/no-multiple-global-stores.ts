@@ -19,9 +19,9 @@ export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
-    hasSuggestions: true,
     ngrxModule: 'store',
     docs: {
+      category: 'Best Practices',
       description: 'There should only be one global store injected.',
       recommended: 'warn',
       suggestion: true,

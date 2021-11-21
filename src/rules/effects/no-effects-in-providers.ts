@@ -19,6 +19,7 @@ export default createRule<Options, MessageIds>({
     type: 'problem',
     ngrxModule: 'effects',
     docs: {
+      category: 'Possible Errors',
       description:
         '`Effect` should not be listed as a provider if it is added to the `EffectsModule`.',
       recommended: 'error',

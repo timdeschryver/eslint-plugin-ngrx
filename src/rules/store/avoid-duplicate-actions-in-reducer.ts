@@ -16,10 +16,10 @@ type Action = TSESTree.Identifier & { parent: TSESTree.CallExpression }
 export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
-    type: 'suggestion',
-    hasSuggestions: true,
+    type: 'problem',
     ngrxModule: 'store',
     docs: {
+      category: 'Possible Errors',
       description: 'A `Reducer` should handle an `Action` once.',
       recommended: 'warn',
       suggestion: true,

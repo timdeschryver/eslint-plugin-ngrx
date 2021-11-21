@@ -16,7 +16,7 @@ type MessageIds = ESLintUtils.InferMessageIdsTypeFromRule<typeof rule>
 type Options = ESLintUtils.InferOptionsTypeFromRule<typeof rule>
 type RunTests = TSESLint.RunTests<MessageIds, Options>
 
-const valid: () => RunTests['valid'] = () => [
+const valid: RunTests['valid'] = [
   `
 @Injectable()
 export class FixtureEffects {
@@ -28,7 +28,7 @@ export class FixtureEffects {
 }`,
 ]
 
-const invalid: () => TSESLint.InvalidTestCase<MessageIds, []>[] = () => [
+const invalid: TSESLint.InvalidTestCase<MessageIds, []>[] = [
   fromFixture(
     stripIndents`
       @Injectable()
@@ -211,9 +211,6 @@ const invalid: () => TSESLint.InvalidTestCase<MessageIds, []>[] = () => [
 ]
 
 test(__filename, () => {
-  ruleTester().run(path.parse(__filename).name, rule, {
-    valid: valid(),
-    invalid: invalid(),
-  })
+  ruleTester().run(path.parse(__filename).name, rule, { valid, invalid })
 })
 test.run()
