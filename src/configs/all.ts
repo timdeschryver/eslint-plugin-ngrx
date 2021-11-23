@@ -11,7 +11,7 @@ export = {
     sourceType: 'module',
     project: './tsconfig.json',
   },
-  plugins: ['ngrx', 'rxjs'],
+  plugins: ['ngrx'],
   rules: {
     'ngrx/updater-explicit-return-type': 'warn',
     'ngrx/avoid-cyclic-effects': 'error',
@@ -38,12 +38,9 @@ export = {
     'ngrx/prefer-action-creator': 'warn',
     'ngrx/prefer-inline-action-props': 'warn',
     'ngrx/prefer-one-generic-in-create-for-feature-selector': 'warn',
+    'ngrx/prefer-selector-in-select': 'warn',
     'ngrx/prefix-selectors-with-select': 'warn',
     'ngrx/select-style': 'warn',
     'ngrx/use-consistent-global-store-name': 'warn',
-    'ngrx/use-selector-in-select': 'warn',
-    'rxjs/no-unsafe-catch': 'warn',
-    'rxjs/no-unsafe-first': 'warn',
-    'rxjs/no-unsafe-switchmap': 'warn',
   },
 }

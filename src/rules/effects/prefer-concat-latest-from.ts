@@ -30,7 +30,6 @@ export default createRule<Options, MessageIds>({
     ngrxModule: 'effects',
     version: '>=12.0.0',
     docs: {
-      category: 'Possible Errors',
       description: `Use \`${concatLatestFromKeyword}\` instead of \`${withLatestFromKeyword}\` to prevent the selector from firing until the correct \`Action\` is dispatched.`,
       recommended: 'warn',
     },

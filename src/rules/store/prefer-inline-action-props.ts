@@ -15,9 +15,9 @@ export default createRule<Options, MessageIds>({
   name: path.parse(__filename).name,
   meta: {
     type: 'suggestion',
+    hasSuggestions: true,
     ngrxModule: 'store',
     docs: {
-      category: 'Best Practices',
       description:
         'Prefer using inline types instead of interfaces, types or classes.',
       recommended: 'warn',
