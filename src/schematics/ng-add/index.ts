@@ -21,19 +21,25 @@ Please see ${docs} to configure the NgRx ESLint Plugin.
     try {
       const json = JSON.parse(eslint)
       if (json.overrides) {
-        json.overrides
-          .filter((override: { files?: string[] }) =>
-            override.files?.some((file: string) => file.endsWith('*.ts')),
+        if (
+          !json.overrides.some((override: any) =>
+            override.extends?.some((extend: any) =>
+              extend.startsWith('plugin:ngrx'),
+            ),
           )
-          .forEach(configurePlugin)
-      } else {
-        configurePlugin(json)
+        ) {
+          json.overrides.push(configurePlugin(schema.config))
+        }
+      } else if (
+        !json.extends?.some((extend: any) => extend.startsWith('plugin:ngrx'))
+      ) {
+        json.overrides = [configurePlugin(schema.config)]
       }
 
       host.overwrite(eslintConfigPath, JSON.stringify(json, null, 2))
 
       context.logger.info(`
-  The NgRx ESLint Plugin is installed and configured with the ${schema.config} config.
+  The NgRx ESLint Plugin is installed and configured with the '${schema.config}' config.
 
   If you want to change the configuration, please see ${docs}.
   `)
@@ -55,13 +61,10 @@ ${detailsContent}
 `)
     }
   }
-  function configurePlugin(json: {
-    plugins?: string[]
-    extends?: string[]
-  }): void {
-    json.plugins = [...new Set([...(json.plugins ?? []), 'ngrx'])]
-    json.extends = [
-      ...new Set([...(json.extends ?? []), `plugin:ngrx/${schema.config}`]),
-    ]
+  function configurePlugin(config: Schema['config']): Record<string, unknown> {
+    return {
+      files: ['*.ts'],
+      extends: [`plugin:ngrx/${config}`],
+    }
   }
 }
