@@ -22,8 +22,7 @@ test('registers the plugin with the recommended config', async () => {
   const eslintContent = appTree.readContent(`.eslintrc.json`)
   const eslintJson = JSON.parse(eslintContent)
   assert.equal(eslintJson, {
-    extends: ['plugin:ngrx/recommended'],
-    plugins: ['ngrx'],
+    overrides: [{ files: ['*.ts'], extends: [`plugin:ngrx/recommended`] }],
   })
 })
 
@@ -41,8 +40,12 @@ test('registers the plugin with a different config', async () => {
   const eslintContent = appTree.readContent(`.eslintrc.json`)
   const eslintJson = JSON.parse(eslintContent)
   assert.equal(eslintJson, {
-    extends: [`plugin:ngrx/${options.config}`],
-    plugins: ['ngrx'],
+    overrides: [
+      {
+        files: ['*.ts'],
+        extends: [`plugin:ngrx/${options.config}`],
+      },
+    ],
   })
 })
 
@@ -91,7 +94,6 @@ test('registers the plugin in overrides when it supports TS', async () => {
           project: ['tsconfig.eslint.json'],
           createDefaultProgram: true,
         },
-        plugins: ['ngrx'],
         extends: [
           'plugin:@angular-eslint/recommended',
           'eslint:recommended',
@@ -99,7 +101,6 @@ test('registers the plugin in overrides when it supports TS', async () => {
           'plugin:@typescript-eslint/recommended-requiring-type-checking',
           'plugin:@angular-eslint/template/process-inline-templates',
           'plugin:prettier/recommended',
-          'plugin:ngrx/recommended',
         ],
       },
       {
@@ -110,6 +111,10 @@ test('registers the plugin in overrides when it supports TS', async () => {
         ],
         rules: {},
       },
+      {
+        files: ['*.ts'],
+        extends: [`plugin:ngrx/recommended`],
+      },
     ],
   })
 })
@@ -118,8 +123,26 @@ test('does not add the plugin if it is already added manually', async () => {
   const appTree = new UnitTestTree(Tree.empty())
 
   const initialConfig = {
-    plugins: ['ngrx'],
     extends: ['plugin:ngrx/recommended'],
+  }
+  appTree.create('.eslintrc.json', JSON.stringify(initialConfig, null, 2))
+
+  await schematicRunner.runSchematicAsync('ng-add', {}, appTree).toPromise()
+
+  const eslintContent = appTree.readContent(`.eslintrc.json`)
+  const eslintJson = JSON.parse(eslintContent)
+  assert.equal(eslintJson, initialConfig)
+})
+
+test('does not add the plugin if it is already added manually as an override', async () => {
+  const appTree = new UnitTestTree(Tree.empty())
+
+  const initialConfig = {
+    overrides: [
+      {
+        extends: ['plugin:ngrx/recommended'],
+      },
+    ],
   }
   appTree.create('.eslintrc.json', JSON.stringify(initialConfig, null, 2))
 

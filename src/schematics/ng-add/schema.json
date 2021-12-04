@@ -26,7 +26,7 @@
           },
           {
             "value": "strict",
-            "label": "recommended (all rules configured as `error`) [https://github.com/timdeschryver/eslint-plugin-ngrx/blob/main/src/configs/strict.ts]"
+            "label": "strict (all rules configured as `error`) [https://github.com/timdeschryver/eslint-plugin-ngrx/blob/main/src/configs/strict.ts]"
           },
           {
             "value": "store",
