@@ -28,7 +28,7 @@ export default createRule<Options, MessageIds>({
     ngrxModule: 'effects',
     docs: {
       description: 'Avoid `Effect` that re-emit filtered actions.',
-      recommended: 'error',
+      recommended: 'warn',
       requiresTypeChecking: true,
     },
     schema: [],
