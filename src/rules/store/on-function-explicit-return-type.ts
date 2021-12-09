@@ -58,12 +58,13 @@ function getFixes(
   sourceCode: Readonly<TSESLint.SourceCode>,
   fixer: TSESLint.RuleFixer,
 ) {
-  const { params } = node;
-    
+  const { params } = node
+
   if (params.length === 0) {
-    return fixer.insertTextAfter(node, ': State')
+    const [, closingParen] = sourceCode.getTokens(node)
+    return fixer.insertTextAfter(closingParen, ': State')
   }
-    
+
   const [firstParam] = params
   const lastParam = getLast(params)
   const previousToken = sourceCode.getTokenBefore(firstParam)

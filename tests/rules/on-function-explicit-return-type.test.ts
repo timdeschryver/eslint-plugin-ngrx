@@ -155,6 +155,31 @@ const invalid: () => TSESLint.InvalidTestCase<MessageIds, []>[] = () => [
       },
     ],
   },
+  {
+    code: stripIndent`
+        const reducer = createReducer(
+          initialState,
+          on(reset, () =>   initialState  ),
+        )`,
+    errors: [
+      {
+        column: 13,
+        endColumn: 33,
+        line: 3,
+        messageId: onFunctionExplicitReturnType,
+        suggestions: [
+          {
+            messageId: onFunctionExplicitReturnTypeSuggest,
+            output: stripIndent`
+                const reducer = createReducer(
+                  initialState,
+                  on(reset, (): State =>   initialState  ),
+                )`,
+          },
+        ],
+      },
+    ],
+  },
 ]
 
 test(__filename, () => {
