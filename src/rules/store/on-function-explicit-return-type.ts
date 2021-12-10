@@ -54,10 +54,17 @@ export default createRule<Options, MessageIds>({
 })
 
 function getFixes(
-  { params }: TSESTree.ArrowFunctionExpression,
+  node: TSESTree.ArrowFunctionExpression,
   sourceCode: Readonly<TSESLint.SourceCode>,
   fixer: TSESLint.RuleFixer,
 ) {
+  const { params } = node
+
+  if (params.length === 0) {
+    const [, closingParen] = sourceCode.getTokens(node)
+    return fixer.insertTextAfter(closingParen, ': State')
+  }
+
   const [firstParam] = params
   const lastParam = getLast(params)
   const previousToken = sourceCode.getTokenBefore(firstParam)
