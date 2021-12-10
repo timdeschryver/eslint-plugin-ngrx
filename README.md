@@ -170,6 +170,7 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
   </tr>
   <tr>
     <td align="center"><a href="https://alorle.github.io/"><img src="https://avatars.githubusercontent.com/u/4264243?v=4?s=100" width="100px;" alt=""/><br /><sub><b>alorle</b></sub></a><br /><a href="https://github.com/timdeschryver/eslint-plugin-ngrx/issues?q=author%3Aalorle" title="Bug reports">🐛</a> <a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=alorle" title="Tests">⚠️</a> <a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=alorle" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/bryantlikes"><img src="https://avatars.githubusercontent.com/u/3209808?v=4?s=100" width="100px;" alt=""/><br /><sub><b>bryantlikes</b></sub></a><br /><a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=bryantlikes" title="Code">💻</a> <a href="https://github.com/timdeschryver/eslint-plugin-ngrx/commits?author=bryantlikes" title="Tests">⚠️</a> <a href="https://github.com/timdeschryver/eslint-plugin-ngrx/issues?q=author%3Abryantlikes" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
