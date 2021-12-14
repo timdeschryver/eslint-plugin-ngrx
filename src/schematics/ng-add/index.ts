@@ -1,4 +1,5 @@
 import type { Rule, SchematicContext, Tree } from '@angular-devkit/schematics'
+import stripJsonComments from 'strip-json-comments'
 import type { Schema } from './schema'
 
 export default function (schema: Schema): Rule {
@@ -19,7 +20,7 @@ Please see ${docs} to configure the NgRx ESLint Plugin.
     }
 
     try {
-      const json = JSON.parse(eslint)
+      const json = JSON.parse(stripJsonComments(eslint))
       if (json.overrides) {
         if (
           !json.overrides.some((override: any) =>
