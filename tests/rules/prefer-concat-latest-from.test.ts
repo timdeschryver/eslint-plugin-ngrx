@@ -127,6 +127,29 @@ class NotOk {
 import { Actions } from '@ngrx/effects'
 import { of, withLatestFrom } from 'rxjs'
 
+class NotOk {
+  effect = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CollectionApiActions.addBookSuccess),
+      withLatestFrom((action) =>
+      ~~~~~~~~~~~~~~ [${messageId}]
+        this.store.select(fromBooks.selectCollectionBookIds),
+        this.store.select(fromBooks.selectWishlist),
+      ),
+      switchMap(([action, bookCollection, wishlist]) => {
+        return of({ type: 'noop' })
+      }),
+    ),
+  )
+
+  constructor(private readonly actions$: Actions) {}
+}`,
+  ),
+  fromFixture(
+    `
+import { Actions } from '@ngrx/effects'
+import { of, withLatestFrom } from 'rxjs'
+
 class NotOk1 {
   readonly effect: CreateEffectMetadata
 
