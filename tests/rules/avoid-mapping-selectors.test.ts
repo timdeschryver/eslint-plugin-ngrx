@@ -93,6 +93,27 @@ class Ok7 {
   }
 }
 `,
+  // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/282
+  `
+import { Store } from '@ngrx/store'
+
+export class CollectionService {
+
+  constructor(
+    private service: Service,
+    private store: Store
+  ) {
+  }
+
+  getEntities$(): Observable<Entity[]> {
+    return this.store.select(selectUser).pipe(
+      switchMap(user => this.service.getCollection(user).pipe(
+        map(transformCollection)
+      )),
+    );
+  }
+}
+`,
 ]
 
 const invalid: () => RunTests['invalid'] = () => [
