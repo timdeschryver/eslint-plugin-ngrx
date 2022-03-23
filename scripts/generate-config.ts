@@ -47,6 +47,11 @@ writeConfig(
     ...getRules((rule) => rule.meta.ngrxModule === 'effects'),
   },
   ['ngrx'],
+  {
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    project: './tsconfig.json',
+  },
 )
 
 writeConfig(
@@ -86,6 +91,11 @@ writeConfig(
     ),
   },
   ['ngrx'],
+  {
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    project: './tsconfig.json',
+  },
 )
 
 writeConfig(
@@ -113,11 +123,7 @@ function writeConfig(
     | 'component-store-strict',
   configRules: Record<string, string>,
   plugins = ['ngrx'],
-  parserOptions: null | Record<string, string | number> = {
-    ecmaVersion: 2020,
-    sourceType: 'module',
-    project: './tsconfig.json',
-  },
+  parserOptions: null | Record<string, string | number> = null,
 ) {
   const code = `
 /**
