@@ -9,150 +9,83 @@ const prettierConfig = resolveConfig.sync(__dirname)
 const RULE_NAME_PREFIX = 'ngrx/'
 const CONFIG_DIRECTORY = './src/configs/'
 
-const getRules = (
-  predicate: (rule: NgRxRuleModule<[], string>) => boolean,
-  setting = (rule: NgRxRuleModule<[], string>) =>
-    rule.meta.docs?.recommended || 'warn',
-) =>
-  Object.entries(rules).reduce<Record<string, string>>(
-    (rules, [ruleName, rule]) => {
-      if (predicate(rule)) {
-        rules[`${RULE_NAME_PREFIX}${ruleName}`] = setting(rule)
-      }
-      return rules
-    },
-    {},
-  )
+writeConfig(
+  'recommended',
+  (rule) =>
+    !!rule.meta.docs?.recommended && !rule.meta.docs?.requiresTypeChecking,
+)
 
-writeConfig('recommended', {
-  ...getRules(
-    (rule) =>
-      !!rule.meta.docs?.recommended && !rule.meta.docs?.requiresTypeChecking,
-  ),
-})
+writeConfig('all', (rule) => !rule.meta.docs?.requiresTypeChecking)
 
-writeConfig('all', {
-  ...getRules((rule) => !rule.meta.docs?.requiresTypeChecking),
-})
+writeConfig(
+  'strict',
+  (rule) => !rule.meta.docs?.requiresTypeChecking,
+  () => 'error',
+)
 
-writeConfig('strict', {
-  ...getRules(
-    (rule) => !rule.meta.docs?.requiresTypeChecking,
-    () => 'error',
-  ),
-})
+writeConfig(
+  'recommended-requiring-type-checking',
+  (rule) => !!rule.meta.docs?.recommended,
+)
 
-writeConfig('recommended-requiring-type-checking', {
-  ...getRules((rule) => !!rule.meta.docs?.recommended),
-})
+writeConfig('all-requiring-type-checking', () => true)
 
-writeConfig('all-requiring-type-checking', {
-  ...getRules(() => true),
-})
-
-writeConfig('strict-requiring-type-checking', {
-  ...getRules(
-    () => true,
-    () => 'error',
-  ),
-})
+writeConfig(
+  'strict-requiring-type-checking',
+  () => true,
+  () => 'error',
+)
 
 writeConfig(
   'store',
-  {
-    ...getRules(
-      (rule) =>
-        rule.meta.ngrxModule === 'store' &&
-        !rule.meta.docs?.requiresTypeChecking,
-    ),
-  },
-  ['ngrx'],
-  null,
+  (rule) =>
+    rule.meta.ngrxModule === 'store' && !rule.meta.docs?.requiresTypeChecking,
 )
 
 writeConfig(
   'store-strict',
-  {
-    ...getRules(
-      (rule) =>
-        rule.meta.ngrxModule === 'store' &&
-        !rule.meta.docs?.requiresTypeChecking,
-      () => 'error',
-    ),
-  },
-  ['ngrx'],
-  null,
+  (rule) =>
+    rule.meta.ngrxModule === 'store' && !rule.meta.docs?.requiresTypeChecking,
+  () => 'error',
 )
 
 writeConfig(
   'effects',
-  {
-    ...getRules(
-      (rule) =>
-        rule.meta.ngrxModule === 'effects' &&
-        !rule.meta.docs?.requiresTypeChecking,
-    ),
-  },
-  ['ngrx'],
+  (rule) =>
+    rule.meta.ngrxModule === 'effects' && !rule.meta.docs?.requiresTypeChecking,
 )
 
 writeConfig(
   'effects-strict',
-  {
-    ...getRules(
-      (rule) =>
-        rule.meta.ngrxModule === 'effects' &&
-        !rule.meta.docs?.requiresTypeChecking,
-      () => 'error',
-    ),
-  },
-  ['ngrx'],
+  (rule) =>
+    rule.meta.ngrxModule === 'effects' && !rule.meta.docs?.requiresTypeChecking,
+  () => 'error',
 )
 
 writeConfig(
   'effects-requiring-type-checking',
-  {
-    ...getRules((rule) => rule.meta.ngrxModule === 'effects'),
-  },
-  ['ngrx'],
+  (rule) => rule.meta.ngrxModule === 'effects',
 )
 
 writeConfig(
   'effects-strict-requiring-type-checking',
-  {
-    ...getRules(
-      (rule) => rule.meta.ngrxModule === 'effects',
-      () => 'error',
-    ),
-  },
-  ['ngrx'],
+  (rule) => rule.meta.ngrxModule === 'effects',
+  () => 'error',
 )
 
 writeConfig(
   'component-store',
-  {
-    ...getRules(
-      (rule) =>
-        rule.meta.ngrxModule === 'component-store' &&
-        !rule.meta.docs?.requiresTypeChecking,
-    ),
-  },
-  ['ngrx'],
-  null,
+  (rule) =>
+    rule.meta.ngrxModule === 'component-store' &&
+    !rule.meta.docs?.requiresTypeChecking,
 )
 
 writeConfig(
   'component-store-strict',
-  {
-    ...getRules(
-      (rule) =>
-        rule.meta.ngrxModule === 'component-store' &&
-        !rule.meta.docs?.requiresTypeChecking,
-      () => 'error',
-    ),
-  },
-  ['ngrx'],
-  null,
+  (rule) =>
+    rule.meta.ngrxModule === 'component-store' &&
+    !rule.meta.docs?.requiresTypeChecking,
+  () => 'error',
 )
 
 function writeConfig(
@@ -171,14 +104,45 @@ function writeConfig(
     | 'effects-strict-requiring-type-checking'
     | 'component-store'
     | 'component-store-strict',
-  configRules: Record<string, string>,
-  plugins = ['ngrx'],
-  parserOptions: null | Record<string, string | number> = {
-    ecmaVersion: 2020,
-    sourceType: 'module',
-    project: './tsconfig.json',
-  },
+  predicate: (rule: NgRxRuleModule<[], string>) => boolean,
+  setting = (rule: NgRxRuleModule<[], string>) =>
+    rule.meta.docs?.recommended || 'warn',
 ) {
+  // const getRules = (
+  //   predicate: (rule: NgRxRuleModule<[], string>) => boolean,
+  //   setting = (rule: NgRxRuleModule<[], string>) =>
+  //     rule.meta.docs?.recommended || 'warn',
+  // ) => {
+  //   return Object.entries(rules).reduce<Record<string, string>>(
+  //     (rules, [ruleName, rule]) => {
+  //       if (predicate(rule)) {
+  //         rules[`${RULE_NAME_PREFIX}${ruleName}`] = setting(rule)
+  //       }
+  //       return rules
+  //     },
+  //     {},
+  //   )
+  // }
+
+  const rulesForConfig = Object.entries(rules).filter(([_, rule]) =>
+    predicate(rule),
+  )
+  const configRules = rulesForConfig.reduce<Record<string, string>>(
+    (rules, [ruleName, rule]) => {
+      rules[`${RULE_NAME_PREFIX}${ruleName}`] = setting(rule)
+      return rules
+    },
+    {},
+  )
+  const parserOptions: null | Record<string, string | number> =
+    rulesForConfig.some(([_, rule]) => rule.meta.docs?.requiresTypeChecking)
+      ? {
+          ecmaVersion: 2020,
+          sourceType: 'module',
+          project: './tsconfig.json',
+        }
+      : null
+
   const code = `
 /**
  * DO NOT EDIT
@@ -189,7 +153,7 @@ function writeConfig(
 export = {
   parser: "@typescript-eslint/parser",
   ${parserOptions ? `parserOptions: ${JSON.stringify(parserOptions)},` : ''}
-  plugins: ${JSON.stringify(plugins)},
+  plugins: ["ngrx"],
   rules: ${JSON.stringify(configRules)},
 }
 `
