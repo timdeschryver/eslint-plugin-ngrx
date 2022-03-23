@@ -25,40 +25,32 @@ const getRules = (
   )
 
 writeConfig('recommended', {
-  ...getRules((rule) => !!rule.meta.docs?.recommended),
+  ...getRules(
+    (rule) =>
+      !!rule.meta.docs?.recommended && !rule.meta.docs?.requiresTypeChecking,
+  ),
 })
 
 writeConfig('all', {
+  ...getRules((rule) => !rule.meta.docs?.requiresTypeChecking),
+})
+
+writeConfig('strict', {
+  ...getRules(
+    (rule) => !rule.meta.docs?.requiresTypeChecking,
+    () => 'error',
+  ),
+})
+
+writeConfig('recommended-requiring-type-checking', {
+  ...getRules((rule) => !!rule.meta.docs?.recommended),
+})
+
+writeConfig('all-requiring-type-checking', {
   ...getRules(() => true),
 })
 
-writeConfig(
-  'store',
-  {
-    ...getRules((rule) => rule.meta.ngrxModule === 'store'),
-  },
-  ['ngrx'],
-  null,
-)
-
-writeConfig(
-  'effects',
-  {
-    ...getRules((rule) => rule.meta.ngrxModule === 'effects'),
-  },
-  ['ngrx'],
-)
-
-writeConfig(
-  'component-store',
-  {
-    ...getRules((rule) => rule.meta.ngrxModule === 'component-store'),
-  },
-  ['ngrx'],
-  null,
-)
-
-writeConfig('strict', {
+writeConfig('strict-requiring-type-checking', {
   ...getRules(
     () => true,
     () => 'error',
@@ -66,10 +58,25 @@ writeConfig('strict', {
 })
 
 writeConfig(
+  'store',
+  {
+    ...getRules(
+      (rule) =>
+        rule.meta.ngrxModule === 'store' &&
+        !rule.meta.docs?.requiresTypeChecking,
+    ),
+  },
+  ['ngrx'],
+  null,
+)
+
+writeConfig(
   'store-strict',
   {
     ...getRules(
-      (rule) => rule.meta.ngrxModule === 'store',
+      (rule) =>
+        rule.meta.ngrxModule === 'store' &&
+        !rule.meta.docs?.requiresTypeChecking,
       () => 'error',
     ),
   },
@@ -78,7 +85,40 @@ writeConfig(
 )
 
 writeConfig(
+  'effects',
+  {
+    ...getRules(
+      (rule) =>
+        rule.meta.ngrxModule === 'effects' &&
+        !rule.meta.docs?.requiresTypeChecking,
+    ),
+  },
+  ['ngrx'],
+)
+
+writeConfig(
   'effects-strict',
+  {
+    ...getRules(
+      (rule) =>
+        rule.meta.ngrxModule === 'effects' &&
+        !rule.meta.docs?.requiresTypeChecking,
+      () => 'error',
+    ),
+  },
+  ['ngrx'],
+)
+
+writeConfig(
+  'effects-requiring-type-checking',
+  {
+    ...getRules((rule) => rule.meta.ngrxModule === 'effects'),
+  },
+  ['ngrx'],
+)
+
+writeConfig(
+  'effects-strict-requiring-type-checking',
   {
     ...getRules(
       (rule) => rule.meta.ngrxModule === 'effects',
@@ -89,10 +129,25 @@ writeConfig(
 )
 
 writeConfig(
+  'component-store',
+  {
+    ...getRules(
+      (rule) =>
+        rule.meta.ngrxModule === 'component-store' &&
+        !rule.meta.docs?.requiresTypeChecking,
+    ),
+  },
+  ['ngrx'],
+  null,
+)
+
+writeConfig(
   'component-store-strict',
   {
     ...getRules(
-      (rule) => rule.meta.ngrxModule === 'component-store',
+      (rule) =>
+        rule.meta.ngrxModule === 'component-store' &&
+        !rule.meta.docs?.requiresTypeChecking,
       () => 'error',
     ),
   },
@@ -102,14 +157,19 @@ writeConfig(
 
 function writeConfig(
   configName:
-    | 'recommended'
     | 'all'
-    | 'store'
-    | 'effects'
-    | 'component-store'
+    | 'recommended'
     | 'strict'
+    | 'all-requiring-type-checking'
+    | 'recommended-requiring-type-checking'
+    | 'strict-requiring-type-checking'
+    | 'store'
     | 'store-strict'
+    | 'effects'
+    | 'effects-requiring-type-checking'
     | 'effects-strict'
+    | 'effects-strict-requiring-type-checking'
+    | 'component-store'
     | 'component-store-strict',
   configRules: Record<string, string>,
   plugins = ['ngrx'],
