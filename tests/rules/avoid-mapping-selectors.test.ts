@@ -114,6 +114,19 @@ export class CollectionService {
   }
 }
 `,
+  // https://github.com/timdeschryver/eslint-plugin-ngrx/issues/285
+  `
+import { Store } from '@ngrx/store'
+
+class OkBecauseOfThis {
+  foo$ = this.store.select(selectIsAuthenticated).pipe(
+      take(1),
+      map((isAuthenticated: boolean) => (isAuthenticated ? true : this.router.parseUrl('/login'))),
+  )
+
+
+  constructor(private store: Store) {}
+}`,
 ]
 
 const invalid: () => RunTests['invalid'] = () => [
