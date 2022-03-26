@@ -44,7 +44,7 @@ export default createRule<Options, MessageIds>({
     )}[callee.object.callee.property.name='select']` as const
 
     return {
-      [`:matches(${selectSelector}, ${pipeWithSelectAndMapSelector}) > CallExpression[callee.name='map']`](
+      [`:matches(${selectSelector}, ${pipeWithSelectAndMapSelector}) > CallExpression[callee.name='map']:not(:has(ThisExpression))`](
         node: TSESTree.CallExpression,
       ) {
         context.report({
