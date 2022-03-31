@@ -127,6 +127,20 @@ class OkBecauseOfThis {
 
   constructor(private store: Store) {}
 }`,
+  `
+import { Store } from '@ngrx/store'
+
+class OkBecauseOfEffect {
+foo$ = createEffect(() => {
+  return this.store.select(selectObj).pipe(
+    map((obj) => obj.prop),
+    distinctUntilChanged(),
+    map(() => anAction())
+  )
+})
+  
+constructor(private store: Store) {}
+}`,
 ]
 
 const invalid: () => RunTests['invalid'] = () => [
