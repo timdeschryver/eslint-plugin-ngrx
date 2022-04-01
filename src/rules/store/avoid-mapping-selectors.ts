@@ -1,4 +1,5 @@
 import type { TSESTree } from '@typescript-eslint/experimental-utils'
+import { isCallExpression, isIdentifier } from 'eslint-etc'
 import path from 'path'
 import { createRule } from '../../rule-creator'
 import {
@@ -43,10 +44,28 @@ export default createRule<Options, MessageIds>({
       storeNames,
     )}[callee.object.callee.property.name='select']` as const
 
+    function isInCreateEffect(node: TSESTree.CallExpression) {
+      let parent = node.parent
+      while (parent) {
+        if (
+          isCallExpression(parent) &&
+          isIdentifier(parent.callee) &&
+          parent.callee.name === 'createEffect'
+        ) {
+          return true
+        }
+        parent = parent.parent
+      }
+      return false
+    }
+
     return {
       [`:matches(${selectSelector}, ${pipeWithSelectAndMapSelector}) > CallExpression[callee.name='map']:not(:has(ThisExpression))`](
         node: TSESTree.CallExpression,
       ) {
+        if (isInCreateEffect(node)) {
+          return
+        }
         context.report({
           node,
           messageId,
