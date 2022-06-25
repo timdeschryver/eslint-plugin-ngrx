@@ -26,12 +26,12 @@ jobs:
       - name: 🎁 Install
         run: npm ci
 
-      - name: 🔍 Lint
-        run: |
-          npm run g:all
-          npm run lint:all
-          npm run prettier:all
-          git diff --name-only --exit-code
+#       - name: 🔍 Lint
+#         run: |
+#           npm run g:all
+#           npm run lint:all
+#           npm run prettier:all
+#           git diff --name-only --exit-code
 
       - name: 🔨 Build
         run: npm run build
