@@ -59,7 +59,7 @@
   },
   "peerDependencies": {
     "eslint": ">=8.0.0",
-    "typescript": ">=4.4.0"
+    "typescript": ">=4.3.5"
   },
   "devDependencies": {
     "@ngrx/effects": "^13.0.1",
